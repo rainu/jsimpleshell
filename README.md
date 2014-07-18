@@ -8,7 +8,7 @@ Demo version
 
 You can build the demo project (runnable jar file) for your own to checkout the functionality of ___JSimpleShell___. The only thing what you have to do is checkout and build the project (see below). After that you can run the jar-file which is created under the exaples/target folder.
 
-    java -jar example/target/jsimpleshell-example-1.0-SNAPSHOT-jar-with-dependencies.jar
+    java -jar example/target/SimpleShell-Demo.jar 
 
 License
 -------
