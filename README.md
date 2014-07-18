@@ -23,7 +23,7 @@ __Attention__: At the moment there are no artifact deployed in a official maven-
 If you want to add ___JSimpleShell___ to your maven project, you can add the following dependency in your __pom.xml__:
 
     <dependency>
-      <groupId>de.rainu</groupId>
+      <groupId>de.rainu.lib</groupId>
       <artifactId>jsimpleshell</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
