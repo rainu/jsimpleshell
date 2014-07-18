@@ -3,12 +3,15 @@ package de.rainu.lib.jsimpleshell.example;
 import java.io.IOException;
 
 import jsimpleshell.ShellFactory;
+import de.rainu.lib.jsimpleshell.Info;
 
 public class Starter {
-
+	private static final String VERSION = Info.getVersion();
+	private static final String PROMT = "$> ";
+	
 	public static void main(String[] args) throws IOException {
 		System.out.println("   _____   ______   __                          __             ______   __                  __  __  ");
-		System.out.println("   |     \\ /      \\ |  \\                        |  \\           /      \\ |  \\                |  \\|  \\");
+		System.out.println("   |     \\ /      \\ |  \\     DEMO               |  \\           /      \\ |  \\                |  \\|  \\");
 		System.out.println("    \\$$$$$|  $$$$$$\\ \\$$ ______ ____    ______  | $$  ______  |  $$$$$$\\| $$____    ______  | $$| $$");
 		System.out.println("      | $$| $$___\\$$|  \\|      \\    \\  /      \\ | $$ /      \\ | $$___\\$$| $$    \\  /      \\ | $$| $$");
 		System.out.println(" __   | $$ \\$$    \\ | $$| $$$$$$\\$$$$\\|  $$$$$$\\| $$|  $$$$$$\\ \\$$    \\ | $$$$$$$\\|  $$$$$$\\| $$| $$");
@@ -16,11 +19,23 @@ public class Starter {
 		System.out.println("| $$__| $$|  \\__| $$| $$| $$ | $$ | $$| $$__/ $$| $$| $$$$$$$$|  \\__| $$| $$  | $$| $$$$$$$$| $$| $$");
 		System.out.println(" \\$$    $$ \\$$    $$| $$| $$ | $$ | $$| $$    $$| $$ \\$$     \\ \\$$    $$| $$  | $$ \\$$     \\| $$| $$");
 		System.out.println("  \\$$$$$$   \\$$$$$$  \\$$ \\$$  \\$$  \\$$| $$$$$$$  \\$$  \\$$$$$$$  \\$$$$$$  \\$$   \\$$  \\$$$$$$$ \\$$ \\$$");
-		System.out.println("                                      | $$                                                          ");
-		System.out.println("         DEMO-Version                 | $$                                                          ");
-		System.out.println("                                       \\$$                                                          ");		
+		System.out.println("                                      | $$");
+		System.out.println("https://github.com/rainu/jsimpleshell | $$    Version: " + VERSION);
+		System.out.println("                                       \\$$");		
+		System.out.println();
+		System.out.println("Usage:");
+		System.out.println("* You can use \"?list\" to show available commands. The command \"?list-all\" lists also the special commands.");
+		System.out.println("* If you want to know more about a specific command, you can use the \"?help\" command. For example:");
+		System.out.println("\t" + PROMT + "?help echo");
+		System.out.println("* Don't be shy to use the arrow-keys! Seriously, try it out :)");
+		System.out.println("\t<LEFT_ARROW> and <RIGHT_ARROW> navigates in current line");
+		System.out.println("\t<UP_ARROW> and <DOWN_ARROW> navigates through the command history");
+		System.out.println("* Use <TAB> to auto-complete the available commands or file/directory path");
 		
-		ShellFactory.createShell(">", "superShell", new HelloWorld()).commandLoop();
+		System.out.println("* To exit this shell, use \"exit\" :)");
+		System.out.println();
+		
+		
+		ShellFactory.createShell(PROMT, "superShell", new MainShell()).commandLoop();
 	}
-
 }
