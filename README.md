@@ -1,2 +1,2 @@
-jsimpleshell
+JSimpleShell
 ============
