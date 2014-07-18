@@ -7,10 +7,28 @@
 	<packaging>pom</packaging>
 	<name>JSimpleShell</name>
 
+	<licenses>
+		<license>
+			<name>The BSD License (3-Clause)</name>
+			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git://github.com/rainu/jsimpleshell.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/rainu/jsimpleshell.git</developerConnection>
+		<url>http://github.com/rainu/jsimpleshell</url>
+	</scm>
+
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/rainu/jsimpleshell/issues</url>
+	</issueManagement>
+
 	<modules>
 		<module>core</module>
 		<module>example</module>
-	</modules>		
+	</modules>
 
 	<build>
 		<plugins>
