@@ -1,4 +1,4 @@
-package jsimpleshell.example;
+package de.rainu.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class Starter {
 		System.out.println(" \\$$    $$ \\$$    $$| $$| $$ | $$ | $$| $$    $$| $$ \\$$     \\ \\$$    $$| $$  | $$ \\$$     \\| $$| $$");
 		System.out.println("  \\$$$$$$   \\$$$$$$  \\$$ \\$$  \\$$  \\$$| $$$$$$$  \\$$  \\$$$$$$$  \\$$$$$$  \\$$   \\$$  \\$$$$$$$ \\$$ \\$$");
 		System.out.println("                                      | $$                                                          ");
-		System.out.println("                                      | $$                                                          ");
+		System.out.println("         DEMO-Version                 | $$                                                          ");
 		System.out.println("                                       \\$$                                                          ");		
 		
 		ShellFactory.createShell(">", "superShell", new HelloWorld()).commandLoop();

@@ -2,7 +2,7 @@
  * This example code is in public domain.
  */
 
-package jsimpleshell.example;
+package de.rainu.lib.jsimpleshell.example;
 
 import java.io.IOException;
 import java.util.ArrayList;

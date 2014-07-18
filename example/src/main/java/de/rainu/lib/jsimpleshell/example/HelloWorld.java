@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package jsimpleshell.example;
+package de.rainu.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
