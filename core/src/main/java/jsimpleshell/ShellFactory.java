@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import asg.cliche.CommandTable;
-import asg.cliche.ConsoleIO;
-import asg.cliche.DashJoinedNamer;
-import asg.cliche.HelpCommandHandler;
-import asg.cliche.util.ArrayHashMultiMap;
-import asg.cliche.util.MultiMap;
+import de.rainu.lib.jsimpleshell.CommandTable;
+import de.rainu.lib.jsimpleshell.ConsoleIO;
+import de.rainu.lib.jsimpleshell.DashJoinedNamer;
+import de.rainu.lib.jsimpleshell.HelpCommandHandler;
+import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
+import de.rainu.lib.jsimpleshell.util.MultiMap;
 
 public class ShellFactory {
 
@@ -18,7 +18,7 @@ public class ShellFactory {
      *
      * Run the obtained Shell with commandLoop().
      *
-     * @see asg.cliche.Shell#Shell(asg.cliche.Shell.Settings, asg.cliche.CommandTable, java.util.List)
+     * @see de.rainu.lib.jsimpleshell.Shell#Shell(de.rainu.lib.jsimpleshell.Shell.Settings, de.rainu.lib.jsimpleshell.CommandTable, java.util.List)
      *
      * @param prompt Prompt to be displayed
      * @param appName The app name string

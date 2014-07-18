@@ -2,9 +2,9 @@ package jsimpleshell;
 
 import java.util.List;
 
-import asg.cliche.CommandTable;
+import de.rainu.lib.jsimpleshell.CommandTable;
 
-public class Shell extends asg.cliche.Shell {
+public class Shell extends de.rainu.lib.jsimpleshell.Shell {
 
 	public Shell(Settings s, CommandTable commandTable, List<String> path) {
 		super(s, commandTable, path);

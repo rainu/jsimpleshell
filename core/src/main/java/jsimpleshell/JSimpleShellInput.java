@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.CommandTable;
+import de.rainu.lib.jsimpleshell.Input;
+import de.rainu.lib.jsimpleshell.ShellCommand;
 import jline.console.ConsoleReader;
 import jline.console.completer.StringsCompleter;
-import asg.cliche.CommandTable;
-import asg.cliche.Input;
-import asg.cliche.ShellCommand;
 
 public class JSimpleShellInput implements Input {
 	private final ConsoleReader reader;

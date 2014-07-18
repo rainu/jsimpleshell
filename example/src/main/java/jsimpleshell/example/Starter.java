@@ -3,7 +3,6 @@ package jsimpleshell.example;
 import java.io.IOException;
 
 import jsimpleshell.ShellFactory;
-import asg.cliche.example.HelloWorld;
 
 public class Starter {
 
