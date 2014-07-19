@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import de.rainu.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.rainu.lib.jsimpleshell.util.Strings;
 
 /**
@@ -70,6 +71,11 @@ public class TerminalIO implements Input, Output {
 
 	@Override
 	public void outputException(Throwable e) {
+		if(e instanceof CommandNotFoundException){
+			printlnErr(e.getMessage());		
+			return;
+		}
+		
 		String stackTrace = extractStacktrace(e);
 		printlnErr(stackTrace);
 	}

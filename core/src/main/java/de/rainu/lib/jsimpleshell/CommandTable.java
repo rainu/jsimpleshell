@@ -8,6 +8,9 @@ package de.rainu.lib.jsimpleshell;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import de.rainu.lib.jsimpleshell.exception.CLIException;
+import de.rainu.lib.jsimpleshell.exception.CommandNotFoundException;
+
 /**
  * Command table is responsible for managing a lot of ShellCommands and is like a dictionary,
  * because its main function is to return a command by name.
@@ -102,11 +105,11 @@ public class CommandTable {
         }
         // selection
         if (collectedTable.size() == 0) {
-            throw CLIException.createCommandNotFound(discriminator);
+            throw new CommandNotFoundException(discriminator);
         } else if (reducedTable.size() == 0) {
-            throw CLIException.createCommandNotFoundForArgNum(discriminator, tokens.size()-1);
+            throw new CommandNotFoundException(discriminator, tokens.size()-1, false);
         } else if (reducedTable.size() > 1) {
-            throw CLIException.createAmbiguousCommandExc(discriminator, tokens.size()-1);
+            throw new CommandNotFoundException(discriminator, tokens.size()-1, true);
         } else {
             return reducedTable.get(0);
         }

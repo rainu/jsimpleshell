@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.exception.CLIException;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 
@@ -265,7 +266,7 @@ public class Shell {
      * @see de.rainu.lib.jsimpleshell.Output
      *
      * @param line Full command line
-     * @throws de.rainu.lib.jsimpleshell.CLIException This may be TokenException
+     * @throws de.rainu.lib.jsimpleshell.exception.CLIException This may be TokenException
      */
     public void processLine(String line) throws CLIException {
         if (line.trim().equals("?")) {

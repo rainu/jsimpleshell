@@ -9,6 +9,8 @@ package de.rainu.lib.jsimpleshell;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.rainu.lib.jsimpleshell.exception.CLIException;
+
 
 /**
  * Command table entry

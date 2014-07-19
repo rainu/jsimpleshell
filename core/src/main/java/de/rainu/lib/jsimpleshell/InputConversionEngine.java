@@ -11,6 +11,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import de.rainu.lib.jsimpleshell.exception.CLIException;
+
 /**
  * This thing is responsible for converting strings to objects.
  * Elementary types can be handled by itself, and arbitrary types can be handled

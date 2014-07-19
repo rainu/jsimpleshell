@@ -5,6 +5,8 @@
 
 package de.rainu.lib.jsimpleshell;
 
+import de.rainu.lib.jsimpleshell.exception.CLIException;
+
 /**
  * Exception pointing at the token which caused it.
  * Used to report invalid parameter types.
