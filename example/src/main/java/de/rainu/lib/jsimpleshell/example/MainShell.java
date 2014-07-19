@@ -3,8 +3,8 @@ package de.rainu.lib.jsimpleshell.example;
 import java.io.IOException;
 
 import de.rainu.lib.jsimpleshell.Shell;
+import de.rainu.lib.jsimpleshell.ShellBuilder;
 import de.rainu.lib.jsimpleshell.ShellDependent;
-import de.rainu.lib.jsimpleshell.ShellFactory;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.annotation.Param;
 
@@ -47,7 +47,9 @@ public class MainShell implements ShellDependent {
     public String colorizedEcho() throws IOException {
     	final ColorizedEcho echoBuilder = new ColorizedEcho();
     	
-    	Shell subShell = ShellFactory.createSubshell("subshell", parent, null, echoBuilder);
+    	Shell subShell = ShellBuilder.subshell("subshell", parent)
+							.addHandler(echoBuilder)
+						.build();
 
     	//the method will be blocked until the shell was abandoned
     	subShell.commandLoop();

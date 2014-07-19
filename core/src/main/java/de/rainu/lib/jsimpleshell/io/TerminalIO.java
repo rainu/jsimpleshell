@@ -21,6 +21,8 @@ import de.rainu.lib.jsimpleshell.util.Strings;
  *
  */
 public class TerminalIO implements Input, Output {
+	private static final String PROMPT_SUFFIX = "> ";
+	
 	private ConsoleReader console;
 	private PrintStream error;
 
@@ -33,6 +35,10 @@ public class TerminalIO implements Input, Output {
 	public TerminalIO(ConsoleReader console, OutputStream error) {
 		this.console = console;
 		this.error = error != null ? new PrintStream(error) : null;
+	}
+	
+	public ConsoleReader getConsole() {
+		return console;
 	}
 
 	@Override
@@ -91,13 +97,17 @@ public class TerminalIO implements Input, Output {
 	@Override
 	public String readCommand(List<String> path) {
 		try {
-			String prompt = Strings.joinStrings(path, false, '/');
+			String prompt = getPrompt(path);
 			lastCommandOffset = prompt.length();
 
 			return console.readLine(prompt);
 		} catch (IOException e) {
 			throw new Error(e);
 		}
+	}
+
+	private String getPrompt(List<String> path) {
+		return Strings.joinStrings(path, false, '/') + PROMPT_SUFFIX;
 	}
 
 	private void output(Object obj, int indent, OutputConversionEngine oce) {

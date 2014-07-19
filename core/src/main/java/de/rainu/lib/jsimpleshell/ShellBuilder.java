@@ -10,10 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.io.TerminalIO;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
+import de.rainu.lib.jsimpleshell.util.EmptyMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 
 /**
@@ -22,26 +24,61 @@ import de.rainu.lib.jsimpleshell.util.MultiMap;
  * @author rainu
  */
 public class ShellBuilder {
-	private String prompt = "$> ";
+	private String prompt;
 	private String appName = "JSimpleShell";
+	private MultiMap<String, Object> auxHandlers = new EmptyMultiMap<String, Object>();
 	private Collection<Object> handlers = new LinkedList<Object>();
+	private Shell parent;
 	private ConsoleReader console;
 	private OutputStream error = System.err;
 	private boolean useForeignConsole = false;
 	private boolean fileNameCompleterEnabled = true;
 	private boolean commandCompleterEnabled = true;
 	
-	/**
-	 * Set the Propt to be displayed.
-	 * 
-	 * @param prompt Prompt to be displayed
-	 * @return This {@link ShellBuilder}
-	 */
-	public ShellBuilder setPrompt(String prompt) {
-		this.prompt = prompt;
-		return this;
+	private ShellBuilder(){
+		
 	}
-
+	
+	/**
+	 * Create a new {@link ShellBuilder} instance with which one you can build a {@link Shell}.
+	 * 
+	 * @param subPrompt The promt for this shell.
+	 * @return A new instance of {@link ShellBuilder}
+	 * @throws NullPointerException If the prompt is null.
+	 */
+	public static ShellBuilder shell(String prompt){
+		if(prompt == null){
+			throw new NullPointerException("The prompt must not be null!");
+		}
+		
+		ShellBuilder builder = new ShellBuilder();
+		
+		builder.prompt = prompt;
+		
+		return builder;
+	}
+	
+	/**
+	 * Create a new {@link ShellBuilder} instance with which one you can build a Sub{@link Shell}.
+	 * 
+	 * @param subPrompt The sub-promt for this sub shell.
+	 * @param parent The parent {@link Shell} instance.
+	 * @return A new instance of {@link ShellBuilder}
+	 * @throws NullPointerException If the prompt is null.
+	 */
+	public static ShellBuilder subshell(String subPrompt, Shell parent){
+		if(subPrompt == null){
+			throw new NullPointerException("The prompt must not be null!");
+		}
+		
+		ShellBuilder builder = new ShellBuilder();
+		
+		builder.prompt = subPrompt;
+		builder.parent = parent;
+		
+		return builder;
+	}
+	
 	/**
 	 * Set the app name.
 	 * 
@@ -146,7 +183,13 @@ public class ShellBuilder {
 	
 	private void checkPrecondition() throws IOException {
 		if(console == null){
-			console = new ConsoleReader();
+			if(parent == null){
+				console = new ConsoleReader();
+			}else if(parent.getSettings().input instanceof TerminalIO){
+				console = ((TerminalIO)parent.getSettings().input).getConsole();
+			}else{
+				throw new IllegalStateException("The parent shell seams to be not built with ShellBuilder!");
+			}
 		}
 	}
 	
@@ -160,6 +203,9 @@ public class ShellBuilder {
 	
 	private void configure(Shell shell) {
 		if(commandCompleterEnabled){
+			//remove old
+			removeOldCommandNameCompleter();
+			
 			Collection<String> commandsNames = new HashSet<String>();
 			for(ShellCommand cmd : shell.getCommandTable().getCommandTable()){
 				commandsNames.add(cmd.getPrefix() + cmd.getName());
@@ -169,13 +215,26 @@ public class ShellBuilder {
 		}
 	}
 	
+	private void removeOldCommandNameCompleter() {
+		Completer toRemove = null;
+		
+		if(console.getCompleters() != null) for(Completer c : console.getCompleters()){
+			if(c instanceof StringsCompleter){
+				toRemove = c;
+				break;
+			}
+		}
+		
+		console.removeCompleter(toRemove);
+	}
+
 	private Shell buildShell() {
 		TerminalIO io = new TerminalIO(console, error);
 
         List<String> path = new ArrayList<String>(1);
         path.add(prompt);
 
-        MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>();
+        MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
         modifAuxHandlers.put("!", io);
 
         Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false),
@@ -191,6 +250,23 @@ public class ShellBuilder {
         return theShell;
 	}
 	
+	private Shell buildSubShell() {
+		List<String> newPath = new ArrayList<String>(parent.getPath());
+        newPath.add(prompt);
+
+        Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers),
+                new CommandTable(parent.getCommandTable().getNamer()), newPath);
+
+        subshell.setAppName(appName);
+        subshell.addMainHandler(subshell, "!");
+        subshell.addMainHandler(new HelpCommandHandler(), "?");
+
+        for (Object h : handlers) {
+        	subshell.addMainHandler(h, "");
+        }
+        return subshell;
+	}
+	
 	/**
 	 * Build the shell with the settings which you have set before.
 	 * 
@@ -201,7 +277,7 @@ public class ShellBuilder {
 			checkPrecondition();
 			configure();
 			
-			Shell shell = buildShell();
+			Shell shell = parent == null ? buildShell() : buildSubShell();
 			configure(shell);
 			
 			return shell;

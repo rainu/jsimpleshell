@@ -35,7 +35,7 @@ public class Starter {
 		System.out.println("* To exit this shell, use \"exit\" :)");
 		System.out.println();
 		
-		new ShellBuilder()
+		ShellBuilder.shell("JSS")
 				.addHandler(new MainShell())
 			.build()
 				.commandLoop();

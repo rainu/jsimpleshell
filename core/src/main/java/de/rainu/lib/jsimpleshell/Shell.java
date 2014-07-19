@@ -45,8 +45,8 @@ public class Shell {
     private String appName;
 
     public static class Settings {
-        private final Input input;
-        private final Output output;
+        final Input input;
+        final Output output;
         private final MultiMap<String, Object> auxHandlers;
         private final boolean displayTime;
 
@@ -89,7 +89,7 @@ public class Shell {
      * @param commandTable CommandTable to store commands
      * @param path Shell's location: list of path elements.
      */
-    public Shell(Settings s, CommandTable commandTable, List<String> path) {
+    Shell(Settings s, CommandTable commandTable, List<String> path) {
         this.commandTable = commandTable;
         this.path = path;
         setSettings(s);
