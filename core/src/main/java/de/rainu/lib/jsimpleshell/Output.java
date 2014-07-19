@@ -5,6 +5,8 @@
 
 package de.rainu.lib.jsimpleshell;
 
+import de.rainu.lib.jsimpleshell.exception.TokenException;
+
 /**
  * Output for Shell to direct its output to.
  * Something like the Builder pattern.

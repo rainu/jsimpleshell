@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.rainu.lib.jsimpleshell.exception.CLIException;
+import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 

@@ -11,6 +11,7 @@ import java.util.List;
 
 import jline.console.ConsoleReader;
 import de.rainu.lib.jsimpleshell.exception.CommandNotFoundException;
+import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.util.Strings;
 
 /**

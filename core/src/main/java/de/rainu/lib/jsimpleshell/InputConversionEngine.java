@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import de.rainu.lib.jsimpleshell.exception.CLIException;
+import de.rainu.lib.jsimpleshell.exception.TokenException;
 
 /**
  * This thing is responsible for converting strings to objects.

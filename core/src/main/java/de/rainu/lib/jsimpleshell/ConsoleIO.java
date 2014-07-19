@@ -15,6 +15,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.util.Strings;
 
 /**
