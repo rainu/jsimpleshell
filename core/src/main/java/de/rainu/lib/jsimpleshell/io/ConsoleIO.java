@@ -181,28 +181,28 @@ public class ConsoleIO implements Input, Output, ShellManageable {
         }
     }
 
-    private void print(Object x) {
+    public void print(Object x) {
         out.print(x);
         if (log != null) {
             log.print(x);
         }
     }
 
-    private void println(Object x) {
+    public void println(Object x) {
         out.println(x);
         if (log != null) {
             log.println(x);
         }
     }
 
-    private void printErr(Object x) {
+    public void printErr(Object x) {
         err.print(x);
         if (log != null) {
             log.print(x);
         }
     }
 
-    private void printlnErr(Object x) {
+    public void printlnErr(Object x) {
         err.println(x);
         if (log != null) {
             log.println(x);

@@ -153,7 +153,7 @@ public class TerminalIO implements Input, Output {
 		return sw.toString(); // stack trace as a string
 	}
 
-	private void printlnErr(Object o) {
+	public void printlnErr(Object o) {
 		if (error == null) {
 			println("[ERROR] " + o);
 		} else {
@@ -161,7 +161,7 @@ public class TerminalIO implements Input, Output {
 		}
 	}
 
-	private void printErr(Object o) {
+	public void printErr(Object o) {
 		if (error == null) {
 			print("[ERROR] " + o);
 		} else {
@@ -169,7 +169,7 @@ public class TerminalIO implements Input, Output {
 		}
 	}
 
-	private void println(Object o) {
+	public void println(Object o) {
 		try {
 			console.println(String.valueOf(o));
 		} catch (IOException e) {
@@ -177,7 +177,7 @@ public class TerminalIO implements Input, Output {
 		}
 	}
 
-	private void print(Object o) {
+	public void print(Object o) {
 		try {
 			console.print(String.valueOf(o));
 		} catch (IOException e) {

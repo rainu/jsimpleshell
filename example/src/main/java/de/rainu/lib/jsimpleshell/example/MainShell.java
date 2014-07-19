@@ -7,6 +7,8 @@ import de.rainu.lib.jsimpleshell.ShellBuilder;
 import de.rainu.lib.jsimpleshell.ShellDependent;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.annotation.Param;
+import de.rainu.lib.jsimpleshell.io.OutputBuilder;
+import de.rainu.lib.jsimpleshell.io.OutputDependent;
 
 /**
  * This class contains all Commands for the main shell.
@@ -15,12 +17,21 @@ import de.rainu.lib.jsimpleshell.annotation.Param;
  */
 //if you want that the shell make sub shell's you must implement the ShellDependent interface 
 //to get the parent shell that is needed if you want to create a subshell
-public class MainShell implements ShellDependent {
+
+//if you want to make output within a command you must implement the OutputDependent interface
+//to get the OutputBuilder. With that builder you can print output to out/err
+public class MainShell implements ShellDependent, OutputDependent {
 	private Shell shell;
+	private OutputBuilder output;
 	
 	@Override
 	public void cliSetShell(Shell theShell) {
 		this.shell = theShell;
+	}
+	
+	@Override
+	public void cliSetOutput(OutputBuilder output) {
+		this.output = output;		
 	}
 	
     @Command(abbrev = "e", description = "Print the argument to std-out.")
@@ -44,7 +55,7 @@ public class MainShell implements ShellDependent {
     		description = "Start a new subshell. Here you can build a colored string that will printed out when you exit that shell.", 
     		//the header will always shown if the user run this command
     		header = "Each subshell have his own commands. Use \"?list\" to show you which commands are available! Use \"exit\" to get out of this shell.")
-    public String colorizedEcho() throws IOException {
+    public void colorizedEcho() throws IOException {
     	final ColorizedEcho echoBuilder = new ColorizedEcho();
     	
     	Shell subShell = ShellBuilder.subshell("cecho", shell)
@@ -54,6 +65,7 @@ public class MainShell implements ShellDependent {
     	//the method will be blocked until the shell was abandoned
     	subShell.commandLoop();
     	
-    	return echoBuilder.build();
+    	//this command doesnt return the output but use the output directly (this is possible because this class implements the OutputDependent-Interface)
+    	output.out().normal(echoBuilder.build()).println();
     }
 }

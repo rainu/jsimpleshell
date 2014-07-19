@@ -25,7 +25,9 @@ import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.io.Input;
 import de.rainu.lib.jsimpleshell.io.InputConversionEngine;
 import de.rainu.lib.jsimpleshell.io.Output;
+import de.rainu.lib.jsimpleshell.io.OutputBuilder;
 import de.rainu.lib.jsimpleshell.io.OutputConversionEngine;
+import de.rainu.lib.jsimpleshell.io.OutputDependent;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 
@@ -40,6 +42,7 @@ public class Shell {
 
     public static String PROJECT_HOMEPAGE_URL = "http://cliche.sourceforge.net";
 
+    private OutputBuilder outputBuilder;
     private Output output;
     private Input input;
     private String appName;
@@ -72,6 +75,7 @@ public class Shell {
     public void setSettings(Settings s) {
         input = s.input;
         output = s.output;
+        outputBuilder = new OutputBuilder(output);
         displayTime = s.displayTime;
         for (String prefix : s.auxHandlers.keySet()) {
             for (Object handler : s.auxHandlers.get(prefix)) {
@@ -148,13 +152,7 @@ public class Shell {
         }
         allHandlers.add(handler);
 
-        addDeclaredMethods(handler, prefix);
-        inputConverter.addDeclaredConverters(handler);
-        outputConverter.addDeclaredConverters(handler);
-
-        if (handler instanceof ShellDependent) {
-            ((ShellDependent)handler).cliSetShell(this);
-        }
+        configureHandler(handler, prefix);
     }
 
     /**
@@ -173,14 +171,21 @@ public class Shell {
         auxHandlers.put(prefix, handler);
         allHandlers.add(handler);
 
-        addDeclaredMethods(handler, prefix);
+        configureHandler(handler, prefix);
+    }
+
+	private void configureHandler(Object handler, String prefix) {
+		addDeclaredMethods(handler, prefix);
         inputConverter.addDeclaredConverters(handler);
         outputConverter.addDeclaredConverters(handler);
 
         if (handler instanceof ShellDependent) {
             ((ShellDependent)handler).cliSetShell(this);
         }
-    }
+		if (handler instanceof OutputDependent) {
+			((OutputDependent) handler).cliSetOutput(outputBuilder);
+		}
+	}
 
     private void addDeclaredMethods(Object handler, String prefix) throws SecurityException {
         for (Method m : handler.getClass().getMethods()) {

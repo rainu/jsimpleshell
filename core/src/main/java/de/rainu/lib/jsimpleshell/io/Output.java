@@ -22,4 +22,11 @@ public interface Output {
 
     void outputHeader(String text);
 
+    void print(Object obj);
+    
+    void println(Object obj);
+    
+    void printErr(Object obj);
+    
+    void printlnErr(Object obj);
 }
