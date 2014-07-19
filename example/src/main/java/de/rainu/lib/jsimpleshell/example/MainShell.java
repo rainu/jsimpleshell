@@ -68,4 +68,25 @@ public class MainShell implements ShellDependent, OutputDependent {
     	//this command doesnt return the output but use the output directly (this is possible because this class implements the OutputDependent-Interface)
     	output.out().normal(echoBuilder.build()).println();
     }
+    
+    @Command(abbrev = "ct", description = "Print colored text.")
+    public void printColorText(){
+    	output.out().black("text").println();
+    	output.out().blue("text").println();
+    	output.out().cyan("text").println();
+    	output.out().green("text").println();
+    	output.out().magenta("text").println();
+    	output.out().red("text").println();
+    	output.out().white("text").println();
+    	output.out().yellow("text").println();
+    	
+    	output.out().blackBG("text").println();
+    	output.out().blueBG("text").println();
+    	output.out().cyanBG("text").println();
+    	output.out().greenBG("text").println();
+    	output.out().magentaBG("text").println();
+    	output.out().redBG("text").println();
+    	output.out().whiteBG("text").println();
+    	output.out().yellowBG("text").println();
+    }
 }
