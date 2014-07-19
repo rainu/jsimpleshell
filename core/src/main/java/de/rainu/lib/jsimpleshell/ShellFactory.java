@@ -5,9 +5,11 @@
 
 package de.rainu.lib.jsimpleshell;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jline.console.ConsoleReader;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.EmptyMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
@@ -31,9 +33,10 @@ public class ShellFactory {
      * @param appName The app name string
      * @param handlers Command handlers
      * @return Shell that can be either further customized or run directly by calling commandLoop().
+     * @throws IOException 
      */
-    public static Shell createConsoleShell(String prompt, String appName, Object... handlers) {
-        ConsoleIO io = new ConsoleIO();
+    public static Shell createConsoleShell(String prompt, String appName, Object... handlers) throws IOException {
+        TerminalIO io = new TerminalIO(new ConsoleReader());
 
         List<String> path = new ArrayList<String>(1);
         path.add(prompt);
@@ -67,10 +70,11 @@ public class ShellFactory {
      * @param mainHandler Main command handler
      * @param auxHandlers Aux handlers to be passed to all subshells.
      * @return Shell that can be either further customized or run directly by calling commandLoop().
+     * @throws IOException 
      */
     public static Shell createConsoleShell(String prompt, String appName, Object mainHandler,
-            MultiMap<String, Object> auxHandlers) {
-        ConsoleIO io = new ConsoleIO();
+            MultiMap<String, Object> auxHandlers) throws IOException {
+    	TerminalIO io = new TerminalIO(new ConsoleReader());
 
         List<String> path = new ArrayList<String>(1);
         path.add(prompt);
@@ -100,8 +104,9 @@ public class ShellFactory {
      * @param appName The app name string
      * @param mainHandler Command handler
      * @return Shell that can be either further customized or run directly by calling commandLoop().
+     * @throws IOException 
      */
-    public static Shell createConsoleShell(String prompt, String appName, Object mainHandler) {
+    public static Shell createConsoleShell(String prompt, String appName, Object mainHandler) throws IOException {
         return createConsoleShell(prompt, appName, mainHandler, new EmptyMultiMap<String, Object>());
     }
 

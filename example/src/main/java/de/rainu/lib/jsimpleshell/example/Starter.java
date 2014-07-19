@@ -2,8 +2,8 @@ package de.rainu.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
-import jsimpleshell.ShellFactory;
 import de.rainu.lib.jsimpleshell.Info;
+import de.rainu.lib.jsimpleshell.ShellFactory;
 
 public class Starter {
 	private static final String VERSION = Info.getVersion();
@@ -36,6 +36,6 @@ public class Starter {
 		System.out.println();
 		
 		
-		ShellFactory.createShell(PROMT, "superShell", new MainShell()).commandLoop();
+		ShellFactory.createConsoleShell(PROMT, "superShell", new MainShell()).commandLoop();
 	}
 }
