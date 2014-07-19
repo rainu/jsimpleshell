@@ -36,11 +36,9 @@ public class Starter {
 		System.out.println();
 		
 		new ShellBuilder()
-			.setPrompt(PROMT)
-			.setAppName("JSimpleShell")
-			.addHandler(new MainShell())
-		.build()
-			.commandLoop();
+				.addHandler(new MainShell())
+			.build()
+				.commandLoop();
 		
 	}
 }
