@@ -15,9 +15,11 @@ import de.rainu.lib.jsimpleshell.util.EmptyMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 
 /**
- *
+ * @deprecated Please use the new {@link ShellBuilder} to create a new {@link Shell}!
+ * 
  * @author ASG
  */
+@Deprecated()
 public class ShellFactory {
 
     private ShellFactory() { } // this class has only static methods.

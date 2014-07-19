@@ -3,7 +3,7 @@ package de.rainu.lib.jsimpleshell.example;
 import java.io.IOException;
 
 import de.rainu.lib.jsimpleshell.Info;
-import de.rainu.lib.jsimpleshell.ShellFactory;
+import de.rainu.lib.jsimpleshell.ShellBuilder;
 
 public class Starter {
 	private static final String VERSION = Info.getVersion();
@@ -35,7 +35,12 @@ public class Starter {
 		System.out.println("* To exit this shell, use \"exit\" :)");
 		System.out.println();
 		
+		new ShellBuilder()
+			.setPrompt(PROMT)
+			.setAppName("JSimpleShell")
+			.addHandler(new MainShell())
+		.build()
+			.commandLoop();
 		
-		ShellFactory.createConsoleShell(PROMT, "superShell", new MainShell()).commandLoop();
 	}
 }
