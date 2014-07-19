@@ -18,8 +18,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.annotation.Param;
 import de.rainu.lib.jsimpleshell.exception.CLIException;
 import de.rainu.lib.jsimpleshell.exception.TokenException;
+import de.rainu.lib.jsimpleshell.io.Input;
+import de.rainu.lib.jsimpleshell.io.InputConversionEngine;
+import de.rainu.lib.jsimpleshell.io.Output;
+import de.rainu.lib.jsimpleshell.io.OutputConversionEngine;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 
@@ -264,7 +270,7 @@ public class Shell {
      * You can operate Shell linewise, without entering the command loop.
      * All output is directed to shell's Output.
      * 
-     * @see de.rainu.lib.jsimpleshell.Output
+     * @see de.rainu.lib.jsimpleshell.io.Output
      *
      * @param line Full command line
      * @throws de.rainu.lib.jsimpleshell.exception.CLIException This may be TokenException

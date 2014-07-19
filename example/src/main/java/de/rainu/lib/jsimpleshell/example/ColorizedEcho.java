@@ -1,6 +1,6 @@
 package de.rainu.lib.jsimpleshell.example;
 
-import de.rainu.lib.jsimpleshell.Command;
+import de.rainu.lib.jsimpleshell.annotation.Command;
 
 /**
  * This is a another container for commands.

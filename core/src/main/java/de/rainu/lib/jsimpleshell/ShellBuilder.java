@@ -11,6 +11,8 @@ import java.util.List;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.StringsCompleter;
+import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.io.TerminalIO;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 

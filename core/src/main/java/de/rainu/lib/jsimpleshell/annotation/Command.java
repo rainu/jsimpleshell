@@ -3,7 +3,7 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.rainu.lib.jsimpleshell;
+package de.rainu.lib.jsimpleshell.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

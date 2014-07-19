@@ -9,10 +9,10 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 
-import de.rainu.lib.jsimpleshell.Command;
 import de.rainu.lib.jsimpleshell.CommandNamer;
 import de.rainu.lib.jsimpleshell.DashJoinedNamer;
 import de.rainu.lib.jsimpleshell.CommandNamer.NamingInfo;
+import de.rainu.lib.jsimpleshell.annotation.Command;
 import static org.junit.Assert.*;
 
 /**

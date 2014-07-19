@@ -8,6 +8,7 @@ package de.rainu.lib.jsimpleshell;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.exception.CLIException;
 import de.rainu.lib.jsimpleshell.exception.CommandNotFoundException;
 

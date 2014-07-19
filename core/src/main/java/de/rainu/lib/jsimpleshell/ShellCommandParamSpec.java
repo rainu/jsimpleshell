@@ -4,6 +4,8 @@ package de.rainu.lib.jsimpleshell;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import de.rainu.lib.jsimpleshell.annotation.Param;
+
 
 /**
  * Specification of command's parameters, such as description given with Param annotation.

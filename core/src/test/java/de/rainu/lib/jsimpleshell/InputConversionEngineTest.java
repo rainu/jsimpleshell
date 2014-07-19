@@ -9,8 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.rainu.lib.jsimpleshell.InputConversionEngine;
-import de.rainu.lib.jsimpleshell.InputConverter;
+import de.rainu.lib.jsimpleshell.io.InputConversionEngine;
+import de.rainu.lib.jsimpleshell.io.InputConverter;
 import static org.junit.Assert.*;
 
 /**

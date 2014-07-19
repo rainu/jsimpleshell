@@ -8,8 +8,8 @@ package de.rainu.lib.jsimpleshell;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.rainu.lib.jsimpleshell.OutputConversionEngine;
-import de.rainu.lib.jsimpleshell.OutputConverter;
+import de.rainu.lib.jsimpleshell.io.OutputConversionEngine;
+import de.rainu.lib.jsimpleshell.io.OutputConverter;
 import static org.junit.Assert.*;
 
 /**

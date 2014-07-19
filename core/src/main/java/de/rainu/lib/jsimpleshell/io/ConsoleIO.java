@@ -3,7 +3,7 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.rainu.lib.jsimpleshell;
+package de.rainu.lib.jsimpleshell.io;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -15,6 +15,9 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.ShellManageable;
+import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.annotation.Param;
 import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.util.Strings;
 

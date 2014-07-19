@@ -12,6 +12,9 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.annotation.Param;
+
 /**
  * Help command handler (usually prefixed by '?').
  * @author ASG

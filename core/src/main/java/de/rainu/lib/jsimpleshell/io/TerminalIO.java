@@ -1,4 +1,4 @@
-package de.rainu.lib.jsimpleshell;
+package de.rainu.lib.jsimpleshell.io;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import de.rainu.lib.jsimpleshell.io.TerminalIO;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.EmptyMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;

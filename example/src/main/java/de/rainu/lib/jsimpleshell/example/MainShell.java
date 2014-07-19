@@ -2,11 +2,11 @@ package de.rainu.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
-import de.rainu.lib.jsimpleshell.Command;
-import de.rainu.lib.jsimpleshell.Param;
 import de.rainu.lib.jsimpleshell.Shell;
 import de.rainu.lib.jsimpleshell.ShellDependent;
 import de.rainu.lib.jsimpleshell.ShellFactory;
+import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.annotation.Param;
 
 /**
  * This class contains all Commands for the main shell.

@@ -3,7 +3,7 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.rainu.lib.jsimpleshell;
+package de.rainu.lib.jsimpleshell.io;
 
 /**
  * This interface is used by the Shell to support new return types.

@@ -3,7 +3,7 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.rainu.lib.jsimpleshell;
+package de.rainu.lib.jsimpleshell.io;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import de.rainu.lib.jsimpleshell.Token;
 import de.rainu.lib.jsimpleshell.exception.CLIException;
 import de.rainu.lib.jsimpleshell.exception.TokenException;
 
