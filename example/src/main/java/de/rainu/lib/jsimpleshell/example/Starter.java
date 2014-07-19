@@ -10,7 +10,7 @@ public class Starter {
 	private static final String PROMT = "$> ";
 	
 	public static void main(String[] args) throws IOException {
-		System.out.println("   _____   ______   __                          __             ______   __                  __  __  ");
+		System.out.println("    _____   ______   __                          __             ______   __                  __  __  ");
 		System.out.println("   |     \\ /      \\ |  \\     DEMO               |  \\           /      \\ |  \\                |  \\|  \\");
 		System.out.println("    \\$$$$$|  $$$$$$\\ \\$$ ______ ____    ______  | $$  ______  |  $$$$$$\\| $$____    ______  | $$| $$");
 		System.out.println("      | $$| $$___\\$$|  \\|      \\    \\  /      \\ | $$ /      \\ | $$___\\$$| $$    \\  /      \\ | $$| $$");

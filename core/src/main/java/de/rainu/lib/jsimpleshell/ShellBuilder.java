@@ -5,12 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import jline.console.ConsoleReader;
+import jline.console.completer.StringsCompleter;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
-import jline.console.ConsoleReader;
 
 /**
  * This is a class that can be used to build a {@link Shell}.
@@ -19,9 +21,13 @@ import jline.console.ConsoleReader;
  */
 public class ShellBuilder {
 	private String prompt = "$> ";
-	private String appName = "jss"; //JSimpleShell
+	private String appName = "JSimpleShell";
 	private Collection<Object> handlers = new LinkedList<Object>();
 	private ConsoleReader console;
+	private OutputStream error = System.err;
+	private boolean useForeignConsole = false;
+	private boolean fileNameCompleterEnabled = true;
+	private boolean commandCompleterEnabled = true;
 	
 	/**
 	 * Set the Propt to be displayed.
@@ -65,6 +71,19 @@ public class ShellBuilder {
 	 */
 	public ShellBuilder setConsole(ConsoleReader console) {
 		this.console = console;
+		this.useForeignConsole = true;
+		
+		return this;
+	}
+	
+	/**
+	 * Set Error {@link OutputStream} which will be used for printing error messages.
+	 * 
+	 * @param error The {@link OutputStream} instance.
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder setError(OutputStream error) {
+		this.error = error;
 		return this;
 	}
 	
@@ -78,6 +97,48 @@ public class ShellBuilder {
 	 */
 	public ShellBuilder setConsole(InputStream in, OutputStream out) throws IOException {
 		this.console = new ConsoleReader(in, out);
+		this.useForeignConsole = false;
+		
+		return this;
+	}
+	
+	/**
+	 * Disable the file name completion mechanism! 
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder disableFileNameCompleter(){
+		this.fileNameCompleterEnabled = false;
+		return this;
+	}
+	
+	/**
+	 * Enable the file name completion mechanism! 
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder enableFileNameCompleter(){
+		this.fileNameCompleterEnabled = true;
+		return this;
+	}
+	
+	/**
+	 * Disable the command name completion mechanism! 
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder disableCommandCompleter(){
+		this.commandCompleterEnabled = false;
+		return this;
+	}
+	
+	/**
+	 * Enable the command name completion mechanism! 
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder enableCommandCompleter(){
+		this.commandCompleterEnabled = true;
 		return this;
 	}
 	
@@ -87,8 +148,27 @@ public class ShellBuilder {
 		}
 	}
 	
+	private void configure() {
+		if(!useForeignConsole){
+			if(fileNameCompleterEnabled){
+				console.addCompleter(new FileArgumentCompleter());
+			}
+		}
+	}
+	
+	private void configure(Shell shell) {
+		if(commandCompleterEnabled){
+			Collection<String> commandsNames = new HashSet<String>();
+			for(ShellCommand cmd : shell.getCommandTable().getCommandTable()){
+				commandsNames.add(cmd.getPrefix() + cmd.getName());
+			}
+			
+			console.addCompleter(new StringsCompleter(commandsNames));
+		}
+	}
+	
 	private Shell buildShell() {
-		TerminalIO io = new TerminalIO(console);
+		TerminalIO io = new TerminalIO(console, error);
 
         List<String> path = new ArrayList<String>(1);
         path.add(prompt);
@@ -117,8 +197,12 @@ public class ShellBuilder {
 	public Shell build(){
 		try{
 			checkPrecondition();
+			configure();
 			
-			return buildShell();
+			Shell shell = buildShell();
+			configure(shell);
+			
+			return shell;
 		}catch(IOException e){
 			throw new RuntimeException("Could not build a shell!", e);
 		}
