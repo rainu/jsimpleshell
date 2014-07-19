@@ -13,6 +13,8 @@ import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
 import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.io.InputConverter;
+import de.rainu.lib.jsimpleshell.io.OutputConverter;
 import de.rainu.lib.jsimpleshell.io.TerminalIO;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.EmptyMultiMap;
@@ -35,9 +37,7 @@ public class ShellBuilder {
 	private boolean fileNameCompleterEnabled = true;
 	private boolean commandCompleterEnabled = true;
 	
-	private ShellBuilder(){
-		
-	}
+	private ShellBuilder(){ }
 	
 	/**
 	 * Create a new {@link ShellBuilder} instance with which one you can build a {@link Shell}.
@@ -91,9 +91,14 @@ public class ShellBuilder {
 	}
 
 	/**
-	 * Add a command handler. A command handler should contains 
-	 * methods that are annotated with {@link Command}.
-	 * 
+	 * Add a handler instance. The responsibility may be different:
+	 * <ul>
+	 * <li>Contains methods annotated with {@link Command} to provide commands</li>
+	 * <li>Implements the {@link ShellDependent} interface to receive the {@link Shell} object (usefully for creating sub shells!)</li>
+	 * <li>Implements the {@link InputConverter} interface to convert custom types from user input (string)</li>
+	 * <li>Implements the {@link OutputConverter} interface to convert custom types to user-friendly-object (usually string)</li>
+	 * </ul>
+	 *
 	 * @param handler A command handler.
 	 * @return This {@link ShellBuilder}
 	 */

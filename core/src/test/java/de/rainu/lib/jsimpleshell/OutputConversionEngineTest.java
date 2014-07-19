@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  *
  * @author ASG
  */
-public class OutputConversionEngineTest {
+public class OutputConversionEngineTest implements OutputConverter{
 
     @Before
     public void setUp() {
@@ -26,32 +26,17 @@ public class OutputConversionEngineTest {
 
     OutputConversionEngine converter;
 
-    public static final OutputConverter[] CLI_OUTPUT_CONVERTERS = {
-        new OutputConverter() {
-            public Object convertOutput(Object toBeFormatted) {
-                if (toBeFormatted instanceof String) {
-                    return String.format("(%s)", (String)toBeFormatted);
-                } else {
-                    return null;
-                }
-            }
-        },
-        new OutputConverter() {
-            public Object convertOutput(Object toBeFormatted) {
-                if (toBeFormatted instanceof String) {
-                    return String.format("[%s]", (String)toBeFormatted);
-                } else {
-                    return null;
-                }
-            }
-        },
-    };
+    @Override
+	public Object convertOutput(Object toBeFormatted) {
+    	if (toBeFormatted instanceof String) {
+            String result = String.format("[%s]", (String)toBeFormatted);
+            return String.format("(%s)", (String)result);
+        } else {
+            return null;
+        }
+	}
 
 
-    /**
-     * This method tests the order of applying converters, as other methods of
-     * OutputConversionEngine are rather trivial.
-     */
     @Test
     public void testConvertOutput() {
         System.out.println("convertOutput");

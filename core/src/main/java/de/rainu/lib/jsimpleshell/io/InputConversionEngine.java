@@ -7,9 +7,8 @@ package de.rainu.lib.jsimpleshell.io;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.rainu.lib.jsimpleshell.Token;
 import de.rainu.lib.jsimpleshell.exception.CLIException;
@@ -134,24 +133,8 @@ public class InputConversionEngine {
     }
 
     public void addDeclaredConverters(Object handler) {
-        Field[] fields = handler.getClass().getFields();
-        final String PREFIX = "CLI_INPUT_CONVERTERS";
-        for (Field field : fields) {
-            if (field.getName().startsWith(PREFIX)
-                    && field.getType().isArray()
-                    && InputConverter.class.isAssignableFrom(field.getType().getComponentType())) {
-                try {
-                    Object convertersArray = field.get(handler);
-                    for (int i = 0; i < Array.getLength(convertersArray); i++) {
-                        addConverter((InputConverter)Array.get(convertersArray, i));
-                    }
-                } catch (Exception ex) {
-                    throw new RuntimeException("Error getting converter from field " + field.getName(), ex);
-                }
-            }
-        }
+    	if(handler instanceof InputConverter){
+    		addConverter((InputConverter)handler);
+    	}
     }
-
-
-
 }

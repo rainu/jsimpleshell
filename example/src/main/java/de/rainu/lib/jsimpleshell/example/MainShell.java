@@ -16,11 +16,11 @@ import de.rainu.lib.jsimpleshell.annotation.Param;
 //if you want that the shell make sub shell's you must implement the ShellDependent interface 
 //to get the parent shell that is needed if you want to create a subshell
 public class MainShell implements ShellDependent {
-	private Shell parent;
+	private Shell shell;
 	
 	@Override
 	public void cliSetShell(Shell theShell) {
-		this.parent = theShell;
+		this.shell = theShell;
 	}
 	
     @Command(abbrev = "e", description = "Print the argument to std-out.")
@@ -47,7 +47,7 @@ public class MainShell implements ShellDependent {
     public String colorizedEcho() throws IOException {
     	final ColorizedEcho echoBuilder = new ColorizedEcho();
     	
-    	Shell subShell = ShellBuilder.subshell("subshell", parent)
+    	Shell subShell = ShellBuilder.subshell("cecho", shell)
 							.addHandler(echoBuilder)
 						.build();
 

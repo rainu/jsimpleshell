@@ -37,6 +37,7 @@ public class Starter {
 		
 		ShellBuilder.shell("JSS")
 				.addHandler(new MainShell())
+				.addHandler(new Calendar())	//this handler is also a InputTypeConverter
 			.build()
 				.commandLoop();
 		

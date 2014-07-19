@@ -5,7 +5,6 @@
 
 package de.rainu.lib.jsimpleshell.io;
 
-import de.rainu.lib.jsimpleshell.Shell;
 
 /**
  * This interface is used by the Shell to support new argument types.

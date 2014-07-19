@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  *
  * @author ASG
  */
-public class InputConversionEngineTest {
+public class InputConversionEngineTest implements InputConverter{
 
     @Before
     public void setUp() {
@@ -78,6 +78,10 @@ public class InputConversionEngineTest {
             }
         }
     };
+    
+    public Object convertInput(String original, Class toClass) throws Exception {
+        return testInputConverter.convertInput(original, toClass);
+    }
 
     @Test
     public void testConverterRegistration() throws Exception {
@@ -89,10 +93,6 @@ public class InputConversionEngineTest {
         assertEquals(new Integer(MAGIC_INT), otherConverter.convertInput(
                 Integer.toString(MAGIC_INT), Integer.class));
     }
-
-    public static InputConverter[] CLI_INPUT_CONVERTERS = {
-        testInputConverter,
-    };
 
     @Test
     public void testDeclaredConverterRegistration() throws Exception {
