@@ -23,11 +23,14 @@ import de.rainu.lib.jsimpleshell.annotation.Param;
 import de.rainu.lib.jsimpleshell.exception.CLIException;
 import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.io.Input;
+import de.rainu.lib.jsimpleshell.io.InputBuilder;
 import de.rainu.lib.jsimpleshell.io.InputConversionEngine;
+import de.rainu.lib.jsimpleshell.io.InputDependent;
 import de.rainu.lib.jsimpleshell.io.Output;
 import de.rainu.lib.jsimpleshell.io.OutputBuilder;
 import de.rainu.lib.jsimpleshell.io.OutputConversionEngine;
 import de.rainu.lib.jsimpleshell.io.OutputDependent;
+import de.rainu.lib.jsimpleshell.io.TerminalIO;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.MultiMap;
 
@@ -44,6 +47,7 @@ public class Shell {
 
     private OutputBuilder outputBuilder;
     private Output output;
+    private InputBuilder inputBuilder;
     private Input input;
     private String appName;
 
@@ -76,6 +80,11 @@ public class Shell {
         input = s.input;
         output = s.output;
         outputBuilder = new OutputBuilder(output);
+        
+        if(input instanceof TerminalIO){
+        	inputBuilder = new InputBuilder(((TerminalIO)input).getConsole());
+        }
+        
         displayTime = s.displayTime;
         for (String prefix : s.auxHandlers.keySet()) {
             for (Object handler : s.auxHandlers.get(prefix)) {
@@ -184,6 +193,9 @@ public class Shell {
         }
 		if (handler instanceof OutputDependent) {
 			((OutputDependent) handler).cliSetOutput(outputBuilder);
+		}
+		if (handler instanceof InputDependent) {
+			((InputDependent) handler).cliSetInput(inputBuilder);
 		}
 	}
 

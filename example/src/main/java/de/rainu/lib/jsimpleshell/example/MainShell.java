@@ -7,6 +7,8 @@ import de.rainu.lib.jsimpleshell.ShellBuilder;
 import de.rainu.lib.jsimpleshell.ShellDependent;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.annotation.Param;
+import de.rainu.lib.jsimpleshell.io.InputBuilder;
+import de.rainu.lib.jsimpleshell.io.InputDependent;
 import de.rainu.lib.jsimpleshell.io.OutputBuilder;
 import de.rainu.lib.jsimpleshell.io.OutputDependent;
 
@@ -20,9 +22,10 @@ import de.rainu.lib.jsimpleshell.io.OutputDependent;
 
 //if you want to make output within a command you must implement the OutputDependent interface
 //to get the OutputBuilder. With that builder you can print output to out/err
-public class MainShell implements ShellDependent, OutputDependent {
+public class MainShell implements ShellDependent, OutputDependent, InputDependent {
 	private Shell shell;
 	private OutputBuilder output;
+	private InputBuilder input;
 	
 	@Override
 	public void cliSetShell(Shell theShell) {
@@ -32,6 +35,11 @@ public class MainShell implements ShellDependent, OutputDependent {
 	@Override
 	public void cliSetOutput(OutputBuilder output) {
 		this.output = output;		
+	}
+	
+	@Override
+	public void cliSetInput(InputBuilder input) {
+		this.input = input;
 	}
 	
     @Command(abbrev = "e", description = "Print the argument to std-out.")
@@ -88,5 +96,10 @@ public class MainShell implements ShellDependent, OutputDependent {
     	output.out().redBG("text").println();
     	output.out().whiteBG("text").println();
     	output.out().yellowBG("text").println();
+    }
+    
+    @Command(abbrev = "sp", description = "Saves your secret password. I swear, in my hands it is save!")
+    public String saveSecretPassword() throws IOException{
+    	return "So, your secret password is: " + input.invisibleIn().withPromt("Enter your password please: ").readLine() + " Thank you and good by... >:->";
     }
 }
