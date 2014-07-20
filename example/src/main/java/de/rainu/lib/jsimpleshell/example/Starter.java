@@ -1,15 +1,18 @@
 package de.rainu.lib.jsimpleshell.example;
 
+import java.io.File;
 import java.io.IOException;
 
 import de.rainu.lib.jsimpleshell.Info;
+import de.rainu.lib.jsimpleshell.Shell;
 import de.rainu.lib.jsimpleshell.ShellBuilder;
+import de.rainu.lib.jsimpleshell.exception.CLIException;
 
 public class Starter {
 	private static final String VERSION = Info.getVersion();
 	private static final String PROMT = "$> ";
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, CLIException {
 		System.out.println("    _____   ______   __                          __             ______   __                  __  __  ");
 		System.out.println("   |     \\ /      \\ |  \\     DEMO               |  \\           /      \\ |  \\                |  \\|  \\");
 		System.out.println("    \\$$$$$|  $$$$$$\\ \\$$ ______ ____    ______  | $$  ______  |  $$$$$$\\| $$____    ______  | $$| $$");
@@ -35,11 +38,15 @@ public class Starter {
 		System.out.println("* To exit this shell, use \"exit\" :)");
 		System.out.println();
 		
-		ShellBuilder.shell("JSS")
-				.addHandler(new MainShell())
-				.addHandler(new Calendar())	//this handler is also a InputTypeConverter
-			.build()
-				.commandLoop();
+		final Shell shell = ShellBuilder.shell("JSS")
+								.addHandler(new MainShell())
+								.addHandler(new Calendar())	//this handler is also a InputTypeConverter
+							.build();
 		
+		if(args.length > 0){
+			shell.runScript(new File(args[0]));
+		}
+	
+		shell.commandLoop();
 	}
 }

@@ -12,6 +12,7 @@
 
 package de.rainu.lib.jsimpleshell;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -235,6 +236,28 @@ public class Shell {
      */
     public void setPath(List<String> path) {
         this.path = path;
+    }
+    
+    /**
+     * Run the given script. This script should be a text file with including the
+     * executing commands. It is also possible to write comments in that file.
+     * Comments begins with the '#' character.
+     * 
+     * @param script Script that should be executed.
+     * @throws CLIException
+     */
+    public void runScript(File script) throws CLIException{
+    	if(script == null){
+    		throw new NullPointerException("The script must not be null!");
+    	}
+    	if(script.isDirectory()){
+    		throw new IllegalArgumentException("The script must be a file!");
+    	}
+    	if(!script.exists()){
+    		throw new IllegalArgumentException("The script doesn't exists!");
+    	}
+    	
+    	processLine("!run-script \"" + script.getAbsolutePath() + "\"");
     }
     
     /**

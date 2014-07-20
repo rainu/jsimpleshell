@@ -1,6 +1,10 @@
 package de.rainu.lib.jsimpleshell.io;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -10,6 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import de.rainu.lib.jsimpleshell.annotation.Command;
+import de.rainu.lib.jsimpleshell.annotation.Param;
 import de.rainu.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.rainu.lib.jsimpleshell.exception.TokenException;
 import de.rainu.lib.jsimpleshell.util.Strings;
@@ -25,7 +31,11 @@ public class TerminalIO implements Input, Output {
 	
 	private ConsoleReader console;
 	private PrintStream error;
-
+	private BufferedReader scriptReader = null;
+	
+	private static enum InputState { USER, SCRIPT }
+    private InputState inputState = InputState.USER;
+	
 	private int lastCommandOffset = 0;
 
 	public TerminalIO(ConsoleReader console) {
@@ -97,14 +107,57 @@ public class TerminalIO implements Input, Output {
 	@Override
 	public String readCommand(List<String> path) {
 		try {
-			String prompt = getPrompt(path);
-			lastCommandOffset = prompt.length();
-
-			return console.readLine(prompt);
-		} catch (IOException e) {
-			throw new Error(e);
-		}
+            String prompt = getPrompt(path);
+            lastCommandOffset = prompt.length();
+            
+            if(inputState == InputState.SCRIPT){
+                String command = readCommandFromScript(prompt);
+                if (command != null) {
+                    return command;
+                } else {
+                    closeScript();
+                }
+            }
+            return console.readLine(prompt);
+        } catch (IOException ex) {
+            throw new Error(ex);
+        }
 	}
+	
+	private String readCommandFromScript(String prompt) throws IOException {
+		String command = null;
+		
+		do{
+			command = scriptReader.readLine();
+			if(command != null){
+				command = command.replaceAll("#.*$", "");
+			}
+		}while(command != null && "".equals(command.trim()));
+        
+		if (command != null) {
+            String completeLine = prompt + command;
+            println(completeLine);
+            lastCommandOffset = completeLine.length();
+        }
+        return command;
+    }
+
+    private void closeScript() throws IOException {
+        if (scriptReader != null) {
+            scriptReader.close();
+            scriptReader = null;
+        }
+        inputState = InputState.USER;
+    }
+	
+	@Command(abbrev = "rs", description="Reads commands from file")
+    public void runScript(
+    		@Param(name="filename", description="Full file name of the script") 
+            String filename) throws FileNotFoundException {
+
+        scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+        inputState = InputState.SCRIPT;
+    }
 
 	private String getPrompt(List<String> path) {
 		return Strings.joinStrings(path, false, '/') + PROMPT_SUFFIX;

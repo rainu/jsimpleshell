@@ -209,6 +209,7 @@ public class ShellBuilder {
 				console.addCompleter(new FileArgumentCompleter());
 			}
 		}
+		console.setExpandEvents(false);
 	}
 	
 	private void configure(Shell shell) {
