@@ -42,5 +42,41 @@ public class Info {
 	    }
 
 	    return version;
-	} 
+	}
+	
+	/**
+	 * Get the author of JSimpleShell.
+	 * 
+	 * @return The author of this project.
+	 */
+	public static String getAuthor(){
+		return "Rainu";
+	}
+	
+	/**
+	 * Get the homepage url for JSimpleShell
+	 * 
+	 * @return The homepage url.
+	 */
+	public static String getProjectHomepage(){
+		return "https://github.com/rainu/jsimpleshell";
+	}
+	
+	/**
+	 * Get the homepage url for Cliche
+	 * 
+	 * @return The homepage url.
+	 */
+	public static String getClicheHomepage(){
+		return "http://cliche.sourceforge.net";
+	}
+	
+	/**
+	 * Get the homepage url for JLine2
+	 * 
+	 * @return The homepage url.
+	 */
+	public static String getJlineHomepage(){
+		return "https://github.com/jline/jline2";
+	}
 }

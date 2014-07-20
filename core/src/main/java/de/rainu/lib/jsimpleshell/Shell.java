@@ -44,8 +44,6 @@ import de.rainu.lib.jsimpleshell.util.MultiMap;
  */
 public class Shell {
 
-    public static String PROJECT_HOMEPAGE_URL = "http://cliche.sourceforge.net";
-
     private OutputBuilder outputBuilder;
     private Output output;
     private InputBuilder inputBuilder;
