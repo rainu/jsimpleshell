@@ -14,7 +14,9 @@ import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.io.InputConverter;
+import de.rainu.lib.jsimpleshell.io.InputDependent;
 import de.rainu.lib.jsimpleshell.io.OutputConverter;
+import de.rainu.lib.jsimpleshell.io.OutputDependent;
 import de.rainu.lib.jsimpleshell.io.TerminalIO;
 import de.rainu.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.rainu.lib.jsimpleshell.util.EmptyMultiMap;
@@ -97,6 +99,9 @@ public class ShellBuilder {
 	 * <li>Implements the {@link ShellDependent} interface to receive the {@link Shell} object (usefully for creating sub shells!)</li>
 	 * <li>Implements the {@link InputConverter} interface to convert custom types from user input (string)</li>
 	 * <li>Implements the {@link OutputConverter} interface to convert custom types to user-friendly-object (usually string)</li>
+	 * <li>Implements the {@link OutputDependent} interface to get the possibility to print anything out</li>
+	 * <li>Implements the {@link InputDependent} interface to get the possibility to read anything in</li>
+	 * <li>Implements the {@link CommandHookDependent} interface to get the possibility to inform about command executions</li>
 	 * </ul>
 	 *
 	 * @param handler A command handler.

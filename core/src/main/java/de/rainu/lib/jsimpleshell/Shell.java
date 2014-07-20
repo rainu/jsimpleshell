@@ -316,22 +316,42 @@ public class Shell {
 
         outputHeader(commandToInvoke.getHeader(), parameters);
         
+        informHooks(commandToInvoke);
+        
         long timeBefore = Calendar.getInstance().getTimeInMillis();
         Object invocationResult = commandToInvoke.invoke(parameters);
         long timeAfter = Calendar.getInstance().getTimeInMillis();
-
+        final long time = timeAfter - timeBefore;
+        
+        informHooks(commandToInvoke, invocationResult, time);
+        
         if (invocationResult != null) {
             output.output(invocationResult, outputConverter);
         }
         if (displayTime) {
-            final long time = timeAfter - timeBefore;
             if (time != 0L) {
                 output.output(String.format(TIME_MS_FORMAT_STRING, time), outputConverter);
             }
         }
     }
 
-    private static final String TIME_MS_FORMAT_STRING = "time: %d ms";
+	private void informHooks(ShellCommand commandToInvoke) {
+		for(Object handler : allHandlers){
+			if(handler instanceof CommandHookDependent){
+				((CommandHookDependent)handler).cliBeforeCommand(commandToInvoke);
+			}
+		}
+	}
+
+	private void informHooks(ShellCommand commandToInvoke, Object invocationResult, long time) {
+		for(Object handler : allHandlers){
+			if(handler instanceof CommandHookDependent){
+				((CommandHookDependent)handler).cliAfterCommand(commandToInvoke, invocationResult, time);
+			}
+		}
+	}
+
+	private static final String TIME_MS_FORMAT_STRING = "time: %d ms";
 
     private boolean displayTime = false;
 

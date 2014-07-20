@@ -22,6 +22,9 @@ import de.rainu.lib.jsimpleshell.io.OutputDependent;
 
 //if you want to make output within a command you must implement the OutputDependent interface
 //to get the OutputBuilder. With that builder you can print output to out/err
+
+//if you want to get (user-)input directly within a command you must implement the InputDependent interface
+//to get the InputBuilder. With that builder you have the possibility to read directly the input
 public class MainShell implements ShellDependent, OutputDependent, InputDependent {
 	private Shell shell;
 	private OutputBuilder output;
