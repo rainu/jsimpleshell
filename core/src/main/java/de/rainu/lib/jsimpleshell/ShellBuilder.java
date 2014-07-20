@@ -217,12 +217,13 @@ public class ShellBuilder {
 			//remove old
 			removeOldCommandNameCompleter();
 			
-			Collection<String> commandsNames = new HashSet<String>();
+			Collection<String> commandNames = new HashSet<String>();
 			for(ShellCommand cmd : shell.getCommandTable().getCommandTable()){
-				commandsNames.add(cmd.getPrefix() + cmd.getName());
+				commandNames.add(cmd.getPrefix() + cmd.getName());
 			}
 			
-			console.addCompleter(new StringsCompleter(commandsNames));
+			console.addCompleter(new StringsCompleter(commandNames));
+			console.addCompleter(new HelpCompleter(commandNames));
 		}
 	}
 	
@@ -231,6 +232,15 @@ public class ShellBuilder {
 		
 		if(console.getCompleters() != null) for(Completer c : console.getCompleters()){
 			if(c instanceof StringsCompleter){
+				toRemove = c;
+				break;
+			}
+		}
+		
+		console.removeCompleter(toRemove);
+		
+		if(console.getCompleters() != null) for(Completer c : console.getCompleters()){
+			if(c instanceof HelpCompleter){
 				toRemove = c;
 				break;
 			}
