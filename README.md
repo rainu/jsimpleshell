@@ -18,14 +18,12 @@ JSimpleShell is distributed under the [BSD License (3-Clause)](http://opensource
 Maven Usage
 --------
 
-__Attention__: At the moment there are no artifact deployed in a official maven-repo! You must build it for yourself.
-
 If you want to add ___JSimpleShell___ to your maven project, you can add the following dependency in your __pom.xml__:
 
     <dependency>
       <groupId>de.raysha.lib</groupId>
       <artifactId>jsimpleshell</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     
 Building
