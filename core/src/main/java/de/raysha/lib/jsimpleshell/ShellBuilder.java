@@ -42,7 +42,7 @@ public class ShellBuilder {
 	/**
 	 * Create a new {@link ShellBuilder} instance with which one you can build a {@link Shell}.
 	 * 
-	 * @param subPrompt The promt for this shell.
+	 * @param prompt The promt for this shell.
 	 * @return A new instance of {@link ShellBuilder}
 	 * @throws NullPointerException If the prompt is null.
 	 */
