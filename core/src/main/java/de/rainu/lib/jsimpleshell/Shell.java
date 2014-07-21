@@ -267,7 +267,7 @@ public class Shell {
     public void commandLoop() throws IOException {
         for (Object handler : allHandlers) {
             if (handler instanceof ShellManageable) {
-                ((ShellManageable)handler).cliEnterLoop();
+                ((ShellManageable)handler).cliEnterLoop(this);
             }
         }
         output.output(appName, outputConverter);
@@ -288,7 +288,7 @@ public class Shell {
         }
         for (Object handler : allHandlers) {
             if (handler instanceof ShellManageable) {
-                ((ShellManageable)handler).cliLeaveLoop();
+                ((ShellManageable)handler).cliLeaveLoop(this);
             }
         }
     }
@@ -301,7 +301,7 @@ public class Shell {
         }
     }
 
-    private static final String HINT_FORMAT = "This is %1$s, running on Cliche Shell\n" +
+    private static final String HINT_FORMAT = "This is %1$s, running on JSimpleShell\n" +
             "For more information on the Shell, enter ?help";
 
     /**

@@ -15,6 +15,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
 
+import de.rainu.lib.jsimpleshell.Shell;
 import de.rainu.lib.jsimpleshell.ShellManageable;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.annotation.Param;
@@ -236,13 +237,13 @@ public class ConsoleIO implements Input, Output, ShellManageable {
 
     private int loopCounter = 0;
 
-    public void cliEnterLoop() {
+    public void cliEnterLoop(Shell shell) {
         if (isLoggingEnabled()) {
             loopCounter++;
         }
     }
 
-    public void cliLeaveLoop() {
+    public void cliLeaveLoop(Shell shell) {
         if (isLoggingEnabled()) {
             loopCounter--;
         }

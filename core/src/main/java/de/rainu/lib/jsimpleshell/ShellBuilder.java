@@ -5,13 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
 import de.rainu.lib.jsimpleshell.annotation.Command;
 import de.rainu.lib.jsimpleshell.io.InputConverter;
 import de.rainu.lib.jsimpleshell.io.InputDependent;
@@ -206,49 +204,22 @@ public class ShellBuilder {
 	private void configure() {
 		if(!useForeignConsole){
 			if(fileNameCompleterEnabled){
-				console.addCompleter(new FileArgumentCompleter());
+				boolean alreadyAdded = false;
+				for(Completer c : console.getCompleters()){
+					if(c instanceof FileArgumentCompleter){
+						alreadyAdded = true;
+						break;
+					}
+				}
+				
+				if(!alreadyAdded){
+					console.addCompleter(new FileArgumentCompleter());
+				}
 			}
 		}
 		console.setExpandEvents(false);
 	}
 	
-	private void configure(Shell shell) {
-		if(commandCompleterEnabled){
-			//remove old
-			removeOldCommandNameCompleter();
-			
-			Collection<String> commandNames = new HashSet<String>();
-			for(ShellCommand cmd : shell.getCommandTable().getCommandTable()){
-				commandNames.add(cmd.getPrefix() + cmd.getName());
-			}
-			
-			console.addCompleter(new StringsCompleter(commandNames));
-			console.addCompleter(new HelpCompleter(commandNames));
-		}
-	}
-	
-	private void removeOldCommandNameCompleter() {
-		Completer toRemove = null;
-		
-		if(console.getCompleters() != null) for(Completer c : console.getCompleters()){
-			if(c instanceof StringsCompleter){
-				toRemove = c;
-				break;
-			}
-		}
-		
-		console.removeCompleter(toRemove);
-		
-		if(console.getCompleters() != null) for(Completer c : console.getCompleters()){
-			if(c instanceof HelpCompleter){
-				toRemove = c;
-				break;
-			}
-		}
-		
-		console.removeCompleter(toRemove);
-	}
-
 	private Shell buildShell() {
 		TerminalIO io = new TerminalIO(console, error);
 
@@ -264,6 +235,11 @@ public class ShellBuilder {
 
         theShell.addMainHandler(theShell, "!");
         theShell.addMainHandler(new HelpCommandHandler(), "?");
+        
+        if(commandCompleterEnabled){
+        	theShell.addMainHandler(new CommandCompleterHandler(), "");
+        }
+        
         for (Object h : handlers) {
             theShell.addMainHandler(h, "");
         }
@@ -281,7 +257,11 @@ public class ShellBuilder {
         subshell.setAppName(appName);
         subshell.addMainHandler(subshell, "!");
         subshell.addMainHandler(new HelpCommandHandler(), "?");
-
+        
+        if(commandCompleterEnabled){
+        	subshell.addMainHandler(new CommandCompleterHandler(), "");
+        }
+        
         for (Object h : handlers) {
         	subshell.addMainHandler(h, "");
         }
@@ -299,7 +279,6 @@ public class ShellBuilder {
 			configure();
 			
 			Shell shell = parent == null ? buildShell() : buildSubShell();
-			configure(shell);
 			
 			return shell;
 		}catch(IOException e){
