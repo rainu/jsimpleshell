@@ -49,10 +49,25 @@
 		</developer>
 	</developers>
 
-	<modules>
-		<module>core</module>
-		<module>example</module>
-	</modules>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>core</module>
+				<module>example</module>
+			</modules>
+		</profile>
+		
+		<profile>
+			<id>release-profile</id>
+			<modules>
+				<module>core</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
