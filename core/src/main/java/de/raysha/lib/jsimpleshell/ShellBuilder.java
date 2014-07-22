@@ -17,7 +17,6 @@ import de.raysha.lib.jsimpleshell.io.OutputConverter;
 import de.raysha.lib.jsimpleshell.io.OutputDependent;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
-import de.raysha.lib.jsimpleshell.util.EmptyMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 
 /**
@@ -28,7 +27,7 @@ import de.raysha.lib.jsimpleshell.util.MultiMap;
 public class ShellBuilder {
 	private String prompt;
 	private String appName = "JSimpleShell";
-	private MultiMap<String, Object> auxHandlers = new EmptyMultiMap<String, Object>();
+	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private Collection<Object> handlers = new LinkedList<Object>();
 	private Shell parent;
 	private ConsoleReader console;
@@ -107,6 +106,20 @@ public class ShellBuilder {
 	 */
 	public ShellBuilder addHandler(Object handler) {
 		handlers.add(handler);
+		return this;
+	}
+	
+	/**
+     * This method is very similar to addHandler, except ShellBuilder
+     * will pass all handlers registered with this method to all this shell's subshells.
+     *
+     * @see de.raysha.lib.jsimpleshell.ShellBuilder#addHandler(java.lang.Object)
+     *
+     * @param handler Object which should be registered as handler.
+     * @return This {@link ShellBuilder}
+     */
+	public ShellBuilder addAuxHandler(Object handler){
+		auxHandlers.put("", handler);
 		return this;
 	}
 
