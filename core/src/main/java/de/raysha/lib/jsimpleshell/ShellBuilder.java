@@ -26,7 +26,7 @@ import de.raysha.lib.jsimpleshell.util.MultiMap;
  */
 public class ShellBuilder {
 	private String prompt;
-	private String appName = "JSimpleShell";
+	private String appName = null;
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private Collection<Object> handlers = new LinkedList<Object>();
 	private Shell parent;
@@ -79,7 +79,7 @@ public class ShellBuilder {
 	}
 	
 	/**
-	 * Set the app name.
+	 * Set the app name. This name will be shown if the shell will be entered.
 	 * 
 	 * @param appName The app name.
 	 * @return This {@link ShellBuilder}
