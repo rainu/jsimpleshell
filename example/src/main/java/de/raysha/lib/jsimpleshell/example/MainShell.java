@@ -7,6 +7,7 @@ import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.ShellDependent;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
 import de.raysha.lib.jsimpleshell.io.InputDependent;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
@@ -104,5 +105,10 @@ public class MainShell implements ShellDependent, OutputDependent, InputDependen
     @Command(abbrev = "sp", description = "Saves your secret password. I swear, in my hands it is save!")
     public String saveSecretPassword() throws IOException{
     	return "So, your secret password is: " + input.invisibleIn().withPromt("Enter your password please: ").readLine() + " Thank you and good by... >:->";
+    }
+    
+    @Command
+    public void quit() throws ExitException{
+    	throw new ExitException("By by...");
     }
 }

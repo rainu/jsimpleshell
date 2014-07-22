@@ -22,6 +22,7 @@ import java.util.List;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
+import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.io.Input;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
@@ -279,6 +280,11 @@ public class Shell {
             } catch (TokenException te) {
                 lastException = te;
                 output.outputException(command, te);
+            } catch(ExitException ee){
+            	if(ee.getMessage() != null){
+            		output.println(ee.getMessage());
+            	}
+            	break;
             } catch (CLIException clie) {
                 lastException = clie;
                 if (!command.trim().equals("exit")) {
@@ -346,13 +352,18 @@ public class Shell {
         
         informHooks(commandToInvoke, invocationResult, time);
         
-        if (invocationResult != null) {
-            output.output(invocationResult, outputConverter);
-        }
         if (displayTime) {
             if (time != 0L) {
                 output.output(String.format(TIME_MS_FORMAT_STRING, time), outputConverter);
             }
+        }
+        
+        if (invocationResult != null) {
+        	if(invocationResult instanceof ExitException){
+        		throw (ExitException)invocationResult;
+        	}
+
+        	output.output(invocationResult, outputConverter);
         }
     }
 

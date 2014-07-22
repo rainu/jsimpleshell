@@ -225,6 +225,7 @@ public class TerminalIO implements Input, Output {
 	public void println(Object o) {
 		try {
 			console.println(String.valueOf(o));
+			console.flush();
 		} catch (IOException e) {
 			throw new Error(e);
 		}
@@ -233,6 +234,7 @@ public class TerminalIO implements Input, Output {
 	public void print(Object o) {
 		try {
 			console.print(String.valueOf(o));
+			console.flush();
 		} catch (IOException e) {
 			throw new Error(e);
 		}
