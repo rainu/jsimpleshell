@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -38,6 +39,7 @@ public class ShellBuilder {
 	private boolean useForeignConsole = false;
 	private boolean fileNameCompleterEnabled = true;
 	private boolean commandCompleterEnabled = true;
+	private boolean handleUserInterrupt = false;
 	
 	private ShellBuilder(){ }
 	
@@ -166,6 +168,20 @@ public class ShellBuilder {
 	}
 	
 	/**
+	 * Should the shell handle user interrupts (CRTL-C)?
+	 * 
+	 * @param handleUserInterrupt
+	 *            False will cause that the JVM will handle SIGINT as normal, which usually
+	 *            causes it to exit. True will cause that the JVM will not handle the signal.
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder setHandleUserInterrupt(boolean handleUserInterrupt) {
+		this.handleUserInterrupt = handleUserInterrupt;
+		
+		return this;
+	}
+	
+	/**
 	 * Disable the file name completion mechanism! 
 	 * 
 	 * @return This {@link ShellBuilder}
@@ -255,6 +271,8 @@ public class ShellBuilder {
 					auxHandlers.put("historyFlusher", new HistoryFlusher());
 				}
 			}
+			
+			console.setHandleUserInterrupt(handleUserInterrupt);
 		}
 		console.setExpandEvents(false);
 	}
