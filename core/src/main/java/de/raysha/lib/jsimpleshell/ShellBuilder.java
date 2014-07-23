@@ -1,5 +1,6 @@
 package de.raysha.lib.jsimpleshell;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.io.InputConverter;
 import de.raysha.lib.jsimpleshell.io.InputDependent;
@@ -29,6 +31,7 @@ public class ShellBuilder {
 	private String appName = null;
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private Collection<Object> handlers = new LinkedList<Object>();
+	private File history;
 	private Shell parent;
 	private ConsoleReader console;
 	private OutputStream error = System.err;
@@ -202,6 +205,17 @@ public class ShellBuilder {
 		return this;
 	}
 	
+	/**
+	 * Set the location of the history. By default the history will be not persisted!
+	 * 
+	 * @param historyFile The location of the history. Null means that the history will not persisted.
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder setHistoryFile(File historyFile){
+		this.history = historyFile;
+		return this;
+	}
+	
 	private void checkPrecondition() throws IOException {
 		if(console == null){
 			if(parent == null){
@@ -229,6 +243,14 @@ public class ShellBuilder {
 					console.addCompleter(new FileArgumentCompleter());
 				}
 			}
+			
+			if(history != null && !(console.getHistory() instanceof FileHistory)){
+				try {
+					console.setHistory(new FileHistory(history));
+				} catch (IOException e) {
+					throw new RuntimeException("Could not configure file history.", e);
+				}
+			}
 		}
 		console.setExpandEvents(false);
 	}
@@ -244,8 +266,8 @@ public class ShellBuilder {
 
         Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false),
                 new CommandTable(new DashJoinedNamer(true)), path);
+        
         theShell.setAppName(appName);
-
         theShell.addMainHandler(theShell, "!");
         theShell.addMainHandler(new HelpCommandHandler(), "?");
         
