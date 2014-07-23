@@ -250,6 +250,10 @@ public class ShellBuilder {
 				} catch (IOException e) {
 					throw new RuntimeException("Could not configure file history.", e);
 				}
+				
+				if(auxHandlers.get("historyFlusher").isEmpty()){
+					auxHandlers.put("historyFlusher", new HistoryFlusher());
+				}
 			}
 		}
 		console.setExpandEvents(false);
@@ -267,21 +271,10 @@ public class ShellBuilder {
         Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false),
                 new CommandTable(new DashJoinedNamer(true)), path);
         
-        theShell.setAppName(appName);
-        theShell.addMainHandler(theShell, "!");
-        theShell.addMainHandler(new HelpCommandHandler(), "?");
-        
-        if(commandCompleterEnabled){
-        	theShell.addMainHandler(new CommandCompleterHandler(), "");
-        }
-        
-        for (Object h : handlers) {
-            theShell.addMainHandler(h, "");
-        }
-
+        configureShell(theShell);
         return theShell;
 	}
-	
+
 	private Shell buildSubShell() {
 		List<String> newPath = new ArrayList<String>(parent.getPath());
         newPath.add(prompt);
@@ -289,18 +282,22 @@ public class ShellBuilder {
         Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers),
                 new CommandTable(parent.getCommandTable().getNamer()), newPath);
 
-        subshell.setAppName(appName);
-        subshell.addMainHandler(subshell, "!");
-        subshell.addMainHandler(new HelpCommandHandler(), "?");
+        configureShell(subshell);
+        return subshell;
+	}
+	
+	private void configureShell(Shell shell) {
+		shell.setAppName(appName);
+		shell.addMainHandler(shell, "!");
+        shell.addMainHandler(new HelpCommandHandler(), "?");
         
         if(commandCompleterEnabled){
-        	subshell.addMainHandler(new CommandCompleterHandler(), "");
+        	shell.addMainHandler(new CommandCompleterHandler(), "");
         }
         
         for (Object h : handlers) {
-        	subshell.addMainHandler(h, "");
+            shell.addMainHandler(h, "");
         }
-        return subshell;
 	}
 	
 	/**
