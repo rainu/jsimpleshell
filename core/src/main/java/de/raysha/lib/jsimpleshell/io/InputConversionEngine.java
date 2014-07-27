@@ -7,6 +7,8 @@ package de.raysha.lib.jsimpleshell.io;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +119,10 @@ public class InputConversionEngine {
             return Float.parseFloat(string);
         } else if (aClass.equals(Boolean.class) || aClass.equals(Boolean.TYPE)) {
             return Boolean.parseBoolean(string);
+        } else if (aClass.equals(BigDecimal.class)) {
+            return new BigDecimal(string);
+        } else if (aClass.equals(BigInteger.class)) {
+            return new BigInteger(string);
         } else {
             try {
                 Constructor c = aClass.getConstructor(String.class);
