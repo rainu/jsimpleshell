@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -106,6 +107,8 @@ public class Shell {
         this.commandTable = commandTable;
         this.path = path;
         setSettings(s);
+        
+        enableExitCommand();
     }
 
     private CommandTable commandTable;
@@ -140,6 +143,31 @@ public class Shell {
     private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
     private List<Object> allHandlers = new ArrayList<Object>();
 
+    /**
+	 * Enable the exit command. By default it is enabled!
+	 */
+	public void enableExitCommand(){
+		disableExitCommand();
+		addMainHandler(new ExitCommand(), "");
+	}
+	
+	/**
+	 * Disable the exit command. Be careful! You must implements
+	 * your own exit mechanism (@see ExitException). If you do not,
+	 * the user can never exit the shell normally!
+	 */
+	public void disableExitCommand(){
+		Iterator<Object> iter = allHandlers.iterator();
+		
+		while(iter.hasNext()){
+			Object handler = iter.next();
+			
+			if(handler instanceof ExitCommand){
+				commandTable.removeCommands(handler);
+				iter.remove();
+			}
+		}
+	}
 
     /**
      * Method for registering command hanlers (or providers?)
@@ -273,7 +301,7 @@ public class Shell {
         }
         output.output(appName, outputConverter);
         String command = "";
-        while (!command.trim().equals("exit")) {
+        while (true) {
             try {
                 command = input.readCommand(path);
                 processLine(command);
@@ -287,9 +315,7 @@ public class Shell {
             	break;
             } catch (CLIException clie) {
                 lastException = clie;
-                if (!command.trim().equals("exit")) {
-                    output.outputException(clie);
-                }
+                output.outputException(clie);
             }
         }
         for (Object handler : allHandlers) {
@@ -410,6 +436,12 @@ public class Shell {
         return appName;
     }
 
-
+    private class ExitCommand {
+    	
+    	@Command(abbrev = "exit", description = "Exit the current shell.")
+    	public void exit() throws ExitException{
+    		throw new ExitException();
+    	}
+    }
 
 }

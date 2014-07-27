@@ -8,6 +8,7 @@ package de.raysha.lib.jsimpleshell;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -35,6 +36,15 @@ public class CommandTable {
 
     public List<ShellCommand> getCommandTable() {
         return Collections.unmodifiableList(commandTable);
+    }
+    
+    public void removeCommands(Object handler){
+    	Iterator<ShellCommand> iter = commandTable.iterator();
+    	while(iter.hasNext()){
+    		if(iter.next().getHandler() == handler){
+    			iter.remove();
+    		}
+    	}
     }
 
     public void addMethod(Method method, Object handler, String prefix) {

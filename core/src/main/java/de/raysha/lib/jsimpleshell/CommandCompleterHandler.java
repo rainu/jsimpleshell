@@ -88,8 +88,6 @@ class CommandCompleterHandler implements ShellManageable {
 		AggregateCompleter completerContainer = aggregateCompleter.get(console);
 		
 		Collection<String> commandNames = new HashSet<String>();
-		commandNames.add("exit");	//special command is not included in commandTable!
-		
 		for(ShellCommand cmd : shell.getCommandTable().getCommandTable()){
 			commandNames.add(cmd.getPrefix() + cmd.getName());
 		}

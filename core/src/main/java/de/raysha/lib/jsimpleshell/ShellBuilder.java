@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
-import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -40,6 +39,7 @@ public class ShellBuilder {
 	private boolean fileNameCompleterEnabled = true;
 	private boolean commandCompleterEnabled = true;
 	private boolean handleUserInterrupt = false;
+	private boolean disableExit = false;
 	
 	private ShellBuilder(){ }
 	
@@ -222,6 +222,28 @@ public class ShellBuilder {
 	}
 	
 	/**
+	 * Enable the exit command. By default it is enabled!
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder enableExitCommand(){
+		this.disableExit = false;
+		return this;
+	}
+	
+	/**
+	 * Disable the exit command. Be careful! You must implements
+	 * your own exit mechanism (@see ExitException). If you do not,
+	 * the user can never exit the shell normally!
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder disableExitCommand(){
+		this.disableExit = true;
+		return this;
+	}
+	
+	/**
 	 * Set the location of the history. By default the history will be not persisted!
 	 * 
 	 * @param historyFile The location of the history. Null means that the history will not persisted.
@@ -311,6 +333,10 @@ public class ShellBuilder {
         
         if(commandCompleterEnabled){
         	shell.addMainHandler(new CommandCompleterHandler(), "");
+        }
+        
+        if(disableExit){
+        	shell.disableExitCommand();
         }
         
         for (Object h : handlers) {

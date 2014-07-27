@@ -117,7 +117,9 @@ public class ShellCommand {
         this.header = header;
     }
 
-
+    public Object getHandler() {
+		return handler;
+	}
 
     public boolean startsWith(String prefix) {
         return (this.prefix + abbreviation).startsWith(prefix) ||
