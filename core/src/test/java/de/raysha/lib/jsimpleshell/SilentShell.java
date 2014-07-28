@@ -83,7 +83,7 @@ public class SilentShell {
 				e.printStackTrace();
 			}
 			
-			simulateUserInput(sb.toString());
+			shell.processLine(sb.toString());
 		}finally{
 			System.setOut(origOut);
 			System.setErr(origErr);
