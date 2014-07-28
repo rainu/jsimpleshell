@@ -5,12 +5,11 @@
 
 package de.raysha.lib.jsimpleshell.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 
 import org.junit.Test;
-
-import de.raysha.lib.jsimpleshell.util.Strings;
-import static org.junit.Assert.*;
 
 /**
  *

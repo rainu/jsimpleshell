@@ -5,12 +5,11 @@
 
 package de.raysha.lib.jsimpleshell;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.junit.Test;
-
-import de.raysha.lib.jsimpleshell.Token;
-import static org.junit.Assert.*;
 
 /**
  *

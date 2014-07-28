@@ -5,13 +5,11 @@
 
 package de.raysha.lib.jsimpleshell.util;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
-import de.raysha.lib.jsimpleshell.util.MultiMap;
-import static org.junit.Assert.*;
 
 /**
  *

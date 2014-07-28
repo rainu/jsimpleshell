@@ -5,15 +5,15 @@
 
 package de.raysha.lib.jsimpleshell;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Method;
 
 import org.junit.Test;
 
-import de.raysha.lib.jsimpleshell.CommandNamer;
-import de.raysha.lib.jsimpleshell.DashJoinedNamer;
 import de.raysha.lib.jsimpleshell.CommandNamer.NamingInfo;
 import de.raysha.lib.jsimpleshell.annotation.Command;
-import static org.junit.Assert.*;
 
 /**
  *

@@ -5,12 +5,13 @@
 
 package de.raysha.lib.jsimpleshell;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
 import de.raysha.lib.jsimpleshell.io.OutputConverter;
-import static org.junit.Assert.*;
 
 /**
  *
