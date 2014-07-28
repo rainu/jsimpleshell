@@ -21,12 +21,17 @@ Feature-List
 
 For possible future changes see [here](https://github.com/rainu/jsimpleshell/labels/enhancement)
 
+How it works
+------------
+
+Do you want to see some code? No problem! Look  [here](https://github.com/rainu/jsimpleshell/blob/master/example/src/main/java/de/raysha/lib/jsimpleshell/example/MainShell.java)
+
 Demo version
 ------------
 
 You can build the demo project (runnable jar file) for your own to checkout the functionality of ___JSimpleShell___. The only thing what you have to do is checkout and build the project (see below). After that you can run the jar-file which is created under the exaples/target folder.
 
-    java -jar example/target/SimpleShell-Demo.jar 
+    java -jar example/target/JSimpleShell-Demo.jar 
 
 License
 -------
