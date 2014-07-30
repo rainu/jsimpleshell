@@ -3,7 +3,7 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.raysha.lib.jsimpleshell.io;
+package de.raysha.lib.jsimpleshell.handler;
 
 
 /**

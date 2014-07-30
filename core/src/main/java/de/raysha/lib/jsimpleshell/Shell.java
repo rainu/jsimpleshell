@@ -25,14 +25,17 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
+import de.raysha.lib.jsimpleshell.handler.InputDependent;
+import de.raysha.lib.jsimpleshell.handler.OutputDependent;
+import de.raysha.lib.jsimpleshell.handler.ShellDependent;
+import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.io.Input;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
 import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
-import de.raysha.lib.jsimpleshell.io.InputDependent;
 import de.raysha.lib.jsimpleshell.io.Output;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
-import de.raysha.lib.jsimpleshell.io.OutputDependent;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
@@ -177,8 +180,8 @@ public class Shell {
      * This method recognizes if it is passed ShellDependent or ShellManageable
      * and calls corresponding methods, as described in those interfaces.
      *
-     * @see de.raysha.lib.jsimpleshell.ShellDependent
-     * @see de.raysha.lib.jsimpleshell.ShellManageable
+     * @see de.raysha.lib.jsimpleshell.handler.ShellDependent
+     * @see de.raysha.lib.jsimpleshell.handler.ShellManageable
      * 
      * @param handler Object which should be registered as handler.
      * @param prefix Prefix that should be prepended to all handler's command names.

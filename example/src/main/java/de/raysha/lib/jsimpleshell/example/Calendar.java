@@ -5,7 +5,7 @@ import java.util.Date;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
-import de.raysha.lib.jsimpleshell.io.InputConverter;
+import de.raysha.lib.jsimpleshell.handler.InputConverter;
 
 /**
  * This class contains a little time functionality.

@@ -1,4 +1,6 @@
-package de.raysha.lib.jsimpleshell.io;
+package de.raysha.lib.jsimpleshell.handler;
+
+import de.raysha.lib.jsimpleshell.io.InputBuilder;
 
 /**
  * Classes that want to get (user-)input within a command should implement this interface.

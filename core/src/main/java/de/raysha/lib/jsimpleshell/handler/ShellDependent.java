@@ -3,7 +3,9 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.handler;
+
+import de.raysha.lib.jsimpleshell.Shell;
 
 /**
  * Classes that want to have an instance of Shell associated with them should implement this interface.

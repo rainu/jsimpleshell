@@ -1,4 +1,6 @@
-package de.raysha.lib.jsimpleshell.io;
+package de.raysha.lib.jsimpleshell.handler;
+
+import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 
 /**
  * Classes that want to make an output within a command should implement this interface.

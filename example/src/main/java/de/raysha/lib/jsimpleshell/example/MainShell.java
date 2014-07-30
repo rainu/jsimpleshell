@@ -4,14 +4,14 @@ import java.io.IOException;
 
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
-import de.raysha.lib.jsimpleshell.ShellDependent;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
+import de.raysha.lib.jsimpleshell.handler.InputDependent;
+import de.raysha.lib.jsimpleshell.handler.OutputDependent;
+import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
-import de.raysha.lib.jsimpleshell.io.InputDependent;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
-import de.raysha.lib.jsimpleshell.io.OutputDependent;
 
 /**
  * This class contains all Commands for the main shell.
@@ -58,7 +58,7 @@ public class MainShell implements ShellDependent, OutputDependent, InputDependen
         	sb.append(s);
         	sb.append(" ");
         }
-    	
+        
     	return sb.toString();
     }
     

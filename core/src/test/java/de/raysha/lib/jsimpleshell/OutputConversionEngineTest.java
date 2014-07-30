@@ -10,8 +10,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.raysha.lib.jsimpleshell.handler.OutputConverter;
 import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
-import de.raysha.lib.jsimpleshell.io.OutputConverter;
 
 /**
  *

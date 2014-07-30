@@ -3,7 +3,9 @@
  * See LICENSE.txt file in root folder of Cliche sources.
  */
 
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.handler;
+
+import de.raysha.lib.jsimpleshell.Shell;
 
 /**
  * This interface is for classes that want to be aware of entering

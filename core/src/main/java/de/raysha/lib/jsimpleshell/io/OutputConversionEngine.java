@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import de.raysha.lib.jsimpleshell.handler.OutputConverter;
+
 /**
  * Output conversion engine is responsible for converting objects after they are returned
  * by command but before they are sent to the Output.

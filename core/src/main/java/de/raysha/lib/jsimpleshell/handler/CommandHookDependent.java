@@ -1,4 +1,6 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.handler;
+
+import de.raysha.lib.jsimpleshell.ShellCommand;
 
 /**
  * Classes that want to inform about command executing should implement this interface.

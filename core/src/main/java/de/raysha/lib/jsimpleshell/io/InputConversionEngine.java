@@ -15,6 +15,7 @@ import java.util.List;
 import de.raysha.lib.jsimpleshell.Token;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.InputConverter;
 
 /**
  * This thing is responsible for converting strings to objects.

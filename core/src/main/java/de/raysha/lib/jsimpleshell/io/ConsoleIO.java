@@ -16,10 +16,10 @@ import java.util.Collection;
 import java.util.List;
 
 import de.raysha.lib.jsimpleshell.Shell;
-import de.raysha.lib.jsimpleshell.ShellManageable;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**

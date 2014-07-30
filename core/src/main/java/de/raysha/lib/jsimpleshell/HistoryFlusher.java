@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
+import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 /**
