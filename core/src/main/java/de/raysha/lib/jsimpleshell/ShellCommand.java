@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import de.raysha.lib.jsimpleshell.exception.CLIException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 
 /**
@@ -26,10 +27,10 @@ public class ShellCommand {
     private Object handler;
     private ShellCommandParamSpec[] paramSpecs;
 
-    public ShellCommand(Object handler, Method method, String prefix, String name) {
+    public ShellCommand(Object handler, Method method, String prefix, String name, MessageResolver msgResolver) {
         super();
         assert method != null;
-        this.paramSpecs = ShellCommandParamSpec.forMethod(method);
+        this.paramSpecs = ShellCommandParamSpec.forMethod(method, msgResolver);
         assert paramSpecs.length == method.getParameterTypes().length;
         this.method = method;
         this.prefix = prefix;

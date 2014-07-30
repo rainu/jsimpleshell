@@ -27,9 +27,12 @@ import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
+import de.raysha.lib.jsimpleshell.handler.impl.CompositeMessageResolver;
+import de.raysha.lib.jsimpleshell.handler.impl.DefaultMessageResolver;
 import de.raysha.lib.jsimpleshell.io.Input;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
 import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
@@ -48,12 +51,13 @@ import de.raysha.lib.jsimpleshell.util.MultiMap;
  * @author ASG
  */
 public class Shell {
-
     private OutputBuilder outputBuilder;
     private Output output;
     private InputBuilder inputBuilder;
     private Input input;
     private String appName;
+    
+    private final CompositeMessageResolver messageResolver;
 
     public static class Settings {
         final Input input;
@@ -109,6 +113,11 @@ public class Shell {
     Shell(Settings s, CommandTable commandTable, List<String> path) {
         this.commandTable = commandTable;
         this.path = path;
+
+        this.messageResolver = new CompositeMessageResolver();
+        this.messageResolver.getChain().add(DefaultMessageResolver.getInstance());
+        this.commandTable.setMessageResolver(messageResolver);
+        
         setSettings(s);
         
         enableExitCommand();
@@ -227,6 +236,12 @@ public class Shell {
 		}
 		if (handler instanceof InputDependent) {
 			((InputDependent) handler).cliSetInput(inputBuilder);
+		}
+		if (handler instanceof MessageResolver) {
+			List<MessageResolver> chain = messageResolver.getChain();
+			
+			//the default message resolver should be always the latest
+			chain.add(chain.size() - 1, (MessageResolver)handler);
 		}
 	}
 

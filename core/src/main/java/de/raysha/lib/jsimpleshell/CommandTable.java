@@ -14,6 +14,7 @@ import java.util.List;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 /**
  * Command table is responsible for managing a lot of ShellCommands and is like a dictionary,
@@ -23,17 +24,22 @@ import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
  */
 public class CommandTable {
 
+	private MessageResolver messageResolver;
     private List<ShellCommand> commandTable = new ArrayList<ShellCommand>();
     private CommandNamer namer;
-
-    public CommandNamer getNamer() {
-        return namer;
-    }
 
     public CommandTable(CommandNamer namer) {
         this.namer = namer;
     }
 
+    public void setMessageResolver(MessageResolver messageResolver) {
+		this.messageResolver = messageResolver;
+	}
+    
+    public CommandNamer getNamer() {
+        return namer;
+    }
+    
     public List<ShellCommand> getCommandTable() {
         return Collections.unmodifiableList(commandTable);
     }
@@ -50,41 +56,63 @@ public class CommandTable {
     public void addMethod(Method method, Object handler, String prefix) {
         Command annotation = method.getAnnotation(Command.class);
         assert method != null;
-        String name;
-        String autoAbbrev = null;
 
-        if (annotation != null && annotation.name() != null && ! annotation.name().equals("")) {
-            name = annotation.name();
-        } else {
-            CommandNamer.NamingInfo autoNames = namer.nameCommand(method);
-            name = autoNames.commandName;
-            for (String abbr : autoNames.possibleAbbreviations) {
-                if (!doesCommandExist(prefix + abbr, method.getParameterTypes().length)) {
-                    autoAbbrev = abbr;
-                    break;
-                }
-            }
-        }
+        String name = resolveName(annotation, method);
+        String abbrev = resolveAbbrev(annotation, method);
+        String desciption = resolveDescription(annotation, method);
+        String header = resolveHeader(annotation, method);
         
-        ShellCommand command = new ShellCommand(handler, method, prefix, name);
+        ShellCommand command = new ShellCommand(handler, method, prefix, name, messageResolver);
 
-        if (annotation != null && annotation.abbrev() != null && ! annotation.abbrev().equals("")) {
-            command.setAbbreviation(annotation.abbrev());
-        } else {
-            command.setAbbreviation(autoAbbrev);
-        }
-        if (annotation != null && annotation.description() != null && !annotation.description().equals("")) {
-            command.setDescription(annotation.description());
-        }
-        if (annotation != null && annotation.header() != null && ! annotation.header().equals("")) {
-            command.setHeader(annotation.header());
-        }
-        
-        commandTable.add(command);
+		command.setAbbreviation(abbrev);
+		command.setDescription(desciption);
+		command.setHeader(header);
+
+		commandTable.add(command);
 
     }
 
-    private boolean doesCommandExist(String commandName, int arity) {
+    private String resolveName(Command annotation, Method method) {
+		String name = "";
+		
+    	if(annotation != null){
+			name = messageResolver.resolveCommandName(annotation, method);
+		}
+    	if(name == null || "".equals(name)){
+    		name = namer.nameCommand(method).commandName;
+    	}
+    	
+		return name;
+	}
+
+	private String resolveAbbrev(Command annotation, Method method) {
+		String abbrev = "";
+		
+    	if(annotation != null){
+			abbrev = messageResolver.resolveCommandAbbrev(annotation, method);
+		}
+    	if(abbrev == null || "".equals(abbrev)){
+    		CommandNamer.NamingInfo autoNames = namer.nameCommand(method);
+    		for (String curAbbrev : autoNames.possibleAbbreviations) {
+                if (!doesCommandExist(abbrev + curAbbrev, method.getParameterTypes().length)) {
+                	abbrev = curAbbrev;
+                    break;
+                }
+            }
+    	}
+    	
+		return abbrev;
+	}
+
+	private String resolveDescription(Command annotation, Method method) {
+		return messageResolver.resolveCommandDescription(annotation, method);
+	}
+
+	private String resolveHeader(Command annotation, Method method) {
+		return messageResolver.resolveCommandHeader(annotation, method);
+	}
+
+	private boolean doesCommandExist(String commandName, int arity) {
         for (ShellCommand cmd : commandTable) {
             if (cmd.canBeDenotedBy(commandName) && cmd.getArity() == arity) {
                 return true;
