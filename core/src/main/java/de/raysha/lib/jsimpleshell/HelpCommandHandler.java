@@ -14,6 +14,8 @@ import java.util.List;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
@@ -21,12 +23,18 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
  * Help command handler (usually prefixed by '?').
  * @author ASG
  */
-public class HelpCommandHandler implements ShellDependent {
+public class HelpCommandHandler implements ShellDependent, MessageResolverDependent {
 
     private Shell owner;
+    private MessageResolver messageResolver;
 
     public void cliSetShell(Shell theShell) {
         this.owner = theShell;
+    }
+
+    @Override
+    public void cliSetMessageResolver(MessageResolver resolver) {
+    	this.messageResolver = resolver;
     }
     
     @Command(abbrev = "command.abbrev.listall", description = "command.description.listall", 
@@ -153,66 +161,24 @@ public class HelpCommandHandler implements ShellDependent {
     	}else if(getTerminalWidth() >= 60){
     		helpText += getSmallLogo();
     	}else{
-    		helpText += "JSimpleShell - " + Info.getProjectHomepage() + "\n\n";
+    		helpText += messageResolver.resolveGeneralMessage("message.help.logo.tiny");
     	}
     	
-    	helpText += "Usage:\n" +
-				"* You can use \"?list\" to show available commands. The command \"?list-all\" lists also the special commands.\n" +
-				"* If you want to know more about a specific command, you can use the \"?help\" following by the command name. For example:\n" +
-				"\t$> ?help !run-script\n" +
-				"* You can also use the arrow-keys!\n" +
-				"\t<LEFT_ARROW> and <RIGHT_ARROW> navigates in current line\n" +
-				"\t<UP_ARROW> and <DOWN_ARROW> navigates through the command history\n" +
-				"* Use <CTRL> + <R> to search in command history\n" +
-				"* Use <CTRL> + <L> to clear the terminal\n" +
-				"* Use <TAB> to auto-complete the available commands or file/directory path\n" +
-				
-				"* To exit this shell or any subshell, use \"exit\"";
+    	helpText += messageResolver.resolveGeneralMessage("message.help.usage");
     	
-    	return helpText;
+    	return helpText.replace("{project.author}", Info.getAuthor())
+    			.replace("{cliche.homepage}", Info.getClicheHomepage())
+    			.replace("{jline2.homepage}", Info.getJlineHomepage())
+    			.replace("{project.homepage}", Info.getProjectHomepage())
+    			.replace("{project.version}", Info.getVersion());
     }
     
     private String getSmallLogo() {
-		return 
-			"########################|\n" +
-			"#     _____     ______      ______  \n" +
-			"#    |     \\   /      \\    /      \\ \n" +
-			"#     \\$$$$$  |  $$$$$$\\  |  $$$$$$\\\n" +
-			"#       | $$  | $$___\\$$  | $$___\\$$\n" +
-			"#  __   | $$   \\$$    \\    \\$$    \\ \n" +
-			"# |  \\  | $$   _\\$$$$$$\\   _\\$$$$$$\\\n" +
-			"# | $$__| $$  |  \\__| $$  |  \\__| $$\n" +
-			"#  \\$$    $$   \\$$    $$   \\$$    $$\n" +
-			"#   \\$$$$$$     \\$$$$$$     \\$$$$$$ \n" +
-			"#\n" +
-			"# JSimpleShell - " + Info.getProjectHomepage() + "\n" +
-			"# Autor: Rainu\n" +
-			"# Version: " + Info.getVersion() + "\n" +
-			"#\n" +
-			"# Based on Cliche (" + Info.getClicheHomepage() + ")\n" +
-    		"# and uses JLine2 (" + Info.getJlineHomepage() + ")\n" +
-			"########################|\n\n";
+		return messageResolver.resolveGeneralMessage("message.help.logo.small");
 	}
 
 	private String getBigLogo() {
-    	return 
-    			"###########################################|\n" +
-				"#     _____  ______  __                       __           ______  __                __ __  \n" +
-				"#    |     \\/      \\|  \\                     |  \\         /      \\|  \\     Rainu    |  |  \\\n" +
-				"#     \\$$$$|  $$$$$$|$$|______ ____   ______ | $$ ______ |  $$$$$$| $$____   ______ | $| $$\n" +
-				"#       | $| $$___\\$|  |      \\    \\ /      \\| $$/      \\| $$___\\$| $$    \\ /      \\| $| $$\n" +
-				"#  __   | $$\\$$    \\| $| $$$$$$\\$$$$|  $$$$$$| $|  $$$$$$\\\\$$    \\| $$$$$$$|  $$$$$$| $| $$\n" +
-				"# |  \\  | $$_\\$$$$$$| $| $$ | $$ | $| $$  | $| $| $$    $$_\\$$$$$$| $$  | $| $$    $| $| $$\n" +
-				"# | $$__| $|  \\__| $| $| $$ | $$ | $| $$__/ $| $| $$$$$$$|  \\__| $| $$  | $| $$$$$$$| $| $$\n" +
-				"#  \\$$    $$\\$$    $| $| $$ | $$ | $| $$    $| $$\\$$     \\\\$$    $| $$  | $$\\$$     | $| $$\n" +
-				"#   \\$$$$$$  \\$$$$$$ \\$$\\$$  \\$$  \\$| $$$$$$$ \\$$ \\$$$$$$$ \\$$$$$$ \\$$   \\$$ \\$$$$$$$\\$$\\$$\n" +
-				"#                                   | $$\n" +
-				"#                                   | $$  " + Info.getProjectHomepage() + "\n" +
-				"#                                    \\$$        Version: " + Info.getVersion() + "\n" +
-				"#\n" +
-        		"# Based on Cliche (" + Info.getClicheHomepage() + ")\n" +
-        		"# and uses JLine2 (" + Info.getJlineHomepage() + ")\n" +
-        		"###########################################|\n\n";
+    	return messageResolver.resolveGeneralMessage("message.help.logo.big");
     }
 
 	private int getTerminalWidth() {
@@ -230,13 +196,11 @@ public class HelpCommandHandler implements ShellDependent {
         List<ShellCommand> commands = owner.getCommandTable().commandsByName(commandName);
         StringBuilder result = new StringBuilder();
         for (ShellCommand command : commands) {
-            result.append(formatCommandLong(command));
+            result.append(formatCommandLong(command, messageResolver));
             result.append("\n");
         }
         return result;
     }
-
-    private static final String COMMAND_LIST_HEADER = "abbrev\tname\tparams";
 
     private static String formatCommandShort(ShellCommand command) {
         boolean hasAbbr = command.getAbbreviation() != null;
@@ -269,18 +233,27 @@ public class HelpCommandHandler implements ShellDependent {
         return result.toString();
     }
     
-    private static String formatCommandLong(ShellCommand command) {
+    private static String formatCommandLong(ShellCommand command, MessageResolver resolver) {
+    	final String cmd = resolver.resolveGeneralMessage("message.general.command");
+    	final String abbrev = resolver.resolveGeneralMessage("message.general.abbrev");
+    	final String params = resolver.resolveGeneralMessage("message.general.params");
+    	final String description = resolver.resolveGeneralMessage("message.general.description");
+    	final String none = resolver.resolveGeneralMessage("message.general.none");
+    	final String numberOfParam = resolver.resolveGeneralMessage("message.general.numberofparameters");
+    	final String paramVarArgs = resolver.resolveGeneralMessage("message.general.command.varargs");
+    	final String noParam = resolver.resolveGeneralMessage("message.general.command.noparam");
+    	
         StringBuilder sb = new StringBuilder(String.format(
-                "Command: %s\n" +
-                "Abbrev:  %s\n" +
-                "Params:  %s\n" +
-                "Description: %s\n",
+        		cmd + ": %s\n" +
+        		abbrev  + ":  %s\n" +
+        		params + ":  %s\n" +
+        		description + ": %s\n",
                 command.getPrefix() + command.getName(),
-                command.getAbbreviation() != null ? command.getPrefix() + command.getAbbreviation() : "(none)",
+                command.getAbbreviation() != null ? command.getPrefix() + command.getAbbreviation() : "(" + none + ")",
                 formatCommandParamsShort(command),
                 command.getDescription()));
         if (command.getArity() > 0) {
-            sb.append(String.format("Number of parameters: %d\n", command.getArity()));
+            sb.append(String.format(numberOfParam + ": %d\n", command.getArity()));
             Class[] paramTypes = command.getMethod().getParameterTypes();
             ShellCommandParamSpec[] paramSpecs = command.getParamSpecs();
             if (paramSpecs != null) {
@@ -292,15 +265,11 @@ public class HelpCommandHandler implements ShellDependent {
                 }
             }
             if (command.getMethod().isVarArgs()) {
-                sb.append("This command is varargs on its last parameter.\n");
+                sb.append(paramVarArgs + "\n");
             }
         } else {
-            sb.append("No parameters.\n");
+            sb.append(noParam + "\n");
         }
         return sb.toString();
     }
-
-    public static void main(String[] args) {
-		System.out.println(new HelpCommandHandler().getSmallLogo());
-	}
 }

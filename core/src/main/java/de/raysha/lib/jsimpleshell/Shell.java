@@ -28,6 +28,7 @@ import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
@@ -244,6 +245,9 @@ public class Shell {
 			
 			//the default message resolver should be always the latest
 			chain.add(chain.size() - 1, (MessageResolver)handler);
+		}
+		if (handler instanceof MessageResolverDependent) {
+			((MessageResolverDependent) handler).cliSetMessageResolver(messageResolver);
 		}
 	}
 
