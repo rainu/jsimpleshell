@@ -247,9 +247,9 @@ public class OutputBuilder {
 		 */
 		public void println() {
 			if (isError) {
-				out.printlnErr(sb);
+				out.printlnErr(sb.toString());
 			} else {
-				out.println(sb);
+				out.println(sb.toString());
 			}
 		}
 
@@ -258,9 +258,9 @@ public class OutputBuilder {
 		 */
 		public void print() {
 			if (isError) {
-				out.printErr(sb);
+				out.printErr(sb.toString());
 			} else {
-				out.print(sb);
+				out.print(sb.toString());
 			}
 		}
 	}

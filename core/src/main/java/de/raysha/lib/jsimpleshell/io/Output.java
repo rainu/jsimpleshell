@@ -6,6 +6,7 @@
 package de.raysha.lib.jsimpleshell.io;
 
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 /**
  * Output for Shell to direct its output to.
@@ -14,6 +15,8 @@ import de.raysha.lib.jsimpleshell.exception.TokenException;
  */
 public interface Output {
 
+	void setMessageResolver(MessageResolver messageResolver);
+	
     void output(Object obj, OutputConversionEngine oce);
 
     void outputException(String input, TokenException error);

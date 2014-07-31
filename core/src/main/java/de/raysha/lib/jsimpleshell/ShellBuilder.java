@@ -13,9 +13,11 @@ import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.OutputConverter;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
@@ -106,6 +108,8 @@ public class ShellBuilder {
 	 * <li>Implements the {@link OutputDependent} interface to get the possibility to print anything out</li>
 	 * <li>Implements the {@link InputDependent} interface to get the possibility to read anything in</li>
 	 * <li>Implements the {@link CommandHookDependent} interface to get the possibility to inform about command executions</li>
+	 * <li>Implements the {@link MessageResolver} interface to get the possibility to resolve {@link Command} / {@link Param}eter messages</li>
+	 * <li>Implements the {@link MessageResolverDependent} interface to get access to the used {@link MessageResolver}</li>
 	 * </ul>
 	 *
 	 * @param handler A command handler.

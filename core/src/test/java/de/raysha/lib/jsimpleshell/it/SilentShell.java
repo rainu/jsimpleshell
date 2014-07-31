@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.it;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,6 +9,9 @@ import java.io.PrintStream;
 
 import org.apache.commons.io.FileUtils;
 
+import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 
 public class SilentShell {

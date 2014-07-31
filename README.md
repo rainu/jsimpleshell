@@ -18,6 +18,7 @@ Feature-List
 * Maven integration (artifacts are stored in maven central)
 * Masking input (helpful for password inputs)
 * Autocompletion (Commands and File-Pathes!)
+* All messages can be resolved (useful for l18n)
 
 For possible future changes see [here](https://github.com/rainu/jsimpleshell/labels/enhancement)
 

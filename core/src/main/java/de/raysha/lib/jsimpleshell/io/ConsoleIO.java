@@ -19,6 +19,7 @@ import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
@@ -30,7 +31,8 @@ import de.raysha.lib.jsimpleshell.util.Strings;
  * @author ASG
  */
 public class ConsoleIO implements Input, Output, ShellManageable {
-
+	private MessageResolver messageResolver;
+	
     public ConsoleIO(BufferedReader in, PrintStream out, PrintStream err) {
         this.in = in;
         this.out = out;
@@ -47,6 +49,11 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     private PrintStream err;
 
     private int lastCommandOffset = 0;
+    
+    @Override
+    public void setMessageResolver(MessageResolver messageResolver) {
+    	this.messageResolver = messageResolver;
+    }
 
     public String readCommand(List<String> path) {
         try {
@@ -108,9 +115,10 @@ public class ConsoleIO implements Input, Output, ShellManageable {
         inputState = InputState.USER;
     }
 
-    @Command(description="Reads commands from file")
+    @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
+    		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
-            @Param(name="filename", description="Full file name of the script") 
+            @Param(name="param.name.runscript", description="param.description.runscript") 
                 String filename
             ) throws FileNotFoundException {
 
@@ -183,6 +191,8 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void print(Object x) {
+    	x = resolve(x);
+    	
         out.print(x);
         if (log != null) {
             log.print(x);
@@ -190,6 +200,8 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void println(Object x) {
+    	x = resolve(x);
+    	
         out.println(x);
         if (log != null) {
             log.println(x);
@@ -197,6 +209,8 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void printErr(Object x) {
+    	x = resolve(x);
+    	
         err.print(x);
         if (log != null) {
             log.print(x);
@@ -204,10 +218,20 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void printlnErr(Object x) {
+    	x = resolve(x);
+    	
         err.println(x);
         if (log != null) {
             log.println(x);
         }
+    }
+    
+    private Object resolve(Object x){
+    	if(x instanceof String){
+    		return messageResolver.resolveGeneralMessage((String)x);
+    	}
+    	
+    	return x;
     }
 
     public void outputException(String input, TokenException error) {
@@ -252,16 +276,18 @@ public class ConsoleIO implements Input, Output, ShellManageable {
         }
     }
 
-    @Command(description="Sets up logging, which duplicates all subsequent output in a file")
-    public void enableLogging(
-            @Param(name="fileName", description="Name of the logfile") String filename
+    @Command(abbrev = "command.abbrev.enablelogging", description = "command.description.enablelogging", 
+    		header = "command.header.enablelogging", name = "command.name.enablelogging")
+    public void l(
+            @Param(name="param.name.enablelogging", description="param.description.enablelogging") String filename
             ) throws FileNotFoundException {
         
         log = new PrintStream(filename);
         loopCounter = 0;
     }
 
-    @Command(description="Turns off logging")
+    @Command(abbrev = "command.abbrev.disablelogging", description = "command.description.disablelogging", 
+    		header = "command.header.disablelogging", name = "command.name.disablelogging")
     public String disableLogging() {
         if (log != null) {
             log.close();

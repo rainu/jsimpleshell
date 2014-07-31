@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 
 /**
@@ -12,7 +13,7 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
  */
 public class ShellCommandParamSpec {
 
-    static ShellCommandParamSpec[] forMethod(Method theMethod) {
+    static ShellCommandParamSpec[] forMethod(Method theMethod, MessageResolver msgResolver) {
         Class[] paramTypes = theMethod.getParameterTypes();
         ShellCommandParamSpec[] result = new ShellCommandParamSpec[theMethod.getParameterTypes().length];
         Annotation[][] annotations = theMethod.getParameterAnnotations();
@@ -27,15 +28,31 @@ public class ShellCommandParamSpec {
             }
             if (paramAnnotation != null) {
                 assert !paramAnnotation.name().isEmpty() : "@Param.name mustn\'t be empty";
-                result[i] = new ShellCommandParamSpec(paramAnnotation.name(), paramTypes[i],
-                        paramAnnotation.description(), i);
+                
+                String name = resolveName(paramAnnotation, theMethod, msgResolver);
+                String desc = resolveDescription(paramAnnotation, theMethod, msgResolver);
+                
+                result[i] = new ShellCommandParamSpec(name, paramTypes[i], desc, i);
             } else {
                 result[i] = new ShellCommandParamSpec(String.format("p%d", i + 1), paramTypes[i], "", i);
             }
         }
         return result;
     }
-    private String name;
+    
+	private static String resolveName(Param annotation, Method method,
+			MessageResolver msgResolver) {
+
+		return msgResolver.resolveParamName(annotation, method);
+	}
+	
+	private static String resolveDescription(Param annotation, Method method,
+			MessageResolver msgResolver) {
+		
+		return msgResolver.resolveParamDescription(annotation, method);
+	}
+    
+	private String name;
     private String description;
     private int position;
     private Class valueClass;

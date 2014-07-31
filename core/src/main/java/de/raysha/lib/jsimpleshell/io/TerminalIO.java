@@ -18,6 +18,7 @@ import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -32,6 +33,7 @@ public class TerminalIO implements Input, Output {
 	private ConsoleReader console;
 	private PrintStream error;
 	private BufferedReader scriptReader = null;
+	private MessageResolver messageResolver;
 	
 	private static enum InputState { USER, SCRIPT }
     private InputState inputState = InputState.USER;
@@ -49,6 +51,11 @@ public class TerminalIO implements Input, Output {
 	
 	public ConsoleReader getConsole() {
 		return console;
+	}
+	
+	@Override
+	public void setMessageResolver(MessageResolver messageResolver) {
+		this.messageResolver = messageResolver;
 	}
 
 	@Override
@@ -150,9 +157,10 @@ public class TerminalIO implements Input, Output {
         inputState = InputState.USER;
     }
 	
-	@Command(abbrev = "rs", description="Reads commands from file")
+    @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
+    		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
-    		@Param(name="filename", description="Full file name of the script") 
+    		@Param(name="param.name.runscript", description="param.description.runscript") 
             String filename) throws FileNotFoundException {
 
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
@@ -207,6 +215,8 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void printlnErr(Object o) {
+		o = resolve(o);
+		
 		if (error == null) {
 			println("[ERROR] " + o);
 		} else {
@@ -215,6 +225,8 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void printErr(Object o) {
+		o = resolve(o);
+		
 		if (error == null) {
 			print("[ERROR] " + o);
 		} else {
@@ -223,6 +235,8 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void println(Object o) {
+		o = resolve(o);
+		
 		try {
 			console.println(String.valueOf(o));
 			console.flush();
@@ -232,11 +246,21 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void print(Object o) {
+		o = resolve(o);
+		
 		try {
 			console.print(String.valueOf(o));
 			console.flush();
 		} catch (IOException e) {
 			throw new Error(e);
 		}
+	}
+	
+	private Object resolve(Object o){
+		if(o instanceof String){
+			return messageResolver.resolveGeneralMessage((String)o);
+		}
+
+		return o;
 	}
 }

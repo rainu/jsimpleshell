@@ -27,9 +27,13 @@ import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
+import de.raysha.lib.jsimpleshell.handler.impl.CompositeMessageResolver;
+import de.raysha.lib.jsimpleshell.handler.impl.DefaultMessageResolver;
 import de.raysha.lib.jsimpleshell.io.Input;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
 import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
@@ -48,12 +52,13 @@ import de.raysha.lib.jsimpleshell.util.MultiMap;
  * @author ASG
  */
 public class Shell {
-
     private OutputBuilder outputBuilder;
     private Output output;
     private InputBuilder inputBuilder;
     private Input input;
     private String appName;
+    
+    private final CompositeMessageResolver messageResolver;
 
     public static class Settings {
         final Input input;
@@ -95,6 +100,8 @@ public class Shell {
                 addAuxHandler(handler, prefix);
             }
         }
+        
+        output.setMessageResolver(messageResolver);
     }
 
     /**
@@ -109,6 +116,11 @@ public class Shell {
     Shell(Settings s, CommandTable commandTable, List<String> path) {
         this.commandTable = commandTable;
         this.path = path;
+
+        this.messageResolver = new CompositeMessageResolver();
+        this.messageResolver.getChain().add(DefaultMessageResolver.getInstance());
+        this.commandTable.setMessageResolver(messageResolver);
+        
         setSettings(s);
         
         enableExitCommand();
@@ -228,6 +240,15 @@ public class Shell {
 		if (handler instanceof InputDependent) {
 			((InputDependent) handler).cliSetInput(inputBuilder);
 		}
+		if (handler instanceof MessageResolver) {
+			List<MessageResolver> chain = messageResolver.getChain();
+			
+			//the default message resolver should be always the latest
+			chain.add(chain.size() - 1, (MessageResolver)handler);
+		}
+		if (handler instanceof MessageResolverDependent) {
+			((MessageResolverDependent) handler).cliSetMessageResolver(messageResolver);
+		}
 	}
 
     private void addDeclaredMethods(Object handler, String prefix) throws SecurityException {
@@ -244,7 +265,8 @@ public class Shell {
     /**
      * Returns last thrown exception
      */
-    @Command(description="Returns last thrown exception") // Shell is self-manageable, isn't it?
+    @Command(abbrev = "command.abbrev.lastexception", description = "command.description.lastexception", 
+    		header = "command.header.lastexception", name = "command.name.lastexception") // Shell is self-manageable, isn't it?
     public Throwable getLastException() {
         return lastException;
     }
@@ -420,9 +442,10 @@ public class Shell {
      * Turns command execution time display on and off
      * @param displayTime true if do display, false otherwise
      */
-    @Command(description="Turns command execution time display on and off")
+    @Command(abbrev = "command.abbrev.displaytime", description = "command.description.displaytime",
+    		header = "command.header.displaytime", name = "command.name.displaytime")
     public void setDisplayTime(
-            @Param(name="do-display-time", description="true if do display, false otherwise")
+            @Param(name="param.name.displaytime", description="param.description.displaytime")
             boolean displayTime) {
         this.displayTime = displayTime;
     }
@@ -441,7 +464,8 @@ public class Shell {
 
     private class ExitCommand {
     	
-    	@Command(abbrev = "exit", description = "Exit the current shell.")
+    	@Command(abbrev = "command.abbrev.exit", description = "command.description.exit", 
+    			header = "command.header.exit", name = "command.name.exit")
     	public void exit() throws ExitException{
     		throw new ExitException();
     	}
