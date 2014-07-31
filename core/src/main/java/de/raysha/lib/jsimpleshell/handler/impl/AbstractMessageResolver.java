@@ -43,6 +43,11 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 	public String resolveParamName(Param param, Method annotatedMethod) {
 		return resolveMessage(param.name());	
 	}
+	
+	@Override
+	public String resolveGeneralMessage(String message) {
+		return resolveMessage(message);
+	}
 
 	/**
 	 * This method will be called if any message should be resolved.

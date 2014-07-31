@@ -19,6 +19,7 @@ import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
@@ -30,7 +31,8 @@ import de.raysha.lib.jsimpleshell.util.Strings;
  * @author ASG
  */
 public class ConsoleIO implements Input, Output, ShellManageable {
-
+	private MessageResolver messageResolver;
+	
     public ConsoleIO(BufferedReader in, PrintStream out, PrintStream err) {
         this.in = in;
         this.out = out;
@@ -47,6 +49,11 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     private PrintStream err;
 
     private int lastCommandOffset = 0;
+    
+    @Override
+    public void setMessageResolver(MessageResolver messageResolver) {
+    	this.messageResolver = messageResolver;
+    }
 
     public String readCommand(List<String> path) {
         try {
@@ -184,6 +191,8 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void print(Object x) {
+    	x = resolve(x);
+    	
         out.print(x);
         if (log != null) {
             log.print(x);
@@ -191,6 +200,8 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void println(Object x) {
+    	x = resolve(x);
+    	
         out.println(x);
         if (log != null) {
             log.println(x);
@@ -198,6 +209,8 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void printErr(Object x) {
+    	x = resolve(x);
+    	
         err.print(x);
         if (log != null) {
             log.print(x);
@@ -205,10 +218,20 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     }
 
     public void printlnErr(Object x) {
+    	x = resolve(x);
+    	
         err.println(x);
         if (log != null) {
             log.println(x);
         }
+    }
+    
+    private Object resolve(Object x){
+    	if(x instanceof String){
+    		return messageResolver.resolveGeneralMessage((String)x);
+    	}
+    	
+    	return x;
     }
 
     public void outputException(String input, TokenException error) {

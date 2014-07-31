@@ -18,6 +18,7 @@ import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -32,6 +33,7 @@ public class TerminalIO implements Input, Output {
 	private ConsoleReader console;
 	private PrintStream error;
 	private BufferedReader scriptReader = null;
+	private MessageResolver messageResolver;
 	
 	private static enum InputState { USER, SCRIPT }
     private InputState inputState = InputState.USER;
@@ -49,6 +51,11 @@ public class TerminalIO implements Input, Output {
 	
 	public ConsoleReader getConsole() {
 		return console;
+	}
+	
+	@Override
+	public void setMessageResolver(MessageResolver messageResolver) {
+		this.messageResolver = messageResolver;
 	}
 
 	@Override
@@ -208,6 +215,8 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void printlnErr(Object o) {
+		o = resolve(o);
+		
 		if (error == null) {
 			println("[ERROR] " + o);
 		} else {
@@ -216,6 +225,8 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void printErr(Object o) {
+		o = resolve(o);
+		
 		if (error == null) {
 			print("[ERROR] " + o);
 		} else {
@@ -224,6 +235,8 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void println(Object o) {
+		o = resolve(o);
+		
 		try {
 			console.println(String.valueOf(o));
 			console.flush();
@@ -233,11 +246,21 @@ public class TerminalIO implements Input, Output {
 	}
 
 	public void print(Object o) {
+		o = resolve(o);
+		
 		try {
 			console.print(String.valueOf(o));
 			console.flush();
 		} catch (IOException e) {
 			throw new Error(e);
 		}
+	}
+	
+	private Object resolve(Object o){
+		if(o instanceof String){
+			return messageResolver.resolveGeneralMessage((String)o);
+		}
+
+		return o;
 	}
 }

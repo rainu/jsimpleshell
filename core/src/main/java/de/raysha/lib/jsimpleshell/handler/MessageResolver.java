@@ -67,4 +67,12 @@ public interface MessageResolver {
 	 */
 	public String resolveParamName(Param param, Method annotatedMethod);
 	
+	/**
+	 * This method will be called if a general message should be resolved. For example: A general message can be the help-text and so on.
+	 * 
+	 * @param message The message(-key).
+	 * @return The resolved message. Otherwise the <b>given</b> message.
+	 */
+	public String resolveGeneralMessage(String message);
+	
 }

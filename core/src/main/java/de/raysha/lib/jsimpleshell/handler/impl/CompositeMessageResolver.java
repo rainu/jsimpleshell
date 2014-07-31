@@ -117,4 +117,18 @@ public class CompositeMessageResolver implements MessageResolver {
 		return value;
 	}
 
+	@Override
+	public String resolveGeneralMessage(String message) {
+		String value = message;
+		for(MessageResolver r : resolverChain){
+			String newValue = r.resolveGeneralMessage(message);
+			if(	(value == null && newValue != null) ||
+				(value != null && newValue != null && !value.equals(newValue))){
+				
+				return newValue;
+			}
+		}
+		return value;
+	}
+	
 }

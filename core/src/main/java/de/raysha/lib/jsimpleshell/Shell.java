@@ -99,6 +99,8 @@ public class Shell {
                 addAuxHandler(handler, prefix);
             }
         }
+        
+        output.setMessageResolver(messageResolver);
     }
 
     /**
