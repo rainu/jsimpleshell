@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.it;
 
 import static org.junit.Assert.*;
 
@@ -7,9 +7,11 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.raysha.lib.jsimpleshell.SilentShell.CommandResult;
+import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
+import de.raysha.lib.jsimpleshell.handler.impl.AbstractMessageResolver;
+import de.raysha.lib.jsimpleshell.it.SilentShell.CommandResult;
 
 public class L18nTest {
 	public class Commands {
@@ -19,7 +21,7 @@ public class L18nTest {
 		}
 	}
 	
-	public class MyMessageResolver {//implements MessageResolver {
+	public class MyMessageResolver extends AbstractMessageResolver {
 		
 		public String resolveMessage(String message){
 			return message.replace("{cmd.desc}", "Test-Description");
