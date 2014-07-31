@@ -150,9 +150,10 @@ public class TerminalIO implements Input, Output {
         inputState = InputState.USER;
     }
 	
-	@Command(abbrev = "rs", description="Reads commands from file")
+    @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
+    		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
-    		@Param(name="filename", description="Full file name of the script") 
+    		@Param(name="param.name.runscript", description="param.description.runscript") 
             String filename) throws FileNotFoundException {
 
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));

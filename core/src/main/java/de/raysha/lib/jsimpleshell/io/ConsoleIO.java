@@ -108,9 +108,10 @@ public class ConsoleIO implements Input, Output, ShellManageable {
         inputState = InputState.USER;
     }
 
-    @Command(description="Reads commands from file")
+    @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
+    		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
-            @Param(name="filename", description="Full file name of the script") 
+            @Param(name="param.name.runscript", description="param.description.runscript") 
                 String filename
             ) throws FileNotFoundException {
 
@@ -252,16 +253,18 @@ public class ConsoleIO implements Input, Output, ShellManageable {
         }
     }
 
-    @Command(description="Sets up logging, which duplicates all subsequent output in a file")
-    public void enableLogging(
-            @Param(name="fileName", description="Name of the logfile") String filename
+    @Command(abbrev = "command.abbrev.enablelogging", description = "command.description.enablelogging", 
+    		header = "command.header.enablelogging", name = "command.name.enablelogging")
+    public void l(
+            @Param(name="param.name.enablelogging", description="param.description.enablelogging") String filename
             ) throws FileNotFoundException {
         
         log = new PrintStream(filename);
         loopCounter = 0;
     }
 
-    @Command(description="Turns off logging")
+    @Command(abbrev = "command.abbrev.disablelogging", description = "command.description.disablelogging", 
+    		header = "command.header.disablelogging", name = "command.name.disablelogging")
     public String disableLogging() {
         if (log != null) {
             log.close();

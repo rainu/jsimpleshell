@@ -29,8 +29,8 @@ public class HelpCommandHandler implements ShellDependent {
         this.owner = theShell;
     }
     
-    @Command(description="List all commands",
-            header=COMMAND_LIST_HEADER)
+    @Command(abbrev = "command.abbrev.listall", description = "command.description.listall", 
+    		header = "command.header.listall", name = "command.name.listall")
     public List<String> listAll() {
         List<ShellCommand> commands = owner.getCommandTable().getCommandTable();
         List<String> result = new ArrayList<String>(commands.size());
@@ -40,8 +40,8 @@ public class HelpCommandHandler implements ShellDependent {
         return result;
     }
 
-    @Command(description="List all commands with no prefix",
-            header=COMMAND_LIST_HEADER)
+    @Command(abbrev = "command.abbrev.list", description = "command.description.list",
+    		header = "command.header.list", name = "command.name.list")
     public List<String> list() {
         List<ShellCommand> commands = owner.getCommandTable().getCommandTable();
         List<String> result = new ArrayList<String>(commands.size());
@@ -53,13 +53,12 @@ public class HelpCommandHandler implements ShellDependent {
         return result;
     }
     
-    @Command(description="Generates an HTML file with command descriptions.\n" +
-    "(Similar to output of ?list, but in HTML format).")
+    @Command(abbrev = "command.abbrev.generatehelp", description = "command.description.generatehelp",
+    		header = "command.header.generatehelp", name = "command.name.generatehelp")
     public String generateHTMLHelp(
-            @Param(name="file-name", description="Path to the file to save the table to.") 
+            @Param(name="param.name.generatehelp", description="param.description.generatehelp") 
             String fileName,
-            @Param(name="include-prefixed", description="Whether to include commands with prefix " +
-            "(usually system or advanced functionality).")
+            @Param(name="param.name.generatehelp.1", description="param.description.generatehelp.1")
             boolean includePrefixed) throws IOException {
 
         final String HTML_FORMAT = "<html><head><title>Auto-generated command reference file</title></head>" +
@@ -129,10 +128,10 @@ public class HelpCommandHandler implements ShellDependent {
                   // and Jakarta Commons is no good in case of Cliche: there be no dependendencies!
     }
             
-    @Command(description="List all available commands starting with given string",
-            header=COMMAND_LIST_HEADER)
+    @Command(abbrev = "command.abbrev.liststartwith", description = "command.description.liststartwith",
+    		header = "command.header.liststartwith", name = "command.name.liststartwith")
     public List<String> list(
-            @Param(name="startsWith", description="Pattern to show commands starting with") String startsWith) {
+            @Param(name="param.name.liststartwith", description="param.description.liststartwith") String startsWith) {
 
         List<ShellCommand> commands = owner.getCommandTable().getCommandTable();
         List<String> result = new ArrayList<String>(commands.size());
@@ -144,7 +143,8 @@ public class HelpCommandHandler implements ShellDependent {
         return result;
     }
 
-    @Command(description="Show info on using the UI")
+    @Command(abbrev = "command.abbrev.help", description = "command.description.help",
+    		header = "command.header.help", name = "command.name.help")
     public Object help() {
     	String helpText = "";
     	
@@ -223,9 +223,10 @@ public class HelpCommandHandler implements ShellDependent {
     	return -1;
 	}
 
-	@Command(description="Show detailed info on all commands with given name")
+	@Command(abbrev = "command.abbrev.helpdetail", description = "command.description.helpdetail", 
+			header = "command.header.helpdetail", name = "command.name.helpdetail")
     public Object help(
-            @Param(name="command-name", description="Command name you want help on") String commandName) {
+            @Param(name="param.name.helpdetail", description="param.description.helpdetail") String commandName) {
         List<ShellCommand> commands = owner.getCommandTable().commandsByName(commandName);
         StringBuilder result = new StringBuilder();
         for (ShellCommand command : commands) {

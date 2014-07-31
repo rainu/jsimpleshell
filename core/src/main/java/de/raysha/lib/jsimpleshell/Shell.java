@@ -259,7 +259,8 @@ public class Shell {
     /**
      * Returns last thrown exception
      */
-    @Command(description="Returns last thrown exception") // Shell is self-manageable, isn't it?
+    @Command(abbrev = "command.abbrev.lastexception", description = "command.description.lastexception", 
+    		header = "command.header.lastexception", name = "command.name.lastexception") // Shell is self-manageable, isn't it?
     public Throwable getLastException() {
         return lastException;
     }
@@ -435,9 +436,10 @@ public class Shell {
      * Turns command execution time display on and off
      * @param displayTime true if do display, false otherwise
      */
-    @Command(description="Turns command execution time display on and off")
+    @Command(abbrev = "command.abbrev.displaytime", description = "command.description.displaytime",
+    		header = "command.header.displaytime", name = "command.name.displaytime")
     public void setDisplayTime(
-            @Param(name="do-display-time", description="true if do display, false otherwise")
+            @Param(name="param.name.displaytime", description="param.description.displaytime")
             boolean displayTime) {
         this.displayTime = displayTime;
     }
@@ -456,7 +458,8 @@ public class Shell {
 
     private class ExitCommand {
     	
-    	@Command(abbrev = "exit", description = "Exit the current shell.")
+    	@Command(abbrev = "command.abbrev.exit", description = "command.description.exit", 
+    			header = "command.header.exit", name = "command.name.exit")
     	public void exit() throws ExitException{
     		throw new ExitException();
     	}
