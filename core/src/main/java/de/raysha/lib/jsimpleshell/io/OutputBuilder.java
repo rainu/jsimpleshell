@@ -1,5 +1,7 @@
 package de.raysha.lib.jsimpleshell.io;
 
+import de.raysha.lib.jsimpleshell.util.ColoredStringBuilder;
+
 /**
  * This builder allow to setting up and print a custom output.
  * 
@@ -48,7 +50,7 @@ public class OutputBuilder {
 	
 	public class OutputBuilder_ {
 		final boolean isError;
-		StringBuffer sb = new StringBuffer();
+		ColoredStringBuilder csb = new ColoredStringBuilder();
 		
 		private OutputBuilder_(boolean err) {
 			this.isError = err;
@@ -61,7 +63,7 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ normal(Object obj){
-			sb.append(obj);
+			csb.normal(obj);
 			
 			return this;
 		}
@@ -75,7 +77,7 @@ public class OutputBuilder {
 		public OutputBuilder_ black(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[30m" + obj + "\u001B[0m");
+			csb.black(obj);
 			
 			return this;
 		}
@@ -89,7 +91,7 @@ public class OutputBuilder {
 		public OutputBuilder_ red(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[31m" + obj + "\u001B[0m");
+			csb.red(obj);
 			
 			return this;
 		}
@@ -103,7 +105,7 @@ public class OutputBuilder {
 		public OutputBuilder_ green(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[32m" + obj + "\u001B[0m");
+			csb.green(obj);
 			
 			return this;
 		}
@@ -117,7 +119,7 @@ public class OutputBuilder {
 		public OutputBuilder_ yellow(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[33m" + obj + "\u001B[0m");
+			csb.yellow(obj);
 			
 			return this;
 		}
@@ -131,7 +133,7 @@ public class OutputBuilder {
 		public OutputBuilder_ blue(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[34m" + obj + "\u001B[0m");
+			csb.blue(obj);
 			
 			return this;
 		}
@@ -145,7 +147,7 @@ public class OutputBuilder {
 		public OutputBuilder_ magenta(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[35m" + obj + "\u001B[0m");
+			csb.magenta(obj);
 			
 			return this;
 		}
@@ -159,7 +161,7 @@ public class OutputBuilder {
 		public OutputBuilder_ cyan(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[36m" + obj + "\u001B[0m");
+			csb.cyan(obj);
 			
 			return this;
 		}
@@ -173,7 +175,7 @@ public class OutputBuilder {
 		public OutputBuilder_ white(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[37m" + obj + "\u001B[0m");
+			csb.white(obj);
 			
 			return this;
 		}
@@ -187,7 +189,7 @@ public class OutputBuilder {
 		public OutputBuilder_ blackBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[40m" + obj + "\u001B[0m");
+			csb.blackBG(obj);
 			
 			return this;
 		}
@@ -201,7 +203,7 @@ public class OutputBuilder {
 		public OutputBuilder_ redBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[41m" + obj + "\u001B[0m");
+			csb.redBG(obj);
 			
 			return this;
 		}
@@ -215,7 +217,7 @@ public class OutputBuilder {
 		public OutputBuilder_ greenBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[42m" + obj + "\u001B[0m");
+			csb.greenBG(obj);
 			
 			return this;
 		}
@@ -229,7 +231,7 @@ public class OutputBuilder {
 		public OutputBuilder_ yellowBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[43m" + obj + "\u001B[0m");
+			csb.yellowBG(obj);
 			
 			return this;
 		}
@@ -243,7 +245,7 @@ public class OutputBuilder {
 		public OutputBuilder_ blueBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[44m" + obj + "\u001B[0m");
+			csb.blueBG(obj);
 			
 			return this;
 		}
@@ -257,7 +259,7 @@ public class OutputBuilder {
 		public OutputBuilder_ magentaBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[45m" + obj + "\u001B[0m");
+			csb.magentaBG(obj);
 			
 			return this;
 		}
@@ -271,7 +273,7 @@ public class OutputBuilder {
 		public OutputBuilder_ cyanBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[46m" + obj + "\u001B[0m");
+			csb.cyanBG(obj);
 			
 			return this;
 		}
@@ -285,7 +287,7 @@ public class OutputBuilder {
 		public OutputBuilder_ whiteBG(Object obj){
 			if(!colorOut) return normal(obj);
 			
-			sb.append("\u001B[47m" + obj + "\u001B[0m");
+			csb.whiteBG(obj);
 			
 			return this;
 		}
@@ -295,9 +297,9 @@ public class OutputBuilder {
 		 */
 		public void println() {
 			if (isError) {
-				out.printlnErr(sb.toString());
+				out.printlnErr(csb.build());
 			} else {
-				out.println(sb.toString());
+				out.println(csb.build());
 			}
 		}
 
@@ -306,9 +308,9 @@ public class OutputBuilder {
 		 */
 		public void print() {
 			if (isError) {
-				out.printErr(sb.toString());
+				out.printErr(csb.build());
 			} else {
-				out.print(sb.toString());
+				out.print(csb.build());
 			}
 		}
 	}

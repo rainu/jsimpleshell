@@ -24,7 +24,9 @@ public class PromptBuilder {
 	}
 
 	/**
-	 * Build a {@link PromptElement} that looks like the given string.
+	 * Build a {@link PromptElement} that looks like the given string. If you want
+	 * to build a colored prompt, you can use the {@link ColoredStringBuilder} to build
+	 * a colored string.
 	 * 
 	 * @param prompt String representation of the prompt.
 	 * @return The {@link PromptElement} which render the given prompt.
