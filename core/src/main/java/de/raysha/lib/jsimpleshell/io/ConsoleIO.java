@@ -15,12 +15,14 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
 
+import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
+import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -55,9 +57,9 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     	this.messageResolver = messageResolver;
     }
 
-    public String readCommand(List<String> path) {
+    public String readCommand(List<PromptElement> path) {
         try {
-            String prompt = Strings.joinStrings(path, false, '/');
+            String prompt = PromptBuilder.joinPromptElements(path, false, '/');
             switch (inputState) {
                 case USER: 
                     return readUsersCommand(prompt);

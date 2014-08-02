@@ -7,6 +7,8 @@ package de.raysha.lib.jsimpleshell.io;
 
 import java.util.List;
 
+import de.raysha.lib.jsimpleshell.PromptElement;
+
 /**
  * Input provider for Shell.
  * Shell asks Input, "What does the user want to execute?", and Input reads and returns line from the user.
@@ -14,6 +16,6 @@ import java.util.List;
  */
 public interface Input {
 
-    String readCommand(List<String> path);
+    String readCommand(List<PromptElement> path);
 
 }

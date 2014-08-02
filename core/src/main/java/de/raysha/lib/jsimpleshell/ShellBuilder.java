@@ -24,6 +24,7 @@ import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
+import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 
 /**
  * This is a class that can be used to build a {@link Shell}.
@@ -31,7 +32,7 @@ import de.raysha.lib.jsimpleshell.util.MultiMap;
  * @author rainu
  */
 public class ShellBuilder {
-	private String prompt;
+	private PromptElement prompt;
 	private String appName = null;
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private Collection<Object> handlers = new LinkedList<Object>();
@@ -52,11 +53,22 @@ public class ShellBuilder {
 	/**
 	 * Create a new {@link ShellBuilder} instance with which one you can build a {@link Shell}.
 	 * 
-	 * @param prompt The promt for this shell.
+	 * @param prompt The prompt for this shell.
 	 * @return A new instance of {@link ShellBuilder}
 	 * @throws NullPointerException If the prompt is null.
 	 */
 	public static ShellBuilder shell(String prompt){
+		return shell(PromptBuilder.fromString(prompt));
+	}
+	
+	/**
+	 * Create a new {@link ShellBuilder} instance with which one you can build a {@link Shell}.
+	 * 
+	 * @param prompt The (complex) prompt for this shell.
+	 * @return A new instance of {@link ShellBuilder}
+	 * @throws NullPointerException If the prompt is null.
+	 */
+	public static ShellBuilder shell(PromptElement prompt){
 		if(prompt == null){
 			throw new NullPointerException("The prompt must not be null!");
 		}
@@ -71,12 +83,24 @@ public class ShellBuilder {
 	/**
 	 * Create a new {@link ShellBuilder} instance with which one you can build a Sub{@link Shell}.
 	 * 
-	 * @param subPrompt The sub-promt for this sub shell.
+	 * @param subPrompt The sub-prompt for this sub shell.
 	 * @param parent The parent {@link Shell} instance.
 	 * @return A new instance of {@link ShellBuilder}
 	 * @throws NullPointerException If the prompt is null.
 	 */
 	public static ShellBuilder subshell(String subPrompt, Shell parent){
+		return subshell(PromptBuilder.fromString(subPrompt), parent);
+	}
+	
+	/**
+	 * Create a new {@link ShellBuilder} instance with which one you can build a Sub{@link Shell}.
+	 * 
+	 * @param subPrompt The (complex) sub-prompt for this sub shell.
+	 * @param parent The parent {@link Shell} instance.
+	 * @return A new instance of {@link ShellBuilder}
+	 * @throws NullPointerException If the prompt is null.
+	 */
+	public static ShellBuilder subshell(PromptElement subPrompt, Shell parent){
 		if(subPrompt == null){
 			throw new NullPointerException("The prompt must not be null!");
 		}
@@ -349,7 +373,7 @@ public class ShellBuilder {
 	private Shell buildShell() {
 		TerminalIO io = new TerminalIO(console, error);
 
-        List<String> path = new ArrayList<String>(1);
+        List<PromptElement> path = new ArrayList<PromptElement>(1);
         path.add(prompt);
 
         MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
@@ -363,7 +387,7 @@ public class ShellBuilder {
 	}
 
 	private Shell buildSubShell() {
-		List<String> newPath = new ArrayList<String>(parent.getPath());
+		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
         newPath.add(prompt);
 
         Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers),
