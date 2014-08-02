@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.it;
 
 import static org.junit.Assert.*;
 
@@ -7,11 +7,11 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.raysha.lib.jsimpleshell.SilentShell.CommandResult;
+import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
+import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
-import de.raysha.lib.jsimpleshell.io.OutputDependent;
 
 public class ColorTest {
 	public class Commands implements OutputDependent{
@@ -28,31 +28,36 @@ public class ColorTest {
 		}
 	}
 	
-	SilentShell silentShell;
+	SilentShell shellInterface;
 	
 	@Before
 	public void setup() throws IOException{
 		ShellBuilder builder = ShellBuilder.shell("jss");
 		builder.addHandler(new Commands());
 		
-		silentShell = new SilentShell(builder);
+		shellInterface = new SilentShell(builder);
+		shellInterface.start();
 	}
 	
 	@Test
 	public void disableColor() throws IOException, CLIException{
-		silentShell.shell.disableColor();
+//		shellInterface.shell.disableColor();
 	
-		CommandResult result = silentShell.executeCommand("print");
+		shellInterface.executeCommand("print");
+		shellInterface.executeCommand("exit");
+		shellInterface.waitForShell();
 		
-		assertEquals("GREEN", result.getOut());
+		assertFalse(shellInterface.getOut().contains("\u001B[32mGREEN\u001B[0m"));
 	}
 	
 	@Test
 	public void enableColor() throws IOException, CLIException{
-		silentShell.shell.enableColor();
+//		shellInterface.shell.enableColor();
 	
-		CommandResult result = silentShell.executeCommand("print");
+		shellInterface.executeCommand("print");
+		shellInterface.executeCommand("exit");
+		shellInterface.waitForShell();
 		
-		assertEquals("\u001B[32mGREEN\u001B[0m", result.getOut());
+		assertTrue(shellInterface.getOut().contains("\u001B[32mGREEN\u001B[0m"));
 	}
 }
