@@ -1,11 +1,9 @@
 package de.raysha.lib.jsimpleshell.io;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -16,9 +14,10 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
 
+import jline.console.ConsoleReader;
+
 import org.apache.commons.io.FileUtils;
 
-import jline.console.ConsoleReader;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
@@ -26,7 +25,6 @@ import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
-import de.raysha.lib.jsimpleshell.it.MakroTest;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -210,6 +208,15 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		this.macroHome = homeDir;
 		
 		return null;
+	}
+	
+	@Command(abbrev = "command.abbrev.runmacro", description = "command.description.runmacro", 
+			header = "command.header.runmacro", name = "command.name.runmacro")
+	public void runMacro(
+			@Param(name = "param.name.runmacro", description = "param.description.runmacro") 
+			String name) throws IOException {
+		
+		runScript(new File(macroHome, name).getAbsolutePath());
 	}
     
 	@Command(abbrev = "command.abbrev.startrecord", description = "command.description.startrecord", 
