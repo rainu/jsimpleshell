@@ -2,6 +2,7 @@ package de.raysha.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
+import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -12,6 +13,8 @@ import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.io.InputBuilder;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
+import de.raysha.lib.jsimpleshell.util.ColoredStringBuilder;
+import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 
 /**
  * This class contains all Commands for the main shell.
@@ -70,7 +73,10 @@ public class MainShell implements ShellDependent, OutputDependent, InputDependen
     public void colorizedEcho() throws IOException {
     	final ColorizedEcho echoBuilder = new ColorizedEcho();
     	
-    	Shell subShell = ShellBuilder.subshell("cecho", shell)
+    	final String coloredPrompt = new ColoredStringBuilder().cyan("cecho").build();
+    	final PromptElement prompt = PromptBuilder.fromString(coloredPrompt);
+    	
+    	Shell subShell = ShellBuilder.subshell(prompt, shell)
 							.addHandler(echoBuilder)
 						.build();
 
