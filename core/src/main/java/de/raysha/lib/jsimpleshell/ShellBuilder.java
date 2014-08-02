@@ -45,6 +45,7 @@ public class ShellBuilder {
 	private boolean commandCompleterEnabled = true;
 	private boolean handleUserInterrupt = false;
 	private boolean disableExit = false;
+	private boolean colorOutput = true;
 	
 	private ShellBuilder(){ }
 	
@@ -184,6 +185,29 @@ public class ShellBuilder {
 	 */
 	public ShellBuilder setHandleUserInterrupt(boolean handleUserInterrupt) {
 		this.handleUserInterrupt = handleUserInterrupt;
+		
+		return this;
+	}
+	
+	/**
+	 * Disable color output. No colored text will be printed even if the
+	 * color-output-methods was called.
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder disableColor() {
+		this.colorOutput = false;
+		
+		return this;
+	}
+	
+	/**
+	 * Enable color output.
+	 * 
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder enableColor() {
+		this.colorOutput = true;
 		
 		return this;
 	}
@@ -360,6 +384,12 @@ public class ShellBuilder {
         
         if(disableExit){
         	shell.disableExitCommand();
+        }
+        
+        if(colorOutput){
+        	shell.enableColor();
+        }else{
+        	shell.disableColor();
         }
         
         if(macroHome != null){

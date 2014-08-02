@@ -7,9 +7,25 @@ package de.raysha.lib.jsimpleshell.io;
  */
 public class OutputBuilder {
 	private Output out;
+	private boolean colorOut = true;
 	
 	public OutputBuilder(Output out) {
 		this.out = out;
+	}
+	
+	/**
+	 * Disable color output. No colored text will be printed even if the
+	 * color-output-methods was called.
+	 */
+	public void disableColor() {
+		this.colorOut = false;
+	}
+	
+	/**
+	 * Enable color output.
+	 */
+	public void enableColor() {
+		this.colorOut = true;
 	}
 
 	/**
@@ -57,6 +73,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ black(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[30m" + obj + "\u001B[0m");
 			
 			return this;
@@ -69,6 +87,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ red(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[31m" + obj + "\u001B[0m");
 			
 			return this;
@@ -81,6 +101,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ green(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[32m" + obj + "\u001B[0m");
 			
 			return this;
@@ -93,6 +115,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ yellow(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[33m" + obj + "\u001B[0m");
 			
 			return this;
@@ -105,6 +129,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ blue(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[34m" + obj + "\u001B[0m");
 			
 			return this;
@@ -117,6 +143,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ magenta(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[35m" + obj + "\u001B[0m");
 			
 			return this;
@@ -129,6 +157,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ cyan(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[36m" + obj + "\u001B[0m");
 			
 			return this;
@@ -141,6 +171,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ white(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[37m" + obj + "\u001B[0m");
 			
 			return this;
@@ -153,6 +185,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ blackBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[40m" + obj + "\u001B[0m");
 			
 			return this;
@@ -165,6 +199,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ redBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[41m" + obj + "\u001B[0m");
 			
 			return this;
@@ -177,6 +213,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ greenBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[42m" + obj + "\u001B[0m");
 			
 			return this;
@@ -189,6 +227,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ yellowBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[43m" + obj + "\u001B[0m");
 			
 			return this;
@@ -201,6 +241,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ blueBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[44m" + obj + "\u001B[0m");
 			
 			return this;
@@ -213,6 +255,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ magentaBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[45m" + obj + "\u001B[0m");
 			
 			return this;
@@ -225,6 +269,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ cyanBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[46m" + obj + "\u001B[0m");
 			
 			return this;
@@ -237,6 +283,8 @@ public class OutputBuilder {
 		 * @return This {@link OutputBuilder_}.
 		 */
 		public OutputBuilder_ whiteBG(Object obj){
+			if(!colorOut) return normal(obj);
+			
 			sb.append("\u001B[47m" + obj + "\u001B[0m");
 			
 			return this;

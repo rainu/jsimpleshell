@@ -41,7 +41,7 @@ public class ColorTest {
 	
 	@Test
 	public void disableColor() throws IOException, CLIException{
-//		shellInterface.shell.disableColor();
+		shellInterface.shell.disableColor();
 	
 		shellInterface.executeCommand("print");
 		shellInterface.executeCommand("exit");
@@ -52,7 +52,7 @@ public class ColorTest {
 	
 	@Test
 	public void enableColor() throws IOException, CLIException{
-//		shellInterface.shell.enableColor();
+		shellInterface.shell.enableColor();
 	
 		shellInterface.executeCommand("print");
 		shellInterface.executeCommand("exit");
