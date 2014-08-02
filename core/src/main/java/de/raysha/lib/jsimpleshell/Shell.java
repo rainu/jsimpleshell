@@ -113,7 +113,7 @@ public class Shell {
      * @param commandTable CommandTable to store commands
      * @param path Shell's location: list of path elements.
      */
-    Shell(Settings s, CommandTable commandTable, List<String> path) {
+    Shell(Settings s, CommandTable commandTable, List<PromptElement> path) {
         this.commandTable = commandTable;
         this.path = path;
 
@@ -305,22 +305,22 @@ public class Shell {
         return lastException;
     }
 
-    private List<String> path;
+    private List<PromptElement> path;
 
     /**
-     * @return list of path elements, as it was passed in constructor
+     * @return list of prompt elements, as it was passed in constructor
      */
-    public List<String> getPath() {
+    public List<PromptElement> getPath() {
         return path;
     }
 
     /**
-     * Function to allow changing path at runtime; use with care to not break
+     * Function to allow changing prompt at runtime; use with care to not break
      * the semantics of sub-shells (if you're using them) or use to emulate
      * tree navigation without subshells
      * @param path New path
      */
-    public void setPath(List<String> path) {
+    public void setPath(List<PromptElement> path) {
         this.path = path;
     }
     

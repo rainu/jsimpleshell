@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
@@ -23,6 +24,7 @@ import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.util.FileUtils;
+import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -120,7 +122,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	}
 
 	@Override
-	public String readCommand(List<String> path) {
+	public String readCommand(List<PromptElement> path) {
 		try {
             String prompt = getPrompt(path);
             lastCommandOffset = prompt.length();
@@ -269,8 +271,8 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		}
 	}
     
-	private String getPrompt(List<String> path) {
-		return Strings.joinStrings(path, false, '/') + PROMPT_SUFFIX;
+	private String getPrompt(List<PromptElement> path) {
+		return PromptBuilder.joinPromptElements(path, false, '/') + PROMPT_SUFFIX;
 	}
 
 	private void output(Object obj, int indent, OutputConversionEngine oce) {
