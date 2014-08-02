@@ -13,7 +13,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 
-public class MakroTest {
+public class MacroTest {
 
 	SilentShell shellInterface;
 	File macroHome;
