@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.it;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 
 public class MakroTest {
