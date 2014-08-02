@@ -1,18 +1,14 @@
 package de.raysha.lib.jsimpleshell.it;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 
-import org.apache.commons.io.FileUtils;
-
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.ShellCommand;
-import de.raysha.lib.jsimpleshell.exception.CLIException;
 
 public class SilentShell {
 	public static class CommandResult{
@@ -38,6 +34,8 @@ public class SilentShell {
 	private ByteArrayOutputStream out;
 	private ByteArrayOutputStream err;
 	
+	private Thread commandLoop;
+	
 	public SilentShell(ShellBuilder builder) throws IOException {
 		this.shell = setup(builder);
 	}
@@ -60,39 +58,40 @@ public class SilentShell {
 		return builder.build();
 	}
 	
+	public void start(){
+		if(commandLoop == null){
+			commandLoop = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						shell.commandLoop();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			commandLoop.setName("Shell-Command-Loop");
+		}
+		
+		commandLoop.start();
+	}
+	
+	public void waitForShell(){
+		try {
+			commandLoop.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-	public CommandResult executeCommand(String cmd, String...arguments) throws IOException, CLIException {
+	public void executeCommand(String cmd, String...arguments) throws IOException {
 		StringBuilder sb = new StringBuilder(cmd);
 		for(String arg : arguments){
 			sb.append(" \"" + arg + "\"");
 		}
 		sb.append("\n");
 		
-		final PrintStream origOut = System.out;
-		final PrintStream origErr = System.err;
-
-		File tmpOut = null;
-		File tmpErr = null;
-		
-		try{
-			try{
-				tmpOut = File.createTempFile("jsimpleshell", ".out");
-				tmpOut.deleteOnExit();
-				tmpErr = File.createTempFile("jsimpleshell", ".err");
-				tmpErr.deleteOnExit();
-				System.setOut(new PrintStream(tmpOut));
-				System.setErr(new PrintStream(tmpErr));
-			}catch(IOException e){
-				e.printStackTrace();
-			}
-			
-			shell.processLine(sb.toString());
-		}finally{
-			System.setOut(origOut);
-			System.setErr(origErr);
-		}
-		
-		return readResult(tmpOut, tmpErr);
+		simulateUserInput(sb.toString());
 	}
 	
 	public String getLongCommandName(String cmd){
@@ -130,25 +129,11 @@ public class SilentShell {
 		in.flush();
 	}
 
-	private CommandResult readResult(File fOut, File fErr) {
-		CommandResult result = new CommandResult(
-				out.toString(), 
-				err.toString());
-		
-		try{
-			result.out = result.out + FileUtils.readFileToString(fOut);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		try{
-			result.err = result.err + FileUtils.readFileToString(fErr);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		
-		out.reset();
-		err.reset();
-		
-		return result;
+	public String getErr(){
+		return err.toString();
+	}
+	
+	public String getOut(){
+		return out.toString();
 	}
 }

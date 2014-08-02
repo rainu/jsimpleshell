@@ -13,7 +13,6 @@ import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.impl.AbstractMessageResolver;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
-import de.raysha.lib.jsimpleshell.it.SilentShell.CommandResult;
 
 public class L18nTest {
 	public class Commands implements OutputDependent {
@@ -57,29 +56,39 @@ public class L18nTest {
 		builder.addAuxHandler(new MyMessageResolver());
 		
 		shell = new SilentShell(builder);
+		shell.start();
 	}
 	
 	@Test
-	public void testResolvingCommand() throws IOException, CLIException{
-		CommandResult result = shell.executeCommand("?help", "test");
+	public void testResolvingCommand() throws IOException {
+		shell.executeCommand("?help", "test");
+		shell.executeCommand("exit");
 
-		assertTrue("The desciption was not resolved! " + result.getOut(),
-				result.getOut().contains("Test-Description"));
+		shell.waitForShell();
+		
+		assertTrue("The desciption was not resolved! " + shell.getOut(),
+				shell.getOut().contains("Test-Description"));
 	}
 	
 	@Test
 	public void testResolvingReturnValue() throws IOException, CLIException{
-		CommandResult result = shell.executeCommand("message");
+		shell.executeCommand("message");
+		shell.executeCommand("exit");
+		
+		shell.waitForShell();
 
-		assertTrue("The return value was not resolved! " + result.getOut(),
-				result.getOut().contains("Resolved-General-Message"));
+		assertTrue("The return value was not resolved! " + shell.getOut(),
+				shell.getOut().contains("Resolved-General-Message"));
 	}
 	
 	@Test
 	public void testResolvingOutput() throws IOException, CLIException{
-		CommandResult result = shell.executeCommand("output");
+		shell.executeCommand("output");
+		shell.executeCommand("exit");
+		
+		shell.waitForShell();
 
-		assertTrue("The return value was not resolved! " + result.getOut(),
-				result.getOut().contains("Resolved-General-Message"));
+		assertTrue("The return value was not resolved! " + shell.getOut(),
+				shell.getOut().contains("Resolved-General-Message"));
 	}
 }
