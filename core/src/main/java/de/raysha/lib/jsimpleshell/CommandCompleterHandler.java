@@ -10,6 +10,7 @@ import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
+import de.raysha.lib.jsimpleshell.completer.HelpCompleter;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 

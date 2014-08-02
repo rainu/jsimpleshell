@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.completer;
 
 import java.util.Collection;
 import java.util.List;

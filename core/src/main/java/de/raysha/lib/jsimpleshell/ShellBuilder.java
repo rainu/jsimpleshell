@@ -14,6 +14,7 @@ import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.FileArgumentCompleter;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
