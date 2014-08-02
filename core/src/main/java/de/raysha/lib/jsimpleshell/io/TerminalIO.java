@@ -19,11 +19,14 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import jline.console.ConsoleReader;
+import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.ShellManageable;
+import de.raysha.lib.jsimpleshell.it.MakroTest;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -32,7 +35,7 @@ import de.raysha.lib.jsimpleshell.util.Strings;
  * @author rainu
  *
  */
-public class TerminalIO implements Input, Output{
+public class TerminalIO implements Input, Output, ShellManageable {
 	private static final String PROMPT_SUFFIX = "> ";
 	
 	private ConsoleReader console;
@@ -169,7 +172,21 @@ public class TerminalIO implements Input, Output{
         }
         inputState = InputState.USER;
     }
+    
+    @Override
+    public void cliEnterLoop(Shell shell) {
+    	//nothing to do
+    }
 	
+    @Override
+    public void cliLeaveLoop(Shell shell) {
+    	if(inRecordMode()){
+    		try {
+				FileUtils.write(macroFile, macroRecorder.toString(), false);
+			} catch (IOException e) { }
+    	}
+    }
+
     @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
@@ -201,7 +218,7 @@ public class TerminalIO implements Input, Output{
 			@Param(name = "param.name.startrecord", description = "param.description.startrecord") 
 			String name) throws IOException {
 		
-		if (macroFile != null) {
+		if (inRecordMode()) {
 			return "message.macro.record.alreadystarted";
 		}
 		
@@ -235,6 +252,10 @@ public class TerminalIO implements Input, Output{
 
 		return "message.macro.record.stop";
     }
+	
+	private boolean inRecordMode() {
+		return macroFile != null;
+	}
 	
 	private void recordLine(String line) throws IOException {
 		if(macroRecorder != null){
