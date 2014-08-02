@@ -14,30 +14,41 @@ import de.raysha.lib.jsimpleshell.exception.CLIException;
 
 public class MakroTest {
 
-	SilentShell shell;
+	SilentShell shellInterface;
 	
 	@Before
 	public void setup() throws IOException{
 		ShellBuilder builder = ShellBuilder.shell("jss");
 		
-		shell = new SilentShell(builder);
+		shellInterface = new SilentShell(builder);
 	}
 	
 	@Test
 	public void recordMakro() throws IOException, CLIException{
-		File makro = File.createTempFile("jsimpleshell", ".makro");
-		makro.deleteOnExit();
-		
-		shell.executeCommand("start-record", makro.getAbsolutePath());
-		shell.executeCommand("?list");
-		shell.executeCommand("?list-all");
-		shell.executeCommand("unknownCommand");
-		shell.executeCommand("stop-record");
-		
-		String makroContent = FileUtils.readFileToString(makro);
-		String expectedContent = "?list\n?list-all\nunknownCommand\n";
-		
-		assertTrue("Makro wasn't created correctely! " + makroContent,
-				makroContent.endsWith(expectedContent));
+		File macroHome = File.createTempFile("jsimpleshell", ".macro");
+		try{
+			macroHome.delete();
+			macroHome.mkdirs();
+
+			shellInterface.shell.setMacroHome(macroHome);
+			shellInterface.start();
+			
+			shellInterface.executeCommand("!start-record", "myMacro");
+			shellInterface.executeCommand("?list");
+			shellInterface.executeCommand("?list-all");
+			shellInterface.executeCommand("unknownCommand");
+			shellInterface.executeCommand("!stop-record");
+			shellInterface.executeCommand("exit");
+			
+			shellInterface.waitForShell();
+			
+			String makroContent = FileUtils.readFileToString(new File(macroHome, "myMacro"));
+			String expectedContent = "?list\n?list-all\nunknownCommand\n";
+
+			assertTrue("Macro wasn't created correctely! " + makroContent,
+					makroContent.endsWith(expectedContent));
+		}finally{
+			FileUtils.deleteDirectory(macroHome);
+		}
 	}
 }

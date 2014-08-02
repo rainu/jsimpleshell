@@ -36,6 +36,7 @@ public class ShellBuilder {
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private Collection<Object> handlers = new LinkedList<Object>();
 	private File history;
+	private File macroHome;
 	private Shell parent;
 	private ConsoleReader console;
 	private OutputStream error = System.err;
@@ -260,6 +261,18 @@ public class ShellBuilder {
 		return this;
 	}
 	
+	/**
+	 * Sets the directory where the macros are stored. This must be an <b>existing directory</b>!
+	 * 
+	 * @param macroHome The new macro home directory.
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder setMacroHome(File macroHome){
+		this.macroHome = macroHome;
+		
+		return this;
+	}
+	
 	private void checkPrecondition() throws IOException {
 		if(console == null){
 			if(parent == null){
@@ -269,6 +282,10 @@ public class ShellBuilder {
 			}else{
 				throw new IllegalStateException("The parent shell seams to be not built with ShellBuilder!");
 			}
+		}
+		
+		if(macroHome != null && (!macroHome.exists() || !macroHome.isDirectory())){
+			throw new IllegalArgumentException("The macro home must be an existing directory!");
 		}
 	}
 	
@@ -343,6 +360,10 @@ public class ShellBuilder {
         
         if(disableExit){
         	shell.disableExitCommand();
+        }
+        
+        if(macroHome != null){
+        	shell.setMacroHome(macroHome);
         }
         
         for (Object h : handlers) {
