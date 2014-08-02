@@ -183,6 +183,26 @@ public class Shell {
 			}
 		}
 	}
+	
+	/**
+	 * This is only a delegate to {@link OutputBuilder#disableColor()}.
+	 * However, this method has the advantage that they effect the global
+	 * {@link OutputBuilder}. That means that you don't have to disable the
+	 * color on each time you get the {@link OutputBuilder} via {@link OutputDependent#cliSetOutput(OutputBuilder)}.
+	 */
+	public void disableColor() {
+		outputBuilder.disableColor();
+	}
+	
+	/**
+	 * This is only a delegate to {@link OutputBuilder#enableColor()}.
+	 * However, this method has the advantage that they effect the global
+	 * {@link OutputBuilder}. That means that you don't have to enable the
+	 * color on each time you get the {@link OutputBuilder} via {@link OutputDependent#cliSetOutput(OutputBuilder)}.
+	 */
+	public void enableColor() {
+		outputBuilder.enableColor();
+	}
 
     /**
      * Method for registering command hanlers (or providers?)
