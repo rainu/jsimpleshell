@@ -47,6 +47,7 @@ public class ColorTest {
 		shellInterface.executeCommand("exit");
 		shellInterface.waitForShell();
 		
+		assertTrue(shellInterface.getOut().contains("GREEN"));
 		assertFalse(shellInterface.getOut().contains("\u001B[32mGREEN\u001B[0m"));
 	}
 	
