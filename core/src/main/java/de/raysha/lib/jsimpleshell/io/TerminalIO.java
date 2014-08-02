@@ -1,6 +1,7 @@
 package de.raysha.lib.jsimpleshell.io;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,11 +15,14 @@ import java.util.Collection;
 import java.util.List;
 
 import jline.console.ConsoleReader;
+import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.ShellManageable;
+import de.raysha.lib.jsimpleshell.util.FileUtils;
 import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
@@ -27,13 +31,17 @@ import de.raysha.lib.jsimpleshell.util.Strings;
  * @author rainu
  *
  */
-public class TerminalIO implements Input, Output {
+public class TerminalIO implements Input, Output, ShellManageable {
 	private static final String PROMPT_SUFFIX = "> ";
 	
 	private ConsoleReader console;
 	private PrintStream error;
 	private BufferedReader scriptReader = null;
 	private MessageResolver messageResolver;
+
+	private File macroHome = new File("./");
+	private File macroFile;
+	private StringBuffer macroRecorder;
 	
 	private static enum InputState { USER, SCRIPT }
     private InputState inputState = InputState.USER;
@@ -125,7 +133,11 @@ public class TerminalIO implements Input, Output {
                     closeScript();
                 }
             }
-            return console.readLine(prompt);
+            
+            final String line = console.readLine(prompt);
+            recordLine(line);
+            
+            return line;
         } catch (IOException ex) {
             throw new Error(ex);
         }
@@ -156,7 +168,21 @@ public class TerminalIO implements Input, Output {
         }
         inputState = InputState.USER;
     }
+    
+    @Override
+    public void cliEnterLoop(Shell shell) {
+    	//nothing to do
+    }
 	
+    @Override
+    public void cliLeaveLoop(Shell shell) {
+    	if(inRecordMode()){
+    		try {
+				FileUtils.write(macroFile, macroRecorder.toString(), false);
+			} catch (IOException e) { }
+    	}
+    }
+
     @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
@@ -166,7 +192,83 @@ public class TerminalIO implements Input, Output {
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
         inputState = InputState.SCRIPT;
     }
+    
+	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome", 
+			header = "command.header.setmacrohome", name = "command.name.setmacrohome")
+	public String setMacroHome(
+			@Param(name = "param.name.setmacrohome", description = "param.description.setmacrohome") 
+			File homeDir) {
+		
+		if(!homeDir.exists() || !homeDir.isDirectory()){
+			return "message.macro.sethome.nodirectory";
+		}
+		
+		this.macroHome = homeDir;
+		
+		return null;
+	}
+	
+	@Command(abbrev = "command.abbrev.runmacro", description = "command.description.runmacro", 
+			header = "command.header.runmacro", name = "command.name.runmacro")
+	public void runMacro(
+			@Param(name = "param.name.runmacro", description = "param.description.runmacro") 
+			String name) throws IOException {
+		
+		runScript(new File(macroHome, name).getAbsolutePath());
+	}
+    
+	@Command(abbrev = "command.abbrev.startrecord", description = "command.description.startrecord", 
+			header = "command.header.startrecord", name = "command.name.startrecord")
+	public String startRecord(
+			@Param(name = "param.name.startrecord", description = "param.description.startrecord") 
+			String name) throws IOException {
+		
+		if (inRecordMode()) {
+			return "message.macro.record.alreadystarted";
+		}
+		
+		this.macroFile = new File(macroHome, name);
+		this.macroRecorder = new StringBuffer(getMacroHead());
 
+		return "message.macro.record.start";
+	}
+
+	private String getMacroHead() {
+		return (String)resolve("message.macro.record.head");
+	}
+
+	@Command(abbrev = "command.abbrev.stoprecord", description = "command.description.stoprecord", 
+			header = "command.header.stoprecord", name = "command.name.stoprecord")
+    public String stopRecord() throws IOException{
+		if (macroFile == null) {
+			return "message.macro.record.notstarted";
+		}
+		
+		//remove last line because this is the stop-record command
+		macroRecorder.replace(macroRecorder.length() - 1, macroRecorder.length(), ""); //remove last new line
+		macroRecorder.replace(macroRecorder.lastIndexOf("\n") + 1, macroRecorder.length(), "");
+		
+		try{
+			FileUtils.write(macroFile, macroRecorder.toString(), false);
+		}finally{
+			this.macroFile = null;
+			this.macroRecorder = null;
+		}
+
+		return "message.macro.record.stop";
+    }
+	
+	private boolean inRecordMode() {
+		return macroFile != null;
+	}
+	
+	private void recordLine(String line) throws IOException {
+		if(macroRecorder != null){
+			macroRecorder.append(line);
+			macroRecorder.append("\n");
+		}
+	}
+    
 	private String getPrompt(List<String> path) {
 		return Strings.joinStrings(path, false, '/') + PROMPT_SUFFIX;
 	}

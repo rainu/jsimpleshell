@@ -65,7 +65,7 @@ public class Shell {
         final Output output;
         private final MultiMap<String, Object> auxHandlers;
         private final boolean displayTime;
-
+        
         public Settings(Input input, Output output, MultiMap auxHandlers, boolean displayTime) {
             this.input = input;
             this.output = output;
@@ -260,6 +260,20 @@ public class Shell {
         }
     }
 
+    public void setMacroHome(File homeDir){
+    	if(homeDir == null){
+    		throw new NullPointerException("Home dir must not be null!");
+    	}
+    	
+    	if(!homeDir.exists() || !homeDir.isDirectory()){
+    		throw new IllegalArgumentException("The given file must exists and must be a directory!");
+    	}
+    	
+    	if(input instanceof TerminalIO){
+    		((TerminalIO) input).setMacroHome(homeDir);
+    	}
+    }
+    
     private Throwable lastException = null;
 
     /**
