@@ -46,24 +46,24 @@ public class FileCandidatesChooser implements CandidatesChooser {
 		}
 		
 		if(Type.DIRECTORY_ONLY.equals(spec.getType())){
-			filterDirectories(result);
+			filterDirectories(part.substring(0, index), result);
 		}
 		
 		return new Candidates(result, index);
 	}
 
-	private void filterDirectories(Set<String> result) {
+	private void filterDirectories(String part, Set<String> result) {
 		Iterator<String> iter = result.iterator();
 		while(iter.hasNext()){
 			String path = iter.next();
 			
-			if(!new File(path).isDirectory()){
+			if(!new File(part + path).isDirectory()){
 				iter.remove();
 			}
 		}
 	}
 
-	private boolean responsibleFor(ShellCommandParamSpec spec) {
+	protected boolean responsibleFor(ShellCommandParamSpec spec) {
 		return 	RESPONSIBLE_FOR.contains(spec.getValueClass().getName()) ||
 				RESPONSIBLE_FOR.contains(spec.getType());
 	}
