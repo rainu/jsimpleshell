@@ -10,6 +10,8 @@ import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
 import jline.console.completer.StringsCompleter;
+import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.ParameterCompleter;
 import de.raysha.lib.jsimpleshell.completer.HelpCompleter;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
@@ -97,6 +99,7 @@ class CommandCompleterHandler implements ShellManageable {
 		List<Completer> completer = new ArrayList<Completer>();
 		completer.add(new StringsCompleter(commandNames));
 		completer.add(new HelpCompleter(commandNames));
+		completer.add(new ParameterCompleter(shell.getCommandTable(), new FileCandidatesChooser()));
 		
 		for(Completer c : completer){
 			completerContainer.getCompleters().add(c);

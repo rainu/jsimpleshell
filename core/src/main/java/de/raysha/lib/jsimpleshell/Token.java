@@ -77,8 +77,7 @@ public class Token {
      * @see de.raysha.lib.jsimpleshell.Shell.Token
      * @see de.raysha.lib.jsimpleshell.Shell.escapeString
      */
-    /*package-private for tests*/
-    static List<Token> tokenize(final String input) {
+    public static List<Token> tokenize(final String input) {
         List<Token> result = new ArrayList<Token>();
         if (input == null) {
             return result;
