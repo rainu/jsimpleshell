@@ -17,7 +17,7 @@ Feature-List
 * Platform independent
 * Maven integration (artifacts are stored in maven central)
 * Masking input (helpful for password inputs)
-* Autocompletion (Commands and File-Pathes!)
+* Param type dependent autocompletion (Commands and File-Pathes are available by default)
 * All messages can be resolved (useful for l18n)
 * Recording macros
 
