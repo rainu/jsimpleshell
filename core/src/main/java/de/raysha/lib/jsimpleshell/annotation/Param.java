@@ -10,6 +10,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+
 /**
  * Annotation for parameters of Command-marked methods.
  * This annotation is of particular usefullness, because Java 5 Reflection doesn't have access
@@ -34,5 +36,12 @@ public @interface Param {
      * @return "Short description attribute" of the annotated parameter.
      */
     String description() default "";
+
+    /**
+     * Specify a custom type for the parameter. It can be used by a {@link CandidatesChooser}
+     * to determine the special type.
+     * @return The custom type for that parameter.
+     */
+    String type() default "";
 
 }
