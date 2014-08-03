@@ -1,17 +1,15 @@
 package de.raysha.lib.jsimpleshell.completer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
 import de.raysha.lib.jsimpleshell.CommandTable;
 import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import de.raysha.lib.jsimpleshell.Token;
+import de.raysha.lib.jsimpleshell.completer.CandidatesChooser.Candidates;
 
 /**
  * This {@link ParameterCompleter} is only active when the cursor is at an argument position after any command.
@@ -43,16 +41,20 @@ public class ParameterCompleter implements Completer {
 		List<ShellCommandParamSpec> possibleParameters = getPossibleCommandParams();
 		if(possibleParameters.isEmpty()) return -1;
 
-		Set<String> choosenCandidates = new HashSet<String>();
+		List<Candidates> possibleCandidates = new ArrayList<Candidates>();
 		for(ShellCommandParamSpec spec : possibleParameters){
-			Collection<String> c = candidatesChooser.chooseCandidates(spec, paramPart);
-			choosenCandidates.addAll(c);
+			Candidates c = candidatesChooser.chooseCandidates(spec, paramPart);
+			possibleCandidates.add(c);
 		}
 		
-		return complete(candidates, choosenCandidates);
+		return complete(candidates, possibleCandidates);
 	}
 
-	private int complete(List<CharSequence> candidates, Set<String> choosenCandidates) {
+	private int complete(List<CharSequence> candidates, List<Candidates> possibleCandidates) {
+		Candidates reduced = reducePossibleCandiates(possibleCandidates);
+		
+		if(reduced.getValues().isEmpty()) return -1;
+		
 		int startIndex = cursor;
 		for(int i = cursor - 1; i >= 0; i--){
 			if(buffer.charAt(i) == ' '){
@@ -60,11 +62,30 @@ public class ParameterCompleter implements Completer {
 				break;
 			}
 		}
+
+		candidates.addAll(reduced.getValues());
 		
-		int result = new StringsCompleter(choosenCandidates).complete(paramPart, cursor - startIndex, candidates);
-		result += startIndex + 1;
+		return startIndex + reduced.getIndex() + 1;
+	}
+
+	private Candidates reducePossibleCandiates(List<Candidates> possibleCandidates) {
+		//collect all candidates with the highest index
 		
-		return result;
+		int maxIndex = 0;
+		for(Candidates c : possibleCandidates){
+			if(c.getIndex() > maxIndex){
+				maxIndex = c.getIndex();
+			}
+		}
+		
+		Candidates reduced = new Candidates(new HashSet<String>(), maxIndex);
+		for(Candidates c : possibleCandidates){
+			if(c.getIndex() == maxIndex){
+				reduced.getValues().addAll(c.getValues());
+			}
+		}
+		
+		return reduced;
 	}
 
 	private List<ShellCommandParamSpec> getPossibleCommandParams() {

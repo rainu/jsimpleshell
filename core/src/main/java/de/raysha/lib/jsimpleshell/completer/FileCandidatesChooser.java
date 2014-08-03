@@ -2,15 +2,14 @@ package de.raysha.lib.jsimpleshell.completer;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import jline.console.completer.FileNameCompleter;
+import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 
 /**
  * This {@link CandidatesChooser} is responsible for completing file pathes.
@@ -34,14 +33,14 @@ public class FileCandidatesChooser implements CandidatesChooser {
 	private FileNameCompleter delegate = new FileNameCompleter();
 	
 	@Override
-	public Collection<String> chooseCandidates(ShellCommandParamSpec spec, String part) {
-		if(!responsibleFor(spec)) return Collections.emptyList();
-		
+	public Candidates chooseCandidates(ShellCommandParamSpec spec, String part) {
 		List<CharSequence> candidates = new ArrayList<CharSequence>();
-		
-		delegate.complete(part, part.length(), candidates);
-		
 		Set<String> result = new HashSet<String>();
+		
+		if(!responsibleFor(spec)) return new Candidates(result);
+		
+		final int index = delegate.complete(part, part.length(), candidates);
+		
 		for(CharSequence candidate : candidates){
 			result.add(candidate.toString().trim());
 		}
@@ -50,7 +49,7 @@ public class FileCandidatesChooser implements CandidatesChooser {
 			filterDirectories(result);
 		}
 		
-		return result;
+		return new Candidates(result, index);
 	}
 
 	private void filterDirectories(Set<String> result) {

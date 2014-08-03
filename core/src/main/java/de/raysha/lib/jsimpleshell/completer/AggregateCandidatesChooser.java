@@ -1,8 +1,6 @@
 package de.raysha.lib.jsimpleshell.completer;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
@@ -29,14 +27,15 @@ public class AggregateCandidatesChooser implements CandidatesChooser {
 	}
 	
 	@Override
-	public Collection<String> chooseCandidates(ShellCommandParamSpec spec, String part) {
-		Collection<String> candidates = new HashSet<String>();
-		
+	public Candidates chooseCandidates(ShellCommandParamSpec spec, String part) {
 		for(CandidatesChooser chooser : delegates){
-			candidates.addAll(chooser.chooseCandidates(spec, part));
+			Candidates candidates = chooser.chooseCandidates(spec, part);
+			if(candidates != null && !candidates.getValues().isEmpty()){
+				return candidates;
+			}
 		}
 		
-		return candidates;
+		return new Candidates(new ArrayList<String>());
 	}
 
 }
