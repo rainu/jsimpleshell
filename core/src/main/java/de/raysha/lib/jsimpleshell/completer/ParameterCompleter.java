@@ -33,6 +33,8 @@ public class ParameterCompleter implements Completer {
 	
 	@Override
 	public synchronized int complete(String buffer, int cursor, List<CharSequence> candidates) {
+		if(buffer == null || buffer.isEmpty()) return -1;
+		
 		this.buffer = buffer;
 		this.cursor = cursor;
 		this.token = Token.tokenize(buffer);

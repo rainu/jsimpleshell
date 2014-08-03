@@ -22,6 +22,8 @@ import java.util.List;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
@@ -59,6 +61,7 @@ public class Shell {
     private String appName;
     
     private final CompositeMessageResolver messageResolver;
+    final AggregateCandidatesChooser candidatesChooser;
 
     public static class Settings {
         final Input input;
@@ -120,6 +123,8 @@ public class Shell {
         this.messageResolver = new CompositeMessageResolver();
         this.messageResolver.getChain().add(DefaultMessageResolver.getInstance());
         this.commandTable.setMessageResolver(messageResolver);
+        
+        this.candidatesChooser = new AggregateCandidatesChooser();
         
         setSettings(s);
         
@@ -268,6 +273,9 @@ public class Shell {
 		}
 		if (handler instanceof MessageResolverDependent) {
 			((MessageResolverDependent) handler).cliSetMessageResolver(messageResolver);
+		}
+		if (handler instanceof CandidatesChooser) {
+			candidatesChooser.addCandidatesChooser((CandidatesChooser)handler);
 		}
 	}
 

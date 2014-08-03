@@ -18,11 +18,11 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 /**
  * This handler is responsible for de-/registraion of {@link Completer} to a {@link ConsoleReader}. 
- * With other words: this class is responsible for enabling command auto-completion.
+ * With other words: this class is responsible for enabling auto-completion.
  * 
  * @author rainu
  */
-class CommandCompleterHandler implements ShellManageable {
+class CompleterHandler implements ShellManageable {
 	/*
 	 * It is VERY important to use a WeakMap. Otherwise the ConsoleReader and/or the Shell instances can never be garbage collected!
 	 */
@@ -35,8 +35,8 @@ class CommandCompleterHandler implements ShellManageable {
 		if(shell.getSettings().input instanceof TerminalIO){
 			ConsoleReader console = ((TerminalIO)shell.getSettings().input).getConsole();
 
-			removePreviousCommandCompleter(shell, console);
-			addCommandNameCompleter(shell, console);
+			removePreviousCompleter(shell, console);
+			addCompleter(shell, console);
 		}
 	}
 
@@ -45,12 +45,12 @@ class CommandCompleterHandler implements ShellManageable {
 		if(shell.getSettings().input instanceof TerminalIO){
 			ConsoleReader console = ((TerminalIO)shell.getSettings().input).getConsole();
 			
-			removeCommandNameCompleter(shell, console);
-			restorePreviousCommandCompleter(shell, console);
+			removeCompleter(shell, console);
+			restorePreviousCompleter(shell, console);
 		}
 	}
 	
-	private void restorePreviousCommandCompleter(Shell shell, ConsoleReader console) {
+	private void restorePreviousCompleter(Shell shell, ConsoleReader console) {
 		if(!shellPrevCompleterRelation.containsKey(shell)){
 			return; //this is the root shell
 		}
@@ -63,7 +63,7 @@ class CommandCompleterHandler implements ShellManageable {
 		}
 	}
 
-	private void removePreviousCommandCompleter(Shell shell, ConsoleReader console) {
+	private void removePreviousCompleter(Shell shell, ConsoleReader console) {
 		AggregateCompleter completerContainer = aggregateCompleter.get(console);
 		if(completerContainer == null){
 			return; //this is the root shell
@@ -73,7 +73,7 @@ class CommandCompleterHandler implements ShellManageable {
 		completerContainer.getCompleters().clear();
 	}
 	
-	private void removeCommandNameCompleter(Shell shell, ConsoleReader console) {
+	private void removeCompleter(Shell shell, ConsoleReader console) {
 		if(aggregateCompleter.containsKey(console)){
 			for(Completer c : shellCompleterRelation.get(shell)){
 				aggregateCompleter.get(console).getCompleters().remove(c);
@@ -81,7 +81,7 @@ class CommandCompleterHandler implements ShellManageable {
 		}
 	}
 	
-	private void addCommandNameCompleter(Shell shell, ConsoleReader console) {
+	private void addCompleter(Shell shell, ConsoleReader console) {
 		if(!aggregateCompleter.containsKey(console)){
 			AggregateCompleter completer = new AggregateCompleter();
 			aggregateCompleter.put(console, completer);
@@ -99,7 +99,7 @@ class CommandCompleterHandler implements ShellManageable {
 		List<Completer> completer = new ArrayList<Completer>();
 		completer.add(new StringsCompleter(commandNames));
 		completer.add(new HelpCompleter(commandNames));
-		completer.add(new ParameterCompleter(shell.getCommandTable(), new FileCandidatesChooser()));
+		completer.add(new ParameterCompleter(shell.getCommandTable(), shell.candidatesChooser));
 		
 		for(Completer c : completer){
 			completerContainer.getCompleters().add(c);
