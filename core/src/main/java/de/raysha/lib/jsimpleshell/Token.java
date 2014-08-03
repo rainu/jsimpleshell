@@ -89,8 +89,11 @@ public class Token {
         final int STRINGDQ = 2;
         final int STRINGSQ = 3;
         final int COMMENT = 4;
+        final int ESCAPE = 5;
 
         int state = WHITESPACE;
+        int lastState = state;
+        
         char ch; // character in hand
         int tokenIndex = -1;
         StringBuilder token = new StringBuilder("");
@@ -113,6 +116,10 @@ public class Token {
                         tokenIndex = i;
                     } else if (ch == '#') {
                         state = COMMENT;
+                    } else if (ch == '\\' && i < input.length()-1) {
+                    	token.append(input.charAt(i+1));
+                    	tokenIndex = i;
+                    	i++;
                     } else {
                         state = WORD;
                         tokenIndex = i;
@@ -129,30 +136,17 @@ public class Token {
                     } else if (Character.isLetterOrDigit(ch) || ch == '_') {
                         token.append(ch); // and keep state
                     } else if (ch == '"') {
-                        if (i < input.length()-1 && input.charAt(i+1) == '"' ) {
-                            // Yes, it's somewhat wrong in terms of statemachine, but it's the
-                            // simplest and crearest way.
-                            token.append('"');
-                            i++;
-                            // and keep state.
-                        } else {
-                            state = STRINGDQ; // but don't append; a"b"c is the same as abc.
-                        }
+                    	state = STRINGDQ; // but don't append; a"b"c is the same as abc.
                     } else if (ch == '\'') {
-                        if (i < input.length()-1 && input.charAt(i+1) == '\'' ) {
-                            // Yes, it's somewhat wrong in terms of statemachine, but it's the
-                            // simplest and crearest way.
-                            token.append('\'');
-                            i++;
-                            // and keep state.
-                        } else {
-                            state = STRINGSQ; // but don't append; a"b"c is the same as abc.
-                        }
+                    	state = STRINGSQ; // but don't append; a"b"c is the same as abc.
                     } else if (ch == '#') {
                         // submit token
                         result.add(new Token(tokenIndex, token.toString()));
                         token.setLength(0);
                         state = COMMENT;
+                    } else if (ch == '\\') {
+                    	lastState = state;
+                    	state = ESCAPE;
                     } else {
                         // for now we do allow special chars in words
                         token.append(ch);
@@ -161,13 +155,10 @@ public class Token {
 
                 case STRINGDQ:
                     if (ch == '"') {
-                        if (i < input.length() - 1 && input.charAt(i+1) == '"') {
-                            token.append('"');
-                            i++;
-                            // and keep state
-                        } else {
-                            state = WORD;
-                        }
+                    	state = WORD;
+                    } else if (ch == '\\') {
+                    	lastState = state;
+                    	state = ESCAPE;
                     } else {
                         token.append(ch);
                     }
@@ -175,13 +166,10 @@ public class Token {
 
                 case STRINGSQ:
                     if (ch == '\'') {
-                        if (i < input.length() - 1 && input.charAt(i+1) == '\'') {
-                            token.append('\'');
-                            i++;
-                            // and keep state
-                        } else {
-                            state = WORD;
-                        }
+                    	state = WORD;
+                    } else if (ch == '\\') {
+                    	lastState = state;
+                    	state = ESCAPE;
                     } else {
                         token.append(ch);
                     }
@@ -190,6 +178,11 @@ public class Token {
                 case COMMENT:
                     // eat ch
                     break;
+                    
+                case ESCAPE:
+                	token.append(ch);
+                	state = lastState;
+                	break;
 
                 default:
                     assert false : "Unknown state in Shell.tokenize() state machine";
@@ -197,7 +190,7 @@ public class Token {
             }
         }
 
-        if (state == WORD || state == STRINGDQ || state == STRINGSQ) {
+        if (state == WORD || state == STRINGDQ || state == STRINGSQ || (state == WHITESPACE && !token.toString().trim().isEmpty())) {
             result.add(new Token(tokenIndex, token.toString()));
         }
 
@@ -214,7 +207,9 @@ public class Token {
         escaped.append('"');
         for (int i = 0; i < input.length(); i++) {
             if (input.charAt(i) == '"') {
-                escaped.append("\"\"");
+                escaped.append("\\\"");
+            } else if (input.charAt(i) == '\\') {
+                escaped.append("\\\\");
             } else {
                 escaped.append(input.charAt(i));
             }
