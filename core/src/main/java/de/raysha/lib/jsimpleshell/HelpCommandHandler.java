@@ -15,6 +15,7 @@ import java.util.List;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidateChooser;
+import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
@@ -65,7 +66,8 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
     @Command(abbrev = "command.abbrev.generatehelp", description = "command.description.generatehelp",
     		header = "command.header.generatehelp", name = "command.name.generatehelp")
     public String generateHTMLHelp(
-            @Param(name="param.name.generatehelp", description="param.description.generatehelp") 
+            @Param(name="param.name.generatehelp", description="param.description.generatehelp",
+            		type = FileCandidatesChooser.Type.FILES) 
             String fileName,
             @Param(name="param.name.generatehelp.1", description="param.description.generatehelp.1")
             boolean includePrefixed) throws IOException {
@@ -193,7 +195,8 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
 	@Command(abbrev = "command.abbrev.helpdetail", description = "command.description.helpdetail", 
 			header = "command.header.helpdetail", name = "command.name.helpdetail")
     public Object help(
-            @Param(name="param.name.helpdetail", description="param.description.helpdetail", type = CommandNameCandidateChooser.COMMAND_NAME_TYPE) 
+            @Param(name="param.name.helpdetail", description="param.description.helpdetail", 
+            		type = CommandNameCandidateChooser.COMMAND_NAME_TYPE) 
             String commandName) {
         List<ShellCommand> commands = owner.getCommandTable().commandsByName(commandName);
         StringBuilder result = new StringBuilder();

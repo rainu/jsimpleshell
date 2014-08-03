@@ -19,6 +19,7 @@ import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -188,7 +189,8 @@ public class TerminalIO implements Input, Output, ShellManageable {
     @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
-    		@Param(name="param.name.runscript", description="param.description.runscript") 
+    		@Param(name="param.name.runscript", description="param.description.runscript",
+    				type = FileCandidatesChooser.Type.FILES) 
             String filename) throws FileNotFoundException {
 
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
@@ -198,7 +200,8 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome", 
 			header = "command.header.setmacrohome", name = "command.name.setmacrohome")
 	public String setMacroHome(
-			@Param(name = "param.name.setmacrohome", description = "param.description.setmacrohome") 
+			@Param(name = "param.name.setmacrohome", description = "param.description.setmacrohome",
+					type = FileCandidatesChooser.Type.DIRECTORY_ONLY) 
 			File homeDir) {
 		
 		if(!homeDir.exists() || !homeDir.isDirectory()){
