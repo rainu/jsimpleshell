@@ -107,7 +107,9 @@ public class ParameterCompleter implements Completer {
 		final String cmdName = token.get(0).getString();
 		
 		for(ShellCommand cmd : commandTable.getCommandTable()){
-			if(cmdName.equals(cmd.getAbbreviation()) || cmdName.equals(cmd.getName())){
+			if(	cmdName.equals(cmd.getPrefix() + cmd.getAbbreviation()) || 
+				cmdName.equals(cmd.getPrefix() + cmd.getName())){
+				
 				if(paramIndex < cmd.getParamSpecs().length){
 					possibleParameters.add(cmd.getParamSpecs()[paramIndex]);
 				}

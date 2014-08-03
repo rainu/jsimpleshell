@@ -14,6 +14,7 @@ import java.util.List;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.CommandNameCandidateChooser;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
@@ -192,7 +193,8 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
 	@Command(abbrev = "command.abbrev.helpdetail", description = "command.description.helpdetail", 
 			header = "command.header.helpdetail", name = "command.name.helpdetail")
     public Object help(
-            @Param(name="param.name.helpdetail", description="param.description.helpdetail") String commandName) {
+            @Param(name="param.name.helpdetail", description="param.description.helpdetail", type = CommandNameCandidateChooser.COMMAND_NAME_TYPE) 
+            String commandName) {
         List<ShellCommand> commands = owner.getCommandTable().commandsByName(commandName);
         StringBuilder result = new StringBuilder();
         for (ShellCommand command : commands) {

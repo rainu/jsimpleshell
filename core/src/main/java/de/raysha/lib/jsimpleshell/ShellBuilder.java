@@ -14,6 +14,7 @@ import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.CommandNameCandidateChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
@@ -370,6 +371,7 @@ public class ShellBuilder {
 		shell.addMainHandler(shell, "!");
         shell.addMainHandler(new HelpCommandHandler(), "?");
         shell.addMainHandler(new CompleterHandler(), "");
+        shell.addMainHandler(new CommandNameCandidateChooser(), "");
         
         if(fileNameCompleterEnabled) {
         	shell.addMainHandler(new FileCandidatesChooser(), "");
