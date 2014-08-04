@@ -67,7 +67,7 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
     		header = "command.header.generatehelp", name = "command.name.generatehelp")
     public String generateHTMLHelp(
             @Param(name="param.name.generatehelp", description="param.description.generatehelp",
-            		type = FileCandidatesChooser.Type.FILES) 
+            		type = FileCandidatesChooser.FILES_TYPE) 
             String fileName,
             @Param(name="param.name.generatehelp.1", description="param.description.generatehelp.1")
             boolean includePrefixed) throws IOException {

@@ -18,22 +18,20 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
  *
  */
 public class FileCandidatesChooser implements CandidatesChooser {
-	public static class Type {
-		/**
-		 * If the parameter type is FILES only directories and files will be completed.
-		 */
-		public static final String FILES = "java.io.file_files";
-		
-		/**
-		 * If the parameter type is DIRECTORY_ONLY only directories will be completed.
-		 */
-		public static final String DIRECTORY_ONLY = "java.io.file_dirOnly";
-	}
+	/**
+	 * If the parameter type is FILES_TYPE only directories and files will be completed.
+	 */
+	public static final String FILES_TYPE = "java.io.file_files";
+	
+	/**
+	 * If the parameter type is DIRECTORY_ONLY_TYPE only directories will be completed.
+	 */
+	public static final String DIRECTORY_ONLY_TYPE = "java.io.file_dirOnly";
 	
 	private static final Set<String> RESPONSIBLE_FOR = Collections.unmodifiableSet(new HashSet<String>(){{
 		add(File.class.getName());
-		add(Type.FILES);
-		add(Type.DIRECTORY_ONLY);
+		add(FILES_TYPE);
+		add(DIRECTORY_ONLY_TYPE);
 	}});
 	
 	private FileNameCompleter delegate = new FileNameCompleter();
@@ -51,7 +49,7 @@ public class FileCandidatesChooser implements CandidatesChooser {
 			result.add(candidate.toString().trim());
 		}
 		
-		if(Type.DIRECTORY_ONLY.equals(spec.getType())){
+		if(DIRECTORY_ONLY_TYPE.equals(spec.getType())){
 			filterDirectories(part.substring(0, index), result);
 		}
 		

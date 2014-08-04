@@ -192,7 +192,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
     		@Param(name="param.name.runscript", description="param.description.runscript",
-    				type = FileCandidatesChooser.Type.FILES) 
+    				type = FileCandidatesChooser.FILES_TYPE) 
             String filename) throws FileNotFoundException {
 
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
@@ -203,7 +203,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			header = "command.header.setmacrohome", name = "command.name.setmacrohome")
 	public String setMacroHome(
 			@Param(name = "param.name.setmacrohome", description = "param.description.setmacrohome",
-					type = FileCandidatesChooser.Type.DIRECTORY_ONLY) 
+					type = FileCandidatesChooser.DIRECTORY_ONLY_TYPE) 
 			File homeDir) {
 		
 		if(!homeDir.exists() || !homeDir.isDirectory()){

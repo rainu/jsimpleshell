@@ -122,7 +122,7 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
             @Param(name="param.name.runscript", description="param.description.runscript", 
-            		type = FileCandidatesChooser.Type.FILES) String filename ) throws FileNotFoundException {
+            		type = FileCandidatesChooser.FILES_TYPE) String filename ) throws FileNotFoundException {
 
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
         inputState = InputState.SCRIPT;
@@ -282,7 +282,7 @@ public class ConsoleIO implements Input, Output, ShellManageable {
     		header = "command.header.enablelogging", name = "command.name.enablelogging")
     public void l(
             @Param(name="param.name.enablelogging", description="param.description.enablelogging",
-            		type = FileCandidatesChooser.Type.FILES) 
+            		type = FileCandidatesChooser.FILES_TYPE) 
             String filename ) throws FileNotFoundException {
         
         log = new PrintStream(filename);
