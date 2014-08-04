@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
+import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 public class MacroTest {
 
@@ -47,7 +48,7 @@ public class MacroTest {
 		
 		shellInterface.waitForShell();
 		
-		String makroContent = FileUtils.readFileToString(new File(macroHome, "myMacro"));
+		String makroContent = FileUtils.readFileToString(new File(macroHome, "myMacro" + TerminalIO.MACRO_SUFFIX));
 		String expectedContent = "?list\n?list-all\nunknownCommand\n";
 
 		assertTrue("Macro wasn't created correctely! " + makroContent,
@@ -64,7 +65,7 @@ public class MacroTest {
 		
 		shellInterface.waitForShell();
 		
-		String makroContent = FileUtils.readFileToString(new File(macroHome, "myMacro"));
+		String makroContent = FileUtils.readFileToString(new File(macroHome, "myMacro" + TerminalIO.MACRO_SUFFIX));
 		String expectedContent = "?list\n?list-all\nunknownCommand\nexit\n";
 
 		assertTrue("Macro wasn't created correctely! " + makroContent,
