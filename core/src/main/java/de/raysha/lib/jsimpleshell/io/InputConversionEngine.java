@@ -119,7 +119,10 @@ public class InputConversionEngine {
         } else if (aClass.equals(Float.class) || aClass.equals(Float.TYPE)) {
             return Float.parseFloat(string);
         } else if (aClass.equals(Boolean.class) || aClass.equals(Boolean.TYPE)) {
-            return Boolean.parseBoolean(string);
+        	if("true".equalsIgnoreCase(string)) return true;
+        	if("false".equalsIgnoreCase(string)) return false;
+        	
+        	throw new CLIException("Can't convert string to " + aClass.getName());
         } else if (aClass.equals(BigDecimal.class)) {
             return new BigDecimal(string);
         } else if (aClass.equals(BigInteger.class)) {

@@ -3,6 +3,7 @@ package de.raysha.lib.jsimpleshell.it;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,18 +15,43 @@ import de.raysha.lib.jsimpleshell.exception.CLIException;
 public class AmbiguousCommands {
 	public class Commands {
 		@Command
-		public Boolean set(Boolean value){
-			return value;
+		public String set(Boolean value){
+			return "Boolean: " + value;
 		}
 		
 		@Command
-		public Integer set(Integer value){
-			return value;
+		public String set(Integer value){
+			return "Integer: " + value;
 		}
 		
 		@Command
 		public String set(String value){
-			return value;
+			return "String: " + value;
+		}
+		
+		@Command
+		public String setVar(String...value){
+			return "String[]: " + Arrays.toString(value);
+		}
+		
+		@Command
+		public String setVar(Integer...value){
+			return "Integer[]: " + Arrays.toString(value);
+		}
+		
+		@Command
+		public String setVar(Boolean...value){
+			return "Boolean[]: " + Arrays.toString(value);
+		}
+		
+		@Command
+		public String complex(Boolean value, String sValue){
+			return "complex: " + value + ", " + sValue;
+		}
+		
+		@Command
+		public String complex(String sValue, Boolean value){
+			return "complex: " + sValue + ", " + value;
 		}
 	}
 	
@@ -49,7 +75,7 @@ public class AmbiguousCommands {
 		shellInterface.waitForShell();
 
 		assertEquals("", shellInterface.getErr());
-		assertEquals("true", shellInterface.getOut());
+		assertTrue(shellInterface.getOut().contains("Boolean: true"));
 	}
 	
 	@Test
@@ -60,7 +86,7 @@ public class AmbiguousCommands {
 		shellInterface.waitForShell();
 
 		assertEquals("", shellInterface.getErr());
-		assertEquals("130810", shellInterface.getOut());
+		assertTrue(shellInterface.getOut().contains("Integer: 130810"));
 	}
 	
 	@Test
@@ -71,6 +97,60 @@ public class AmbiguousCommands {
 		shellInterface.waitForShell();
 		
 		assertEquals("", shellInterface.getErr());
-		assertEquals("Rainu", shellInterface.getOut());
+		assertTrue(shellInterface.getOut().contains("String: Rainu"));
+	}
+	
+	@Test
+	public void setVarBoolean() throws IOException, CLIException{
+		shellInterface.executeCommand("set-var", "true", "false");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
+
+		assertEquals("", shellInterface.getErr());
+		assertTrue(shellInterface.getOut().contains("Boolean[]: [true, false]"));
+	}
+	
+	@Test
+	public void setVarInteger() throws IOException, CLIException{
+		shellInterface.executeCommand("set-var", "130810", "130490");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
+
+		assertEquals("", shellInterface.getErr());
+		assertTrue(shellInterface.getOut().contains("Integer[]: [130810, 130490]"));
+	}
+	
+	@Test
+	public void setVarString() throws IOException, CLIException{
+		shellInterface.executeCommand("set-var", "Rainu", "JSS");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
+		
+		assertEquals("", shellInterface.getErr());
+		assertTrue(shellInterface.getOut().contains("String[]: [Rainu, JSS]"));
+	}
+	
+	@Test
+	public void complex() throws IOException, CLIException{
+		shellInterface.executeCommand("complex", "String", "false");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
+		
+		assertEquals("", shellInterface.getErr());
+		assertTrue(shellInterface.getOut().contains("complex: String, false"));
+	}
+	
+	@Test
+	public void complexAmbiguous() throws IOException, CLIException{
+		shellInterface.executeCommand("complex", "true", "false");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
+		
+		assertTrue(shellInterface.getErr().contains("Ambiguous"));
 	}
 }

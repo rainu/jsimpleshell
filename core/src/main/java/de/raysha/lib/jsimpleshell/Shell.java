@@ -436,7 +436,7 @@ public class Shell {
         assert discriminator != null;
         assert ! discriminator.equals("");
 
-        ShellCommand commandToInvoke = commandTable.lookupCommand(discriminator, tokens);
+        ShellCommand commandToInvoke = commandTable.lookupCommand(discriminator, tokens, inputConverter);
 
         Class[] paramClasses = commandToInvoke.getMethod().getParameterTypes();
         Object[] parameters = inputConverter.convertToParameters(tokens, paramClasses,
