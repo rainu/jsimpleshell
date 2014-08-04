@@ -13,6 +13,7 @@ import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
@@ -400,6 +401,7 @@ public class ShellBuilder {
         shell.addMainHandler(new CompleterHandler(), "");
         shell.addMainHandler(new CommandNameCandidatesChooser(), "");
         shell.addMainHandler(new MacroNameCandidatesChooser(), "");
+        shell.addMainHandler(new BooleanCandidatesChooser(), "");
 	}
 	
 	/**
