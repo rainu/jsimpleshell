@@ -52,7 +52,7 @@ public class MainShell implements ShellDependent, OutputDependent, InputDependen
     @Command(abbrev = "e", description = "Print the argument to std-out.")
     //if you have not define a seperate name in @Command the method-name itself will be used as command name
     public String echo(
-    		@Param(name = "value", description = "The string which should be printed.")
+    		@Param(value = "value", description = "The string which should be printed.")
     		String...strings) {
     	
     	//the return value of a command-method will be printed out on std-out

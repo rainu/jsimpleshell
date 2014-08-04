@@ -66,10 +66,10 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
     @Command(abbrev = "command.abbrev.generatehelp", description = "command.description.generatehelp",
     		header = "command.header.generatehelp", name = "command.name.generatehelp")
     public String generateHTMLHelp(
-            @Param(name="param.name.generatehelp", description="param.description.generatehelp",
+            @Param(value="param.name.generatehelp", description="param.description.generatehelp",
             		type = FileCandidatesChooser.FILES_TYPE) 
             String fileName,
-            @Param(name="param.name.generatehelp.1", description="param.description.generatehelp.1")
+            @Param(value="param.name.generatehelp.1", description="param.description.generatehelp.1")
             boolean includePrefixed) throws IOException {
 
         final String HTML_FORMAT = "<html><head><title>Auto-generated command reference file</title></head>" +
@@ -142,7 +142,7 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
     @Command(abbrev = "command.abbrev.liststartwith", description = "command.description.liststartwith",
     		header = "command.header.liststartwith", name = "command.name.liststartwith")
     public List<String> list(
-            @Param(name="param.name.liststartwith", description="param.description.liststartwith") String startsWith) {
+            @Param(value="param.name.liststartwith", description="param.description.liststartwith") String startsWith) {
 
         List<ShellCommand> commands = owner.getCommandTable().getCommandTable();
         List<String> result = new ArrayList<String>(commands.size());
@@ -195,7 +195,7 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
 	@Command(abbrev = "command.abbrev.helpdetail", description = "command.description.helpdetail", 
 			header = "command.header.helpdetail", name = "command.name.helpdetail")
     public Object help(
-            @Param(name="param.name.helpdetail", description="param.description.helpdetail", 
+            @Param(value="param.name.helpdetail", description="param.description.helpdetail", 
             		type = CommandNameCandidatesChooser.COMMAND_NAME_TYPE) 
             String commandName) {
         List<ShellCommand> commands = owner.getCommandTable().commandsByName(commandName);

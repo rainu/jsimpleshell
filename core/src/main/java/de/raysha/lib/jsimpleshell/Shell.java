@@ -495,7 +495,7 @@ public class Shell {
     @Command(abbrev = "command.abbrev.displaytime", description = "command.description.displaytime",
     		header = "command.header.displaytime", name = "command.name.displaytime")
     public void setDisplayTime(
-            @Param(name="param.name.displaytime", description="param.description.displaytime")
+            @Param(value="param.name.displaytime", description="param.description.displaytime")
             boolean displayTime) {
         this.displayTime = displayTime;
     }

@@ -27,7 +27,7 @@ public class ShellCommandParamSpec {
                 }
             }
             if (paramAnnotation != null) {
-                assert !paramAnnotation.name().isEmpty() : "@Param.name mustn\'t be empty";
+                assert !paramAnnotation.value().isEmpty() : "@Param.value mustn\'t be empty";
                 
                 String name = resolveName(paramAnnotation, theMethod, msgResolver);
                 String desc = resolveDescription(paramAnnotation, theMethod, msgResolver);

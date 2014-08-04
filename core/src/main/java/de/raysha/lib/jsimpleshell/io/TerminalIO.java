@@ -191,7 +191,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
     @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
-    		@Param(name="param.name.runscript", description="param.description.runscript",
+    		@Param(value="param.name.runscript", description="param.description.runscript",
     				type = FileCandidatesChooser.FILES_TYPE) 
             String filename) throws FileNotFoundException {
 
@@ -202,7 +202,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome", 
 			header = "command.header.setmacrohome", name = "command.name.setmacrohome")
 	public String setMacroHome(
-			@Param(name = "param.name.setmacrohome", description = "param.description.setmacrohome",
+			@Param(value = "param.name.setmacrohome", description = "param.description.setmacrohome",
 					type = FileCandidatesChooser.DIRECTORY_ONLY_TYPE) 
 			File homeDir) {
 		
@@ -224,7 +224,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	@Command(abbrev = "command.abbrev.runmacro", description = "command.description.runmacro", 
 			header = "command.header.runmacro", name = "command.name.runmacro")
 	public void runMacro(
-			@Param(name = "param.name.runmacro", description = "param.description.runmacro",
+			@Param(value = "param.name.runmacro", description = "param.description.runmacro",
 					type = MacroNameCandidatesChooser.MACRO_NAME_TYPE) 
 			String name) throws IOException {
 		
@@ -234,7 +234,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	@Command(abbrev = "command.abbrev.startrecord", description = "command.description.startrecord", 
 			header = "command.header.startrecord", name = "command.name.startrecord")
 	public String startRecord(
-			@Param(name = "param.name.startrecord", description = "param.description.startrecord") 
+			@Param(value = "param.name.startrecord", description = "param.description.startrecord") 
 			String name) throws IOException {
 		
 		if (inRecordMode()) {

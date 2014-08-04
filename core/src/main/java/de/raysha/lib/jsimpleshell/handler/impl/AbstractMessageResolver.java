@@ -21,7 +21,7 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 
 	@Override
 	public String resolveCommandName(Command command, Method annotatedMethod) {
-		return resolveMessage(command.name());
+		return resolveMessage("".equals(command.value()) ? command.name() : command.value());
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 
 	@Override
 	public String resolveParamName(Param param, Method annotatedMethod) {
-		return resolveMessage(param.name());	
+		return resolveMessage(param.value());	
 	}
 	
 	@Override

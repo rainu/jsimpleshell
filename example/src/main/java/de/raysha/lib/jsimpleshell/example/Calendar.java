@@ -26,7 +26,7 @@ public class Calendar implements InputConverter {
 	
 	@Command(description = "Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this date.")
 	public long getTime(
-			@Param(name = "date")
+			@Param("date")
 			Date date){
 		
 		return date.getTime();

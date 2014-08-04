@@ -17,9 +17,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
-    /**
+
+	 /**
      * Allows to override default command name, which is derived from method's name
      * @return "" or null if default name is used, user-specified name otherwise.
+     */
+    String value() default ""; // if "" then Null is assumed.
+    
+    /**
+     * It is only a alternative for value.
+     * @see Command#value()
      */
     String name() default ""; // if "" then Null is assumed.
 

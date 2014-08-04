@@ -28,7 +28,7 @@ public @interface Param {
      * Recommendations: "number-of-nodes", "user-login", "coefficients".
      * @return The name ascribed to annotated method parameter.
      */
-    String name();
+    String value() default "";
 
     /**
      * One-sentence description of the parameter.

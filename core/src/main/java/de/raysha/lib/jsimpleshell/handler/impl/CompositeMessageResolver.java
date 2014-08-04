@@ -49,7 +49,7 @@ public class CompositeMessageResolver implements MessageResolver {
 
 	@Override
 	public String resolveCommandName(Command command, Method annotatedMethod) {
-		String value = command.name();
+		String value = "".equals(command.value()) ? command.name() : command.value();
 		for(MessageResolver r : resolverChain){
 			String newValue = r.resolveCommandName(command, annotatedMethod);
 			if(	(value == null && newValue != null) ||
@@ -105,7 +105,7 @@ public class CompositeMessageResolver implements MessageResolver {
 
 	@Override
 	public String resolveParamName(Param param, Method annotatedMethod) {
-		String value = param.name();
+		String value = param.value();
 		for(MessageResolver r : resolverChain){
 			String newValue = r.resolveParamName(param, annotatedMethod);
 			if(	(value == null && newValue != null) ||
