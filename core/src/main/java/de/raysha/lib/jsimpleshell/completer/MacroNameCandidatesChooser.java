@@ -28,7 +28,7 @@ public class MacroNameCandidatesChooser implements CandidatesChooser, ShellDepen
 	
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, final String part) {
-		if(responsibleFor(paramSpec)) return null;
+		if(!responsibleFor(paramSpec)) return null;
 		
 		String[] macros = shell.getMacroHome().list(new FilenameFilter() {
 			@Override
