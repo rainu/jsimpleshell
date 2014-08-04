@@ -302,6 +302,14 @@ public class Shell {
     	}
     }
     
+    public File getMacroHome(){
+    	if(input instanceof TerminalIO){
+    		return new File(((TerminalIO) input).getMacroHome());
+    	}
+    	
+    	return null;
+    }
+    
     private Throwable lastException = null;
 
     /**

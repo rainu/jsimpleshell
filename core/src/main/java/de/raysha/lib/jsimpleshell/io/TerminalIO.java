@@ -20,6 +20,7 @@ import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -35,6 +36,7 @@ import de.raysha.lib.jsimpleshell.util.Strings;
  *
  */
 public class TerminalIO implements Input, Output, ShellManageable {
+	public static final String MACRO_SUFFIX = ".jssm";
 	private static final String PROMPT_SUFFIX = "> ";
 	
 	private ConsoleReader console;
@@ -213,13 +215,20 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		return null;
 	}
 	
+	@Command(abbrev = "command.abbrev.getmacrohome", description = "command.description.getmacrohome", 
+			header = "command.header.getmacrohome", name = "command.name.getmacrohome")
+	public String getMacroHome() {
+		return macroHome == null ? "" : macroHome.getPath();
+	}
+	
 	@Command(abbrev = "command.abbrev.runmacro", description = "command.description.runmacro", 
 			header = "command.header.runmacro", name = "command.name.runmacro")
 	public void runMacro(
-			@Param(name = "param.name.runmacro", description = "param.description.runmacro") 
+			@Param(name = "param.name.runmacro", description = "param.description.runmacro",
+					type = MacroNameCandidatesChooser.MACRO_NAME_TYPE) 
 			String name) throws IOException {
 		
-		runScript(new File(macroHome, name).getAbsolutePath());
+		runScript(new File(macroHome, name + MACRO_SUFFIX).getAbsolutePath());
 	}
     
 	@Command(abbrev = "command.abbrev.startrecord", description = "command.description.startrecord", 
@@ -232,7 +241,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			return "message.macro.record.alreadystarted";
 		}
 		
-		this.macroFile = new File(macroHome, name);
+		this.macroFile = new File(macroHome, name + MACRO_SUFFIX);
 		this.macroRecorder = new StringBuffer(getMacroHead());
 
 		return "message.macro.record.start";
@@ -370,4 +379,5 @@ public class TerminalIO implements Input, Output, ShellManageable {
 
 		return o;
 	}
+
 }

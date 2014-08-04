@@ -16,6 +16,7 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
@@ -368,10 +369,7 @@ public class ShellBuilder {
 	
 	private void configureShell(Shell shell) {
 		shell.setAppName(appName);
-		shell.addMainHandler(shell, "!");
-        shell.addMainHandler(new HelpCommandHandler(), "?");
-        shell.addMainHandler(new CompleterHandler(), "");
-        shell.addMainHandler(new CommandNameCandidatesChooser(), "");
+		addDefaultHandler(shell);
         
         if(fileNameCompleterEnabled) {
         	shell.addMainHandler(new FileCandidatesChooser(), "");
@@ -394,6 +392,14 @@ public class ShellBuilder {
         for (Object h : handlers) {
             shell.addMainHandler(h, "");
         }
+	}
+
+	private void addDefaultHandler(Shell shell) {
+		shell.addMainHandler(shell, "!");
+        shell.addMainHandler(new HelpCommandHandler(), "?");
+        shell.addMainHandler(new CompleterHandler(), "");
+        shell.addMainHandler(new CommandNameCandidatesChooser(), "");
+        shell.addMainHandler(new MacroNameCandidatesChooser(), "");
 	}
 	
 	/**
