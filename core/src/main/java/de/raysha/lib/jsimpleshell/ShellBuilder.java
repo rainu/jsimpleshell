@@ -10,14 +10,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
-import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.OutputConverter;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
@@ -43,7 +47,6 @@ public class ShellBuilder {
 	private OutputStream error = System.err;
 	private boolean useForeignConsole = false;
 	private boolean fileNameCompleterEnabled = true;
-	private boolean commandCompleterEnabled = true;
 	private boolean handleUserInterrupt = false;
 	private boolean disableExit = false;
 	private boolean colorOutput = true;
@@ -136,6 +139,7 @@ public class ShellBuilder {
 	 * <li>Implements the {@link CommandHookDependent} interface to get the possibility to inform about command executions</li>
 	 * <li>Implements the {@link MessageResolver} interface to get the possibility to resolve {@link Command} / {@link Param}eter messages</li>
 	 * <li>Implements the {@link MessageResolverDependent} interface to get access to the used {@link MessageResolver}</li>
+	 * <li>Implements the {@link CandidatesChooser} interface to choose your own parameter candidates</li>
 	 * </ul>
 	 *
 	 * @param handler A command handler.
@@ -257,26 +261,6 @@ public class ShellBuilder {
 	}
 	
 	/**
-	 * Disable the command name completion mechanism! 
-	 * 
-	 * @return This {@link ShellBuilder}
-	 */
-	public ShellBuilder disableCommandCompleter(){
-		this.commandCompleterEnabled = false;
-		return this;
-	}
-	
-	/**
-	 * Enable the command name completion mechanism! 
-	 * 
-	 * @return This {@link ShellBuilder}
-	 */
-	public ShellBuilder enableCommandCompleter(){
-		this.commandCompleterEnabled = true;
-		return this;
-	}
-	
-	/**
 	 * Enable the exit command. By default it is enabled!
 	 * 
 	 * @return This {@link ShellBuilder}
@@ -339,20 +323,6 @@ public class ShellBuilder {
 	
 	private void configure() {
 		if(!useForeignConsole){
-			if(fileNameCompleterEnabled){
-				boolean alreadyAdded = false;
-				for(Completer c : console.getCompleters()){
-					if(c instanceof FileArgumentCompleter){
-						alreadyAdded = true;
-						break;
-					}
-				}
-				
-				if(!alreadyAdded){
-					console.addCompleter(new FileArgumentCompleter());
-				}
-			}
-			
 			if(history != null && !(console.getHistory() instanceof FileHistory)){
 				try {
 					console.setHistory(new FileHistory(history));
@@ -399,11 +369,10 @@ public class ShellBuilder {
 	
 	private void configureShell(Shell shell) {
 		shell.setAppName(appName);
-		shell.addMainHandler(shell, "!");
-        shell.addMainHandler(new HelpCommandHandler(), "?");
+		addDefaultHandler(shell);
         
-        if(commandCompleterEnabled){
-        	shell.addMainHandler(new CommandCompleterHandler(), "");
+        if(fileNameCompleterEnabled) {
+        	shell.addMainHandler(new FileCandidatesChooser(), "");
         }
         
         if(disableExit){
@@ -423,6 +392,14 @@ public class ShellBuilder {
         for (Object h : handlers) {
             shell.addMainHandler(h, "");
         }
+	}
+
+	private void addDefaultHandler(Shell shell) {
+		shell.addMainHandler(shell, "!");
+        shell.addMainHandler(new HelpCommandHandler(), "?");
+        shell.addMainHandler(new CompleterHandler(), "");
+        shell.addMainHandler(new CommandNameCandidatesChooser(), "");
+        shell.addMainHandler(new MacroNameCandidatesChooser(), "");
 	}
 	
 	/**

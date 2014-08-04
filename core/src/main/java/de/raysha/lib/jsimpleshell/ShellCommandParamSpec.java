@@ -31,10 +31,11 @@ public class ShellCommandParamSpec {
                 
                 String name = resolveName(paramAnnotation, theMethod, msgResolver);
                 String desc = resolveDescription(paramAnnotation, theMethod, msgResolver);
+                String type = paramAnnotation.type();
                 
-                result[i] = new ShellCommandParamSpec(name, paramTypes[i], desc, i);
+                result[i] = new ShellCommandParamSpec(name, paramTypes[i], desc, i, type);
             } else {
-                result[i] = new ShellCommandParamSpec(String.format("p%d", i + 1), paramTypes[i], "", i);
+                result[i] = new ShellCommandParamSpec(String.format("p%d", i + 1), paramTypes[i], "", i, "");
             }
         }
         return result;
@@ -56,6 +57,7 @@ public class ShellCommandParamSpec {
     private String description;
     private int position;
     private Class valueClass;
+    private String type;
 
     public Class getValueClass() {
         return valueClass;
@@ -72,12 +74,17 @@ public class ShellCommandParamSpec {
     public int getPosition() {
         return position;
     }
+    
+    public String getType(){
+    	return type;
+    }
 
-    public ShellCommandParamSpec(String name, Class valueClass, String description, int position) {
+    public ShellCommandParamSpec(String name, Class valueClass, String description, int position, String type) {
         super();
         this.name = name;
         this.description = description;
         this.position = position;
         this.valueClass = valueClass;
+        this.type = type;
     }
 }

@@ -7,7 +7,10 @@ package de.raysha.lib.jsimpleshell;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
@@ -22,7 +25,6 @@ public class TokenTest {
      */
     @Test
     public void testTokenize() {
-        System.out.println("tokenize");
         String[] cases = {
             "",
             "aSingleToken",
@@ -31,7 +33,7 @@ public class TokenTest {
             "Shell instance = new Shell(new ShellTest(), System.out",
             "dir \"E:\\ASG\\!dynamic\\projects\" \t-l 3492.9  ",
             "a b c ''",
-            " \"\" "
+            " \\\" "
         };
 
         int[] sizes = {
@@ -40,13 +42,28 @@ public class TokenTest {
 
         for (int i = 0; i < cases.length; i++) {
             List<Token> result = Token.tokenize(cases[i]);
-            System.out.println("case: " + cases[i]);
-            for (Token t : result) {
-                System.out.print(t + " ");
-            }
-            System.out.println();
-
             assertEquals(sizes[i], result.size());
+        }
+    }
+    
+    @Test
+    public void testTokenEscaping() {
+        Map<String, String> cases = new HashMap<String, String>();
+        cases.put("\"para\\\"m\"", "para\"m");
+        cases.put("'para\\'m'", "para'm");
+        cases.put("\\\"param ", "\"param");
+        cases.put("\\'param ", "'param");
+        cases.put("param\\\"", "param\"");
+        cases.put("param\\'", "param'");
+        cases.put(" \\\" ", "\"");
+        cases.put(" \\\' ", "\'");
+        cases.put("\\\" ", "\"");
+        cases.put("\\\' ", "\'");
+        
+        for (Entry<String, String> curCase : cases.entrySet()) {
+            List<Token> result = Token.tokenize(curCase.getKey());
+            System.out.println(curCase + "|\t" + result);
+            assertEquals(curCase.getValue(), result.get(0).getString());
         }
     }
 
@@ -55,20 +72,25 @@ public class TokenTest {
      */
     @Test
     public void testEscapeString() {
-        System.out.println("escapeString");
         String[] cases = {
-            "aSingleToken",
-            "a b c",
-            "an's g'ri # quotation test",
-            "Shell instance = new Shell(new ShellTest(), System.out",
-            "dir \"E:\\ASG\\!dynamic\\projects\" \t-l 3492.9  "
+                "aSingleToken",
+                "a b c",
+                "an's g'ri # quotation test",
+                "Shell instance = new Shell(new ShellTest(), System.out",
+                "dir \"E:\\ASG\\!dynamic\\projects\" \t-l 3492.9  ",
+                "param1 \"par\\\"am2\"",
+                "param1 'par\\'am2'",
+                "\\\"param",
+                "'param",
+                "'",
+                "\"",
+                "\\'",
+                "\\\""
         };
-
-        for (int i = 0; i < cases.length; i++) {
+        
+        for (int i=0; i < cases.length; i++) {
             String escaped = Token.escapeString(cases[i]);
             List<Token> result = Token.tokenize(escaped);
-            System.out.println("case: " + cases[i]);
-            System.out.println("escaped: " + escaped);
 
             assertEquals(1, result.size());
             assertEquals(cases[i], result.get(0).getString());
