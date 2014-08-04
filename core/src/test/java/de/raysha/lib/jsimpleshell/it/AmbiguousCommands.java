@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.it;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.raysha.lib.jsimpleshell.SilentShell.CommandResult;
+import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 
@@ -30,37 +30,47 @@ public class AmbiguousCommands {
 	}
 	
 	
-	SilentShell shell;
+	SilentShell shellInterface;
 	
 	@Before
 	public void setup() throws IOException{
 		ShellBuilder builder = ShellBuilder.shell("jss");
 		builder.addHandler(new Commands());
 		
-		shell = new SilentShell(builder);
+		shellInterface = new SilentShell(builder);
+		shellInterface.start();
 	}
 	
 	@Test
 	public void setBoolean() throws IOException, CLIException{
-		CommandResult result = shell.executeCommand("set", "true");
+		shellInterface.executeCommand("set", "true");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
 
-		assertEquals("", result.getErr());
-		assertEquals("true", result.getOut());
+		assertEquals("", shellInterface.getErr());
+		assertEquals("true", shellInterface.getOut());
 	}
 	
 	@Test
 	public void setInteger() throws IOException, CLIException{
-		CommandResult result = shell.executeCommand("set", "130810");
+		shellInterface.executeCommand("set", "130810");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
 
-		assertEquals("", result.getErr());
-		assertEquals("130810", result.getOut());
+		assertEquals("", shellInterface.getErr());
+		assertEquals("130810", shellInterface.getOut());
 	}
 	
 	@Test
 	public void setString() throws IOException, CLIException{
-		CommandResult result = shell.executeCommand("set", "Rainu");
-
-		assertEquals("", result.getErr());
-		assertEquals("Rainu", result.getOut());
+		shellInterface.executeCommand("set", "Rainu");
+		shellInterface.executeCommand("exit");
+		
+		shellInterface.waitForShell();
+		
+		assertEquals("", shellInterface.getErr());
+		assertEquals("Rainu", shellInterface.getOut());
 	}
 }
