@@ -14,7 +14,7 @@ import de.raysha.lib.jsimpleshell.handler.ShellDependent;
  * @author rainu
  *
  */
-public class CommandNameCandidateChooser implements CandidatesChooser, ShellDependent {
+public class CommandNameCandidatesChooser implements CandidatesChooser, ShellDependent {
 	public static final String COMMAND_NAME_TYPE = "de.raysha.lib.jsimpleshell.Shell_commandName";
 	
 	private Shell shell;
