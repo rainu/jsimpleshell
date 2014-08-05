@@ -31,9 +31,19 @@ public class CommandResult{
 	}
 
 	public boolean containsLine(String string) {
-		for(String line : getOut().split("\\\n")){
+		for(String line : getLines()){
 			if(line.matches(string)) return true;
 		}
 		return false;
+	}
+
+	private String[] lines;
+	
+	private String[] getLines() {
+		if(lines == null){
+			lines = getOut().split("\\\n");
+		}
+		
+		return lines;
 	}
 }

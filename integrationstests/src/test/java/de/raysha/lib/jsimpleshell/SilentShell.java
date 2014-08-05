@@ -58,7 +58,7 @@ public class SilentShell {
 				break;
 			}else{
 				try {
-					Thread.sleep(250);
+					Thread.sleep(25);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					break;
