@@ -140,9 +140,9 @@ public class CommandTable {
         // reduction
         List<ShellCommand> reducedTable = new ArrayList<ShellCommand>();
         for (ShellCommand cs : collectedTable) {
-            if (cs.getMethod().getParameterTypes().length == tokens.size()-1
-                    || (cs.getMethod().isVarArgs()
-                        && (cs.getMethod().getParameterTypes().length <= tokens.size()-1))) {
+            if (cs.getMethod().getParameterTypes().length == tokens.size()-1 || 
+            	(cs.getMethod().isVarArgs() && (cs.getMethod().getParameterTypes().length-1 <= tokens.size()-1))) {
+            	
                 reducedTable.add(cs);
             }
         }
