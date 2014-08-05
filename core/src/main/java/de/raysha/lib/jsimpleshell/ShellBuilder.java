@@ -16,6 +16,7 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.EnumCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
@@ -402,6 +403,7 @@ public class ShellBuilder {
         shell.addMainHandler(new CommandNameCandidatesChooser(), "");
         shell.addMainHandler(new MacroNameCandidatesChooser(), "");
         shell.addMainHandler(new BooleanCandidatesChooser(), "");
+        shell.addMainHandler(new EnumCandidatesChooser(), "");
 	}
 	
 	/**
