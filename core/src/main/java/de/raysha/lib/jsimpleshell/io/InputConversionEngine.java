@@ -107,7 +107,8 @@ public class InputConversionEngine {
     }
 
 
-    private static Object convertArgToElementaryType(String string, Class aClass) throws CLIException {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private static Object convertArgToElementaryType(String string, Class aClass) throws CLIException {
         if (aClass.equals(String.class) || aClass.isInstance(string)) {
             return string;
         } else if (aClass.equals(Integer.class) || aClass.equals(Integer.TYPE)) {
@@ -127,6 +128,12 @@ public class InputConversionEngine {
             return new BigDecimal(string);
         } else if (aClass.equals(BigInteger.class)) {
             return new BigInteger(string);
+        } else if (aClass.isEnum()){
+        	try{
+        		return Enum.valueOf(aClass, string);
+        	}catch(Exception e){
+        		throw new CLIException("Can't convert string to an enum-element.", e);
+        	}
         } else {
             try {
                 Constructor c = aClass.getConstructor(String.class);
