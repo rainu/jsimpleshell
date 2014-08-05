@@ -41,10 +41,6 @@ public abstract class IT {
 		shellInterface.simulateUserInput(userInput);
 	}
 	
-	public boolean isError(CommandResult result) {
-		return !result.getErr().isEmpty();
-	}
-
 	protected ShellBuilder buildShell() {
 		return ShellBuilder.shell("IT")
 					.addAuxHandler(new MainHandler());

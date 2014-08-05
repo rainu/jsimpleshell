@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.regex.Pattern;
 
 public class SilentShell {
 	final Shell shell;
@@ -14,6 +15,7 @@ public class SilentShell {
 	private ByteArrayOutputStream err;
 	
 	private final Thread commandLoop;
+	private final Pattern promtLinePattern = Pattern.compile("^IT.*\\>.*$");
 	
 	public SilentShell(ShellBuilder builder) throws IOException {
 		this.shell = setup(builder);
@@ -54,15 +56,24 @@ public class SilentShell {
 			err.append(getErr());
 			out.append(getOut());
 			
-			if(out.toString().trim().endsWith(">")){
+			String lastLine = null;
+			
+			int lastIndex = out.lastIndexOf("\n");
+			if(lastIndex < 0 && out.toString().startsWith("IT")){
+				lastLine = out.toString();
+			}else if(lastIndex >= 0){
+				lastLine = out.substring(lastIndex + 1).toString();
+			}
+			
+			if(lastLine != null && promtLinePattern.matcher(lastLine).matches()){
 				break;
-			}else{
-				try {
-					Thread.sleep(25);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					break;
-				}
+			}
+			
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
 			}
 		}
 		
