@@ -27,8 +27,8 @@ public class Input extends IT {
 		CommandResult result = waitForShell();
 		assertFalse(result.isError());
 		
-		assertTrue(result.containsLine("Enter: \\*\\*\\*\\*\\*"));
-		assertTrue(result.containsLine("Password: 01234"));
+		assertTrue(result.containsOutLine("Enter: \\*\\*\\*\\*\\*"));
+		assertTrue(result.containsOutLine("Password: 01234"));
 	}
 	
 	@Test
@@ -39,8 +39,8 @@ public class Input extends IT {
 		CommandResult result = waitForShell();
 		assertFalse(result.isError());
 		
-		assertTrue(result.containsLine("Enter: $"));
-		assertTrue(result.containsLine("Password: 01234"));
+		assertTrue(result.containsOutLine("Enter: $"));
+		assertTrue(result.containsOutLine("Password: 01234"));
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class Input extends IT {
 		CommandResult result = waitForShell();
 		assertFalse(result.isError());
 		
-		assertTrue(result.containsLine("Enter: 01234$"));
-		assertTrue(result.containsLine("Password: 01234"));
+		assertTrue(result.containsOutLine("Enter: 01234$"));
+		assertTrue(result.containsOutLine("Password: 01234"));
 	}
 }

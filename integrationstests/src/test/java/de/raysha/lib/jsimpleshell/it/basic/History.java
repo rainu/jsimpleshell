@@ -44,7 +44,7 @@ public class History extends IT {
 	
 	private void isLineShown(CommandResult result, String line) {
 		assertTrue("The command-line '" + line + " is not shown!" + result,
-				result.containsLine(".*" + line + ".*"));
+				result.containsOutLine(".*" + line + ".*"));
 	}
 
 	private void searchForward(String string) throws IOException {

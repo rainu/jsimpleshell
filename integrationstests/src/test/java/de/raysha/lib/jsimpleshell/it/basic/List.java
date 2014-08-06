@@ -71,13 +71,13 @@ public class List extends IT {
 	private void isCommandListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {
 		String line = buildRegexp(prefix, abbrev, name, parameters);
 		assertTrue("The command '" + prefix + name + "(" + Arrays.toString(parameters) + ")' is not listed!",
-				result.containsLine(line));
+				result.containsOutLine(line));
 	}
 	
 	private void isCommandNotListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {
 		String line = buildRegexp(prefix, abbrev, name, parameters);
 		assertFalse("The command '" + prefix + name + "(" + Arrays.toString(parameters) + ")' is listed!",
-				result.containsLine(line));
+				result.containsOutLine(line));
 	}
 
 	private String buildRegexp(String prefix, String abbrev, String name, String... parameters) {
