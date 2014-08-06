@@ -7,9 +7,9 @@ import java.io.IOException;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
-import de.raysha.lib.jsimpleshell.IT;
+import de.raysha.lib.jsimpleshell.IntegrationsTest;
 
-public class History extends IT {
+public class History extends IntegrationsTest {
 
 	@Test
 	public void moveThrough() throws IOException{

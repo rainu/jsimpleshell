@@ -8,10 +8,10 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
-import de.raysha.lib.jsimpleshell.IT;
+import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
 
-public class List extends IT {
+public class List extends IntegrationsTest {
 
 	@Test
 	public void list() throws IOException {

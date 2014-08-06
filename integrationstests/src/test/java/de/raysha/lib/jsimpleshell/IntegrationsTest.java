@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 
-public abstract class IT {
+public abstract class IntegrationsTest {
 
 	protected SilentShell shellInterface;
 	
