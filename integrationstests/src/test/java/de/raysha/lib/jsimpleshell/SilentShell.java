@@ -80,6 +80,26 @@ public class SilentShell {
 		return new CommandResult(out.toString(), err.toString());
 	}
 	
+	public CommandResult waitForShell(){
+		while(commandLoop.isAlive()){
+			String err = getErr();
+			String out = getOut();
+			
+			if(!err.isEmpty() || !out.isEmpty()){
+				return new CommandResult(out, err);
+			}
+			
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+		
+		return new CommandResult(getOut(), getErr());
+	}
+	
 	public void waitForShellExit(){
 		try {
 			commandLoop.join();

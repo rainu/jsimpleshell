@@ -41,7 +41,7 @@ public class CommandResult{
 	
 	private String[] getLines() {
 		if(lines == null){
-			lines = getOut().split("\\\n");
+			lines = getOut().replace("\r", "\n").split("\\\n");
 		}
 		
 		return lines;

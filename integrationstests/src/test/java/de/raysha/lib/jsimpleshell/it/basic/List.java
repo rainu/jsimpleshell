@@ -26,7 +26,6 @@ public class List extends IT {
 	public void listAll() throws IOException {
 		final CommandResult result = executeAndWaitForCommand("?list-all");
 		
-		
 		assertFalse(result.isError());
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandListed(result, "", "exit", "exit");

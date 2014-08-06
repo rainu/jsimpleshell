@@ -25,6 +25,10 @@ public abstract class IT {
 		return shellInterface.waitForShellCommandExec();
 	}
 
+	public CommandResult waitForShell() {
+		return shellInterface.waitForShell();
+	}
+
 	public void waitForShellExit() {
 		shellInterface.waitForShellExit();
 	}
@@ -47,8 +51,12 @@ public abstract class IT {
 		macroHome.delete(); macroHome.mkdirs();
 		macroHome.deleteOnExit();
 		
+		File historyFile = File.createTempFile("jss", ".history");
+		historyFile.deleteOnExit();
+		
 		return ShellBuilder.shell("IT")
 					.addAuxHandler(new MainHandler())
-					.setMacroHome(macroHome);
+					.setMacroHome(macroHome)
+					.setHistoryFile(historyFile);
 	}
 }
