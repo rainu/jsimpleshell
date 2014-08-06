@@ -1,5 +1,6 @@
 package de.raysha.lib.jsimpleshell;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.After;
@@ -41,8 +42,13 @@ public abstract class IT {
 		shellInterface.simulateUserInput(userInput);
 	}
 	
-	protected ShellBuilder buildShell() {
+	protected ShellBuilder buildShell() throws IOException {
+		File macroHome = File.createTempFile("jss", ".dir");
+		macroHome.delete(); macroHome.mkdirs();
+		macroHome.deleteOnExit();
+		
 		return ShellBuilder.shell("IT")
-					.addAuxHandler(new MainHandler());
+					.addAuxHandler(new MainHandler())
+					.setMacroHome(macroHome);
 	}
 }

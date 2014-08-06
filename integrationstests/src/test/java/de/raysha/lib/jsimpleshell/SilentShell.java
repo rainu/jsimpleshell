@@ -70,7 +70,7 @@ public class SilentShell {
 			}
 			
 			try {
-				Thread.sleep(50);
+				Thread.sleep(150);	//TODO: Sleep is a stupid solution :(
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				break;
@@ -104,10 +104,18 @@ public class SilentShell {
 	}
 
 	private String getErr(){
-		return err.toString();
+		try{
+			return err.toString();
+		}finally{
+			this.err.reset();
+		}
 	}
 	
 	private String getOut(){
-		return out.toString();
+		try{
+			return out.toString();
+		}finally{
+			this.out.reset();
+		}
 	}
 }
