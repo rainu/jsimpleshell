@@ -169,11 +169,11 @@ public class HelpCommandHandler implements ShellDependent, MessageResolverDepend
     	
     	helpText += messageResolver.resolveGeneralMessage("message.help.usage");
     	
-    	return helpText.replace("{project.author}", Info.getAuthor())
-    			.replace("{cliche.homepage}", Info.getClicheHomepage())
-    			.replace("{jline2.homepage}", Info.getJlineHomepage())
-    			.replace("{project.homepage}", Info.getProjectHomepage())
-    			.replace("{project.version}", Info.getVersion());
+    	return helpText.replace("{project.author}", String.valueOf(Info.getAuthor()))
+    			.replace("{cliche.homepage}", String.valueOf(Info.getClicheHomepage()))
+    			.replace("{jline2.homepage}", String.valueOf(Info.getJlineHomepage()))
+    			.replace("{project.homepage}", String.valueOf(Info.getProjectHomepage()))
+    			.replace("{project.version}", String.valueOf(Info.getVersion()));
     }
     
     private String getSmallLogo() {
