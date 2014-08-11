@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 public class SilentShell {
-	final Shell shell;
+	private final Shell shell;
 	
 	private PipedOutputStream in;
 	private ByteArrayOutputStream out;
@@ -121,6 +121,10 @@ public class SilentShell {
 	public void simulateUserInput(String userInput) throws IOException{
 		in.write(userInput.getBytes());
 		in.flush();
+	}
+	
+	public Shell getShell() {
+		return shell;
 	}
 
 	private String getErr(){

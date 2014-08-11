@@ -16,7 +16,6 @@ public class OutputCommands implements OutputDependent {
 
 	@Command
 	public void outColor(){
-		output.enableColor();
 		output.out().black("text").println();
     	output.out().blue("text").println();
     	output.out().cyan("text").println();
@@ -60,7 +59,6 @@ public class OutputCommands implements OutputDependent {
 	
 	@Command
 	public void errColor(){
-		output.enableColor();
 		output.err().black("text").println();
     	output.err().blue("text").println();
     	output.err().cyan("text").println();
