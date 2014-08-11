@@ -37,8 +37,13 @@ public class Macro extends IntegrationsTest {
 	}
 	
 	@Test
-	public void recordMakro() throws IOException, CLIException{
-		executeCommand("!start-record", "myMacro");
+	public void recordAndRunMacro() throws IOException, CLIException{
+		recordMacro("myMacro");
+		runMacro("myMacro");
+	}
+
+	private void recordMacro(String macroName) throws IOException {
+		executeCommand("!start-record", macroName);
 		executeCommand("?list");
 		executeCommand("?list-all");
 		executeCommand("unknownCommand");
@@ -46,11 +51,20 @@ public class Macro extends IntegrationsTest {
 		
 		waitForShell();
 		
-		String makroContent = FileUtils.readFileToString(new File(macroHome, "myMacro" + TerminalIO.MACRO_SUFFIX));
+		String makroContent = FileUtils.readFileToString(new File(macroHome, macroName + TerminalIO.MACRO_SUFFIX));
 		String expectedContent = "?list\n?list-all\nunknownCommand\n";
 
 		assertTrue("Macro wasn't created correctely! " + makroContent,
 				makroContent.endsWith(expectedContent));
+	}
+	
+	private void runMacro(String macroName) throws IOException {
+		CommandResult result = executeAndWaitForCommand("!run-macro", macroName);
+		
+		assertTrue(result.containsOutLine("IT\\> \\?list"));
+		assertTrue(result.containsOutLine("IT\\> \\?list-all"));
+		assertTrue(result.containsOutLine("IT\\> unknownCommand"));
+		assertFalse(result.containsOutLine("IT\\> !stop-record"));
 	}
 	
 	@Test
