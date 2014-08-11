@@ -17,4 +17,13 @@ public class SubShellCommands implements ShellDependent {
 	public void newSubShell() throws IOException{
 		ShellBuilder.subshell("sub", shell).build().commandLoop();
 	}
+	
+	@Command
+	public void subShellWithoutExit() throws IOException{
+		ShellBuilder.subshell("sub", shell)
+			.disableExitCommand()
+			.addHandler(new ExitAlternativeCommands())
+			.build()
+		.commandLoop();
+	}
 }
