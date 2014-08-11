@@ -130,6 +130,30 @@ public class ShellBuilder {
 	}
 
 	/**
+	 * Change the used {@link PromptElement}.
+	 * 
+	 * @param prompt The {@link PromptElement} that should be used.
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder setPrompt(PromptElement prompt) {
+		this.prompt = prompt;
+		
+		return this;
+	}
+	
+	/**
+	 * Change the used prompt.
+	 * 
+	 * @param prompt The prompt that should be used.
+	 * @return This {@link ShellBuilder}
+	 */
+	public ShellBuilder setPrompt(String prompt) {
+		this.prompt = PromptBuilder.fromString(prompt);
+		
+		return this;
+	}
+	
+	/**
 	 * Add a handler instance. The responsibility may be different:
 	 * <ul>
 	 * <li>Contains methods annotated with {@link Command} to provide commands</li>

@@ -11,7 +11,7 @@ import de.raysha.lib.jsimpleshell.PromptElement;
  * @author rainu
  *
  */
-public class PromptBuilder {
+public abstract class PromptBuilder {
 
 	public static String joinPromptElements(List<PromptElement> elements, boolean fixCase, char withChar){
 		List<String> rendered = new ArrayList<String>();
