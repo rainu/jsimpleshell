@@ -27,44 +27,44 @@ import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
 public class CommandTable {
 
 	private MessageResolver messageResolver;
-    private List<ShellCommand> commandTable = new ArrayList<ShellCommand>();
-    private CommandNamer namer;
+	private List<ShellCommand> commandTable = new ArrayList<ShellCommand>();
+	private CommandNamer namer;
 
-    public CommandTable(CommandNamer namer) {
-        this.namer = namer;
-    }
+	public CommandTable(CommandNamer namer) {
+		this.namer = namer;
+	}
 
-    public void setMessageResolver(MessageResolver messageResolver) {
+	public void setMessageResolver(MessageResolver messageResolver) {
 		this.messageResolver = messageResolver;
 	}
-    
-    public CommandNamer getNamer() {
-        return namer;
-    }
-    
-    public List<ShellCommand> getCommandTable() {
-        return Collections.unmodifiableList(commandTable);
-    }
-    
-    public void removeCommands(Object handler){
-    	Iterator<ShellCommand> iter = commandTable.iterator();
-    	while(iter.hasNext()){
-    		if(iter.next().getHandler() == handler){
-    			iter.remove();
-    		}
-    	}
-    }
 
-    public void addMethod(Method method, Object handler, String prefix) {
-        Command annotation = method.getAnnotation(Command.class);
-        assert method != null;
+	public CommandNamer getNamer() {
+		return namer;
+	}
 
-        String name = resolveName(annotation, method);
-        String abbrev = resolveAbbrev(annotation, method);
-        String desciption = resolveDescription(annotation, method);
-        String header = resolveHeader(annotation, method);
-        
-        ShellCommand command = new ShellCommand(handler, method, prefix, name, messageResolver);
+	public List<ShellCommand> getCommandTable() {
+		return Collections.unmodifiableList(commandTable);
+	}
+
+	public void removeCommands(Object handler){
+		Iterator<ShellCommand> iter = commandTable.iterator();
+		while(iter.hasNext()){
+			if(iter.next().getHandler() == handler){
+				iter.remove();
+			}
+		}
+	}
+
+	public void addMethod(Method method, Object handler, String prefix) {
+		Command annotation = method.getAnnotation(Command.class);
+		assert method != null;
+
+		String name = resolveName(annotation, method);
+		String abbrev = resolveAbbrev(annotation, method);
+		String desciption = resolveDescription(annotation, method);
+		String header = resolveHeader(annotation, method);
+
+		ShellCommand command = new ShellCommand(handler, method, prefix, name, messageResolver);
 
 		command.setAbbreviation(abbrev);
 		command.setDescription(desciption);
@@ -72,37 +72,37 @@ public class CommandTable {
 
 		commandTable.add(command);
 
-    }
+	}
 
-    private String resolveName(Command annotation, Method method) {
+	private String resolveName(Command annotation, Method method) {
 		String name = "";
-		
-    	if(annotation != null){
+
+		if(annotation != null){
 			name = messageResolver.resolveCommandName(annotation, method);
 		}
-    	if(name == null || "".equals(name)){
-    		name = namer.nameCommand(method).commandName;
-    	}
-    	
+		if(name == null || "".equals(name)){
+			name = namer.nameCommand(method).commandName;
+		}
+
 		return name;
 	}
 
 	private String resolveAbbrev(Command annotation, Method method) {
 		String abbrev = "";
-		
-    	if(annotation != null){
+
+		if(annotation != null){
 			abbrev = messageResolver.resolveCommandAbbrev(annotation, method);
 		}
-    	if(abbrev == null || "".equals(abbrev)){
-    		CommandNamer.NamingInfo autoNames = namer.nameCommand(method);
-    		for (String curAbbrev : autoNames.possibleAbbreviations) {
-                if (!doesCommandExist(abbrev + curAbbrev, method.getParameterTypes().length)) {
-                	abbrev = curAbbrev;
-                    break;
-                }
-            }
-    	}
-    	
+		if(abbrev == null || "".equals(abbrev)){
+			CommandNamer.NamingInfo autoNames = namer.nameCommand(method);
+			for (String curAbbrev : autoNames.possibleAbbreviations) {
+				if (!doesCommandExist(abbrev + curAbbrev, method.getParameterTypes().length)) {
+					abbrev = curAbbrev;
+					break;
+				}
+			}
+		}
+
 		return abbrev;
 	}
 
@@ -115,57 +115,57 @@ public class CommandTable {
 	}
 
 	private boolean doesCommandExist(String commandName, int arity) {
-        for (ShellCommand cmd : commandTable) {
-            if (cmd.canBeDenotedBy(commandName) && cmd.getArity() == arity) {
-                return true;
-            }
-        }
-        return false;
-    }
+		for (ShellCommand cmd : commandTable) {
+			if (cmd.canBeDenotedBy(commandName) && cmd.getArity() == arity) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 
-    public List<ShellCommand> commandsByName(String discriminator) {
-        List<ShellCommand> collectedTable = new ArrayList<ShellCommand>();
-        // collection
-        for (ShellCommand cs : commandTable) {
-            if (cs.canBeDenotedBy(discriminator)) {
-                collectedTable.add(cs);
-            }
-        }
-        return collectedTable;
-    }
+	public List<ShellCommand> commandsByName(String discriminator) {
+		List<ShellCommand> collectedTable = new ArrayList<ShellCommand>();
+		// collection
+		for (ShellCommand cs : commandTable) {
+			if (cs.canBeDenotedBy(discriminator)) {
+				collectedTable.add(cs);
+			}
+		}
+		return collectedTable;
+	}
 
-    public ShellCommand lookupCommand(String discriminator, List<Token> tokens, InputConversionEngine inputEngine) throws CLIException {
-        List<ShellCommand> collectedTable = commandsByName(discriminator);
-        // reduction
-        List<ShellCommand> reducedTable = new ArrayList<ShellCommand>();
-        for (ShellCommand cs : collectedTable) {
-            if (cs.getMethod().getParameterTypes().length == tokens.size()-1 || 
-            	(cs.getMethod().isVarArgs() && (cs.getMethod().getParameterTypes().length-1 <= tokens.size()-1))) {
-            	
-                reducedTable.add(cs);
-            }
-        }
-        // selection
-        if (collectedTable.size() == 0) {
-            throw new CommandNotFoundException(discriminator);
-        } else if (reducedTable.size() == 0) {
-            throw new CommandNotFoundException(discriminator, tokens.size()-1, false);
-        } else if (reducedTable.size() > 1) {
-        	ShellCommand resolved = lookupAmbiguous(tokens, reducedTable, inputEngine);
-        	if(resolved == null){
-        		throw new CommandNotFoundException(discriminator, tokens.size()-1, true);
-        	}
-        	
-        	return resolved;
-        } else {
-            return reducedTable.get(0);
-        }
-    }
+	public ShellCommand lookupCommand(String discriminator, List<Token> tokens, InputConversionEngine inputEngine) throws CLIException {
+		List<ShellCommand> collectedTable = commandsByName(discriminator);
+		// reduction
+		List<ShellCommand> reducedTable = new ArrayList<ShellCommand>();
+		for (ShellCommand cs : collectedTable) {
+			if (cs.getMethod().getParameterTypes().length == tokens.size()-1 ||
+				(cs.getMethod().isVarArgs() && (cs.getMethod().getParameterTypes().length-1 <= tokens.size()-1))) {
+
+				reducedTable.add(cs);
+			}
+		}
+		// selection
+		if (collectedTable.size() == 0) {
+			throw new CommandNotFoundException(discriminator);
+		} else if (reducedTable.size() == 0) {
+			throw new CommandNotFoundException(discriminator, tokens.size()-1, false);
+		} else if (reducedTable.size() > 1) {
+			ShellCommand resolved = lookupAmbiguous(tokens, reducedTable, inputEngine);
+			if(resolved == null){
+				throw new CommandNotFoundException(discriminator, tokens.size()-1, true);
+			}
+
+			return resolved;
+		} else {
+			return reducedTable.get(0);
+		}
+	}
 
 	private ShellCommand lookupAmbiguous(List<Token> tokens, List<ShellCommand> reducedTable, InputConversionEngine inputEngine) {
 		sortPossibleCommands(reducedTable);
-		
+
 		removeInvalid(tokens, reducedTable, inputEngine);
 		if(reducedTable.size() == 1){
 			return reducedTable.get(0);
@@ -175,16 +175,16 @@ public class CommandTable {
 		if(reducedTable.size() == 1){
 			return reducedTable.get(0);
 		}
-		
+
 		return null;
 	}
-	
+
 	private void removeWithString(List<ShellCommand> reducedTable) {
-		
+
 		Iterator<ShellCommand> iter = reducedTable.iterator();
 		while(iter.hasNext()){
 			ShellCommand cmd = iter.next();
-			
+
 			if(containsString(cmd.getMethod().getParameterTypes())){
 				iter.remove();
 			}
@@ -193,39 +193,39 @@ public class CommandTable {
 
 	private void removeInvalid(List<Token> tokens,
 			List<ShellCommand> reducedTable, InputConversionEngine inputEngine) {
-		
+
 		Iterator<ShellCommand> iter = reducedTable.iterator();
 		while(iter.hasNext()){
 			ShellCommand cmd = iter.next();
-			
+
 			try{
-				inputEngine.convertToParameters(tokens, 
-						cmd.getMethod().getParameterTypes(), 
+				inputEngine.convertToParameters(tokens,
+						cmd.getMethod().getParameterTypes(),
 						cmd.getMethod().isVarArgs());
 			}catch(Exception e){
 				iter.remove();
 			}
 		}
 	}
-	
+
 	private void sortPossibleCommands(List<ShellCommand> commands){
 		Collections.sort(commands, new Comparator<ShellCommand>() {
 			@Override
 			public int compare(ShellCommand o1, ShellCommand o2) {
 				Class[] types1 = o1.getMethod().getParameterTypes();
 				Class[] types2 = o2.getMethod().getParameterTypes();
-				
+
 				if(!containsString(types1) && containsString(types2)){
 					return -1;
 				}else if(containsString(types1) && !containsString(types2)){
 					return 1;
 				}
-				
+
 				return 0;
 			}
 		});
 	}
-	
+
 	private boolean containsString(Class[] types) {
 		for(Class type : types){
 			if(type == String.class || type == String[].class) return true;

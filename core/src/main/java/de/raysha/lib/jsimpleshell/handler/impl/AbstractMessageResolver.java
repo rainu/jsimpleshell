@@ -7,9 +7,9 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 /**
- * This {@link MessageResolver} don't care about the message source. 
+ * This {@link MessageResolver} don't care about the message source.
  * This resolver handles all message the same.
- * 
+ *
  * @author rainu
  */
 public abstract class AbstractMessageResolver implements MessageResolver {
@@ -41,9 +41,9 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 
 	@Override
 	public String resolveParamName(Param param, Method annotatedMethod) {
-		return resolveMessage(param.value());	
+		return resolveMessage(param.value());
 	}
-	
+
 	@Override
 	public String resolveGeneralMessage(String message) {
 		return resolveMessage(message);
@@ -51,7 +51,7 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 
 	/**
 	 * This method will be called if any message should be resolved.
-	 * 
+	 *
 	 * @param msg The current message value.
 	 * @return The resolved message. Otherwise the <b>given</b> message.
 	 */

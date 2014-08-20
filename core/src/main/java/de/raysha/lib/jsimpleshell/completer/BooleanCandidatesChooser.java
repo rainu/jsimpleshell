@@ -8,7 +8,7 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 
 /**
  * This {@link CandidatesChooser} is responsible for auto complete boolean values (true/false).
- * 
+ *
  * @author rainu
  */
 public class BooleanCandidatesChooser implements CandidatesChooser {
@@ -16,7 +16,7 @@ public class BooleanCandidatesChooser implements CandidatesChooser {
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
 		if(!responsibleFor(paramSpec)) return null;
-		
+
 		List<String> values = new ArrayList<String>(2);
 		values.add("true");
 		values.add("false");
@@ -27,7 +27,7 @@ public class BooleanCandidatesChooser implements CandidatesChooser {
 				iter.remove();
 			}
 		}
-		
+
 		return new Candidates(values);
 	}
 

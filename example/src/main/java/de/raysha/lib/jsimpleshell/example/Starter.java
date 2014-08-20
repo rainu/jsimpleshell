@@ -13,14 +13,14 @@ public class Starter {
 								.addHandler(new MainShell())
 								.addHandler(new Calendar())	//this handler is also a InputTypeConverter
 							.build();
-		
+
 		//print help text
 		shell.processLine("?help");
-		
+
 		if(args.length > 0){
 			shell.runScript(new File(args[0]));
 		}
-	
+
 		shell.commandLoop();
 	}
 }

@@ -14,26 +14,26 @@ import de.raysha.lib.jsimpleshell.Token;
  * @author ASG
  */
 public class TokenException extends CLIException {
-    private Token token;
+	private Token token;
 
-    public Token getToken() {
-        return token;
-    }
+	public Token getToken() {
+		return token;
+	}
 
-    public TokenException(Token token) {
-        super();
-        this.token = token;
-    }
-    public TokenException(Token token, String message) {
-        super(message);
-        this.token = token;
-    }
-    public TokenException(Token token, Throwable cause) {
-        super(cause);
-        this.token = token;
-    }
-    public TokenException(Token token, String message, Throwable cause) {
-        super(message, cause);
-        this.token = token;
-    }
+	public TokenException(Token token) {
+		super();
+		this.token = token;
+	}
+	public TokenException(Token token, String message) {
+		super(message);
+		this.token = token;
+	}
+	public TokenException(Token token, Throwable cause) {
+		super(cause);
+		this.token = token;
+	}
+	public TokenException(Token token, String message, Throwable cause) {
+		super(message, cause);
+		this.token = token;
+	}
 }

@@ -12,15 +12,15 @@ package de.raysha.lib.jsimpleshell.handler;
  * @author ASG
  */
 public interface InputConverter {
-    /**
-     * String-to-someClass conversion method
-     * May throw any exception if string is considered invalid for given class;
-     * must do nothing but return null if doesn't recognize the toClass.
-     * @param original String to be converted
-     * @param toClass Class to be converted to
-     * @return Object of the class toClass or <strong>null</strong>, if don't know how to convert to given class
-     *
-     * @see de.raysha.lib.jsimpleshell.Shell
-     */
-    Object convertInput(String original, Class toClass) throws Exception;
+	/**
+	 * String-to-someClass conversion method
+	 * May throw any exception if string is considered invalid for given class;
+	 * must do nothing but return null if doesn't recognize the toClass.
+	 * @param original String to be converted
+	 * @param toClass Class to be converted to
+	 * @return Object of the class toClass or <strong>null</strong>, if don't know how to convert to given class
+	 *
+	 * @see de.raysha.lib.jsimpleshell.Shell
+	 */
+	Object convertInput(String original, Class toClass) throws Exception;
 }

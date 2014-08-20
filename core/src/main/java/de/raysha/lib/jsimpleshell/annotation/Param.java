@@ -22,26 +22,26 @@ import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Param {
-    /**
-     * Parameter name.
-     * Should (1) reflect the original Java parameter name, (2) be short and descriptive to the user.
-     * Recommendations: "number-of-nodes", "user-login", "coefficients".
-     * @return The name ascribed to annotated method parameter.
-     */
-    String value() default "";
+	/**
+	 * Parameter name.
+	 * Should (1) reflect the original Java parameter name, (2) be short and descriptive to the user.
+	 * Recommendations: "number-of-nodes", "user-login", "coefficients".
+	 * @return The name ascribed to annotated method parameter.
+	 */
+	String value() default "";
 
-    /**
-     * One-sentence description of the parameter.
-     * It is recommended that you always set it.
-     * @return "Short description attribute" of the annotated parameter.
-     */
-    String description() default "";
+	/**
+	 * One-sentence description of the parameter.
+	 * It is recommended that you always set it.
+	 * @return "Short description attribute" of the annotated parameter.
+	 */
+	String description() default "";
 
-    /**
-     * Specify a custom type for the parameter. It can be used by a {@link CandidatesChooser}
-     * to determine the special type.
-     * @return The custom type for that parameter.
-     */
-    String type() default "";
+	/**
+	 * Specify a custom type for the parameter. It can be used by a {@link CandidatesChooser}
+	 * to determine the special type.
+	 * @return The custom type for that parameter.
+	 */
+	String type() default "";
 
 }

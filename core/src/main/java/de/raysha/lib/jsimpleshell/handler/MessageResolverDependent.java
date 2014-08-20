@@ -9,7 +9,7 @@ public interface MessageResolverDependent {
 
 	/**
 	 * This method pass a {@link MessageResolver}.
-	 * 
+	 *
 	 * @param resolver The {@link MessageResolver} instance.
 	 */
 	public void cliSetMessageResolver(MessageResolver resolver);

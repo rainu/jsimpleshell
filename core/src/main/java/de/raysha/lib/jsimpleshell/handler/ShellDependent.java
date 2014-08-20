@@ -15,11 +15,11 @@ import de.raysha.lib.jsimpleshell.Shell;
  */
 public interface ShellDependent {
 
-    /**
-     * This method informs the object about the Shell operating it.
-     * Is called upon object's registration in Shell.
-     * @param theShell Shell running the object.
-     */
-    void cliSetShell(Shell theShell);
+	/**
+	 * This method informs the object about the Shell operating it.
+	 * Is called upon object's registration in Shell.
+	 * @param theShell Shell running the object.
+	 */
+	void cliSetShell(Shell theShell);
 
 }

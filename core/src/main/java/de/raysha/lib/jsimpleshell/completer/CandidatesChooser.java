@@ -7,7 +7,7 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 
 /**
  * This interface is responsible for choosing candidates for special {@link Param}eters.
- * 
+ *
  * @author rainu
  *
  */
@@ -15,26 +15,26 @@ public interface CandidatesChooser {
 
 	/**
 	 * This method will be called if should be completed.
-	 * 
+	 *
 	 * @param paramSpec The parameter which is affected.
 	 * @param part The already typed part of parameter.
 	 * @return All possible {@link Candidates}.
 	 */
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part);
-	
+
 	public static class Candidates {
 		private final int index;
 		private final Collection<String> values;
-		
+
 		/**
 		 * @param values Contains all possible candidates as String.
 		 */
 		public Candidates(Collection<String> values) {
 			this(values, 0);
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param values Contains all possible candidates as String.
 		 * @param index The index of the parameter for which the completion will be relative.
 		 */
@@ -42,11 +42,11 @@ public interface CandidatesChooser {
 			this.values = values;
 			this.index = index;
 		}
-		
+
 		public Collection<String> getValues() {
 			return values;
 		}
-		
+
 		public int getIndex() {
 			return index;
 		}

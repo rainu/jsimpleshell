@@ -6,14 +6,14 @@ import java.io.IOException;
 
 /**
  * A utility class for file operations.
- * 
+ *
  * @author rainu
  */
 public abstract class FileUtils {
 
 	/**
 	 * Write a content to the given file.
-	 * 
+	 *
 	 * @param targetFile The file.
 	 * @param content The content to be written.
 	 * @param append Append to the file?

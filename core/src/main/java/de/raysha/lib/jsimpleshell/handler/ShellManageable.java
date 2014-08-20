@@ -23,17 +23,17 @@ import de.raysha.lib.jsimpleshell.Shell;
  */
 public interface ShellManageable {
 
-    /**
-     * This method is called when it is about to enter the command loop.
-     * 
-     * @param shell That {@link Shell} which entered the loop.
-     */
-    void cliEnterLoop(Shell shell);
+	/**
+	 * This method is called when it is about to enter the command loop.
+	 *
+	 * @param shell That {@link Shell} which entered the loop.
+	 */
+	void cliEnterLoop(Shell shell);
 
-    /**
-     * This method is called when Shell is leaving the command loop.
-     * 
-     * @param shell That {@link Shell} which leaved the loop.
-     */
-    void cliLeaveLoop(Shell shell);
+	/**
+	 * This method is called when Shell is leaving the command loop.
+	 *
+	 * @param shell That {@link Shell} which leaved the loop.
+	 */
+	void cliLeaveLoop(Shell shell);
 }

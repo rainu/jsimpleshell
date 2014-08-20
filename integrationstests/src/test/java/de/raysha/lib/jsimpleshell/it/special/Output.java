@@ -18,11 +18,11 @@ public class Output extends IntegrationsTest {
 		return super.buildShell()
 					.addHandler(new OutputCommands());
 	}
-	
+
 	@Test
 	public void outColor() throws IOException{
 		CommandResult result = executeAndWaitForCommand("out-color");
-	
+
 		assertTrue(result.containsOutLine("\u001B\\[30mtext\u001B\\[0m"));
 		assertTrue(result.containsOutLine("\u001B\\[31mtext\u001B\\[0m"));
 		assertTrue(result.containsOutLine("\u001B\\[32mtext\u001B\\[0m"));
@@ -40,11 +40,11 @@ public class Output extends IntegrationsTest {
 		assertTrue(result.containsOutLine("\u001B\\[46mtext\u001B\\[0m"));
 		assertTrue(result.containsOutLine("\u001B\\[47mtext\u001B\\[0m"));
 	}
-	
+
 	@Test
 	public void outWitoutColor() throws IOException{
 		CommandResult result = executeAndWaitForCommand("out-without-color");
-		
+
 		assertFalse(result.containsOutLine("\u001B\\[30mtext\u001B\\[0m"));
 		assertFalse(result.containsOutLine("\u001B\\[31mtext\u001B\\[0m"));
 		assertFalse(result.containsOutLine("\u001B\\[32mtext\u001B\\[0m"));
@@ -62,11 +62,11 @@ public class Output extends IntegrationsTest {
 		assertFalse(result.containsOutLine("\u001B\\[46mtext\u001B\\[0m"));
 		assertFalse(result.containsOutLine("\u001B\\[47mtext\u001B\\[0m"));
 	}
-	
+
 	@Test
 	public void errColor() throws IOException{
 		CommandResult result = executeAndWaitForCommand("err-color");
-	
+
 		assertTrue(result.containsErrLine("\u001B\\[30mtext\u001B\\[0m"));
 		assertTrue(result.containsErrLine("\u001B\\[31mtext\u001B\\[0m"));
 		assertTrue(result.containsErrLine("\u001B\\[32mtext\u001B\\[0m"));
@@ -84,11 +84,11 @@ public class Output extends IntegrationsTest {
 		assertTrue(result.containsErrLine("\u001B\\[46mtext\u001B\\[0m"));
 		assertTrue(result.containsErrLine("\u001B\\[47mtext\u001B\\[0m"));
 	}
-	
+
 	@Test
 	public void errWitoutColor() throws IOException{
 		CommandResult result = executeAndWaitForCommand("err-without-color");
-		
+
 		assertFalse(result.containsErrLine("\u001B\\[30mtext\u001B\\[0m"));
 		assertFalse(result.containsErrLine("\u001B\\[31mtext\u001B\\[0m"));
 		assertFalse(result.containsErrLine("\u001B\\[32mtext\u001B\\[0m"));

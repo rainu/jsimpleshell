@@ -16,6 +16,6 @@ import de.raysha.lib.jsimpleshell.PromptElement;
  */
 public interface Input {
 
-    String readCommand(List<PromptElement> path);
+	String readCommand(List<PromptElement> path);
 
 }

@@ -34,268 +34,268 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
  */
 public class ConsoleIO implements Input, Output, ShellManageable {
 	private MessageResolver messageResolver;
-	
-    public ConsoleIO(BufferedReader in, PrintStream out, PrintStream err) {
-        this.in = in;
-        this.out = out;
-        this.err = err;
-    }
 
-    public ConsoleIO() {
-        this(new BufferedReader(new InputStreamReader(System.in)),
-                System.out, System.err);
-    }
+	public ConsoleIO(BufferedReader in, PrintStream out, PrintStream err) {
+		this.in = in;
+		this.out = out;
+		this.err = err;
+	}
 
-    private BufferedReader in;
-    private PrintStream out;
-    private PrintStream err;
+	public ConsoleIO() {
+		this(new BufferedReader(new InputStreamReader(System.in)),
+				System.out, System.err);
+	}
 
-    private int lastCommandOffset = 0;
-    
-    @Override
-    public void setMessageResolver(MessageResolver messageResolver) {
-    	this.messageResolver = messageResolver;
-    }
+	private BufferedReader in;
+	private PrintStream out;
+	private PrintStream err;
 
-    public String readCommand(List<PromptElement> path) {
-        try {
-            String prompt = PromptBuilder.joinPromptElements(path, false, '/');
-            switch (inputState) {
-                case USER: 
-                    return readUsersCommand(prompt);
-                case SCRIPT:
-                    String command = readCommandFromScript(prompt);
-                    if (command != null) {
-                        return command;
-                    } else {
-                        closeScript();
-                        return readUsersCommand(prompt);
-                    }
-            }
-            return readUsersCommand(prompt);
-        } catch (IOException ex) {
-            throw new Error(ex);
-        }
-    }
+	private int lastCommandOffset = 0;
 
-    private static final String USER_PROMPT_SUFFIX = "> ";
-    private static final String FILE_PROMPT_SUFFIX = "$ ";
+	@Override
+	public void setMessageResolver(MessageResolver messageResolver) {
+		this.messageResolver = messageResolver;
+	}
 
-    private static enum InputState { USER, SCRIPT }
+	public String readCommand(List<PromptElement> path) {
+		try {
+			String prompt = PromptBuilder.joinPromptElements(path, false, '/');
+			switch (inputState) {
+				case USER:
+					return readUsersCommand(prompt);
+				case SCRIPT:
+					String command = readCommandFromScript(prompt);
+					if (command != null) {
+						return command;
+					} else {
+						closeScript();
+						return readUsersCommand(prompt);
+					}
+			}
+			return readUsersCommand(prompt);
+		} catch (IOException ex) {
+			throw new Error(ex);
+		}
+	}
 
-    private InputState inputState = InputState.USER;
+	private static final String USER_PROMPT_SUFFIX = "> ";
+	private static final String FILE_PROMPT_SUFFIX = "$ ";
 
-    private String readUsersCommand(String prompt) throws IOException {
-        String completePrompt = prompt+ USER_PROMPT_SUFFIX;
-        print(completePrompt);
-        lastCommandOffset = completePrompt.length();
-        
-        String command = in.readLine();
-        if (log != null) {
-            log.println(command);
-        }
-        return command;
-    }
+	private static enum InputState { USER, SCRIPT }
 
-    private BufferedReader scriptReader = null;
+	private InputState inputState = InputState.USER;
 
-    private String readCommandFromScript(String prompt) throws IOException {
-        String command = scriptReader.readLine();
-        if (command != null) {
-            String completePrompt = prompt+ FILE_PROMPT_SUFFIX;
-            print(completePrompt);
-            lastCommandOffset = completePrompt.length();
-        }
-        return command;
-    }
+	private String readUsersCommand(String prompt) throws IOException {
+		String completePrompt = prompt+ USER_PROMPT_SUFFIX;
+		print(completePrompt);
+		lastCommandOffset = completePrompt.length();
 
-    private void closeScript() throws IOException {
-        if (scriptReader != null) {
-            scriptReader.close();
-            scriptReader = null;
-        }
-        inputState = InputState.USER;
-    }
+		String command = in.readLine();
+		if (log != null) {
+			log.println(command);
+		}
+		return command;
+	}
 
-    @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
-    		header = "command.header.runscript", name = "command.name.runscript")
-    public void runScript(
-            @Param(value="param.name.runscript", description="param.description.runscript", 
-            		type = FileCandidatesChooser.FILES_TYPE) String filename ) throws FileNotFoundException {
+	private BufferedReader scriptReader = null;
 
-        scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-        inputState = InputState.SCRIPT;
-    }
+	private String readCommandFromScript(String prompt) throws IOException {
+		String command = scriptReader.readLine();
+		if (command != null) {
+			String completePrompt = prompt+ FILE_PROMPT_SUFFIX;
+			print(completePrompt);
+			lastCommandOffset = completePrompt.length();
+		}
+		return command;
+	}
+
+	private void closeScript() throws IOException {
+		if (scriptReader != null) {
+			scriptReader.close();
+			scriptReader = null;
+		}
+		inputState = InputState.USER;
+	}
+
+	@Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript",
+			header = "command.header.runscript", name = "command.name.runscript")
+	public void runScript(
+			@Param(value="param.name.runscript", description="param.description.runscript",
+					type = FileCandidatesChooser.FILES_TYPE) String filename ) throws FileNotFoundException {
+
+		scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+		inputState = InputState.SCRIPT;
+	}
 
 
-    public void outputHeader(String text) {
-        if (text != null) {
-            println(text);
-        }
-    }
+	public void outputHeader(String text) {
+		if (text != null) {
+			println(text);
+		}
+	}
 
-    public void output(Object obj, OutputConversionEngine oce) {
-        if (obj == null) {
-            return;
-        } else {
-            obj = oce.convertOutput(obj);
-        }
+	public void output(Object obj, OutputConversionEngine oce) {
+		if (obj == null) {
+			return;
+		} else {
+			obj = oce.convertOutput(obj);
+		}
 
-        if (obj.getClass().isArray()) {
-            int length = Array.getLength(obj);
-            for (int i = 0; i < length; i++) {
-                output(Array.get(obj, i), 0, oce);
-            }
-        } else if (obj instanceof Collection) {
-            for (Object elem : (Collection)obj) {
-                output(elem, 0, oce);
-            }
-        } else {
-            output(obj, 0, oce);
-        }
-    }
+		if (obj.getClass().isArray()) {
+			int length = Array.getLength(obj);
+			for (int i = 0; i < length; i++) {
+				output(Array.get(obj, i), 0, oce);
+			}
+		} else if (obj instanceof Collection) {
+			for (Object elem : (Collection)obj) {
+				output(elem, 0, oce);
+			}
+		} else {
+			output(obj, 0, oce);
+		}
+	}
 
-    private void output(Object obj, int indent, OutputConversionEngine oce) {
-        if (obj == null) {
-            return;
-        }
+	private void output(Object obj, int indent, OutputConversionEngine oce) {
+		if (obj == null) {
+			return;
+		}
 
-        if (obj != null) {
-            obj = oce.convertOutput(obj);
-        }
+		if (obj != null) {
+			obj = oce.convertOutput(obj);
+		}
 
-        for (int i = 0; i < indent; i++) {
-            print("\t");
-        }
+		for (int i = 0; i < indent; i++) {
+			print("\t");
+		}
 
-        if (obj == null) {
-            println("(null)");
-        } else if (obj.getClass().isPrimitive() || obj instanceof String) {
-            println(obj);
-        } else if (obj.getClass().isArray()) {
-            println("Array");
-            int length = Array.getLength(obj);
-            for (int i = 0; i < length; i++) {
-                output(Array.get(obj, i), indent + 1, oce);
-            }
-        } else if (obj instanceof Collection) {
-            println("Collection");
-            for (Object elem : (Collection)obj) {
-                output(elem, indent + 1, oce);
-            }
-        } else if (obj instanceof Throwable) {
-            println(obj); // class and its message
-            ((Throwable)obj).printStackTrace(out);
-        } else {
-            println(obj);
-        }
-    }
+		if (obj == null) {
+			println("(null)");
+		} else if (obj.getClass().isPrimitive() || obj instanceof String) {
+			println(obj);
+		} else if (obj.getClass().isArray()) {
+			println("Array");
+			int length = Array.getLength(obj);
+			for (int i = 0; i < length; i++) {
+				output(Array.get(obj, i), indent + 1, oce);
+			}
+		} else if (obj instanceof Collection) {
+			println("Collection");
+			for (Object elem : (Collection)obj) {
+				output(elem, indent + 1, oce);
+			}
+		} else if (obj instanceof Throwable) {
+			println(obj); // class and its message
+			((Throwable)obj).printStackTrace(out);
+		} else {
+			println(obj);
+		}
+	}
 
-    public void print(Object x) {
-    	x = resolve(x);
-    	
-        out.print(x);
-        if (log != null) {
-            log.print(x);
-        }
-    }
+	public void print(Object x) {
+		x = resolve(x);
 
-    public void println(Object x) {
-    	x = resolve(x);
-    	
-        out.println(x);
-        if (log != null) {
-            log.println(x);
-        }
-    }
+		out.print(x);
+		if (log != null) {
+			log.print(x);
+		}
+	}
 
-    public void printErr(Object x) {
-    	x = resolve(x);
-    	
-        err.print(x);
-        if (log != null) {
-            log.print(x);
-        }
-    }
+	public void println(Object x) {
+		x = resolve(x);
 
-    public void printlnErr(Object x) {
-    	x = resolve(x);
-    	
-        err.println(x);
-        if (log != null) {
-            log.println(x);
-        }
-    }
-    
-    private Object resolve(Object x){
-    	if(x instanceof String){
-    		return messageResolver.resolveGeneralMessage((String)x);
-    	}
-    	
-    	return x;
-    }
+		out.println(x);
+		if (log != null) {
+			log.println(x);
+		}
+	}
 
-    public void outputException(String input, TokenException error) {
-        int errIndex = error.getToken().getIndex() + lastCommandOffset;
-        while (errIndex-- > 0) {
-            printErr("-");
-        }
-        for (int i = 0; i < error.getToken().getString().length(); i++) {
-            printErr("^");
-        }
-        printlnErr("");
-        printlnErr(error);
-    }
+	public void printErr(Object x) {
+		x = resolve(x);
 
-    public void outputException(Throwable e) {
-        printlnErr(e);
-        if (e.getCause() != null) {
-            printlnErr(e.getCause());
-        }
-    }
-    
-    private PrintStream log = null;
+		err.print(x);
+		if (log != null) {
+			log.print(x);
+		}
+	}
 
-    private boolean isLoggingEnabled() {
-        return log != null;
-    }
+	public void printlnErr(Object x) {
+		x = resolve(x);
 
-    private int loopCounter = 0;
+		err.println(x);
+		if (log != null) {
+			log.println(x);
+		}
+	}
 
-    public void cliEnterLoop(Shell shell) {
-        if (isLoggingEnabled()) {
-            loopCounter++;
-        }
-    }
+	private Object resolve(Object x){
+		if(x instanceof String){
+			return messageResolver.resolveGeneralMessage((String)x);
+		}
 
-    public void cliLeaveLoop(Shell shell) {
-        if (isLoggingEnabled()) {
-            loopCounter--;
-        }
-        if (loopCounter < 0) {
-            disableLogging();
-        }
-    }
+		return x;
+	}
 
-    @Command(abbrev = "command.abbrev.enablelogging", description = "command.description.enablelogging", 
-    		header = "command.header.enablelogging", name = "command.name.enablelogging")
-    public void l(
-            @Param(value="param.name.enablelogging", description="param.description.enablelogging",
-            		type = FileCandidatesChooser.FILES_TYPE) 
-            String filename ) throws FileNotFoundException {
-        
-        log = new PrintStream(filename);
-        loopCounter = 0;
-    }
+	public void outputException(String input, TokenException error) {
+		int errIndex = error.getToken().getIndex() + lastCommandOffset;
+		while (errIndex-- > 0) {
+			printErr("-");
+		}
+		for (int i = 0; i < error.getToken().getString().length(); i++) {
+			printErr("^");
+		}
+		printlnErr("");
+		printlnErr(error);
+	}
 
-    @Command(abbrev = "command.abbrev.disablelogging", description = "command.description.disablelogging", 
-    		header = "command.header.disablelogging", name = "command.name.disablelogging")
-    public String disableLogging() {
-        if (log != null) {
-            log.close();
-            log = null;
-            return "Logging disabled";
-        } else return "Logging is already disabled";
-    }
+	public void outputException(Throwable e) {
+		printlnErr(e);
+		if (e.getCause() != null) {
+			printlnErr(e.getCause());
+		}
+	}
+
+	private PrintStream log = null;
+
+	private boolean isLoggingEnabled() {
+		return log != null;
+	}
+
+	private int loopCounter = 0;
+
+	public void cliEnterLoop(Shell shell) {
+		if (isLoggingEnabled()) {
+			loopCounter++;
+		}
+	}
+
+	public void cliLeaveLoop(Shell shell) {
+		if (isLoggingEnabled()) {
+			loopCounter--;
+		}
+		if (loopCounter < 0) {
+			disableLogging();
+		}
+	}
+
+	@Command(abbrev = "command.abbrev.enablelogging", description = "command.description.enablelogging",
+			header = "command.header.enablelogging", name = "command.name.enablelogging")
+	public void l(
+			@Param(value="param.name.enablelogging", description="param.description.enablelogging",
+					type = FileCandidatesChooser.FILES_TYPE)
+			String filename ) throws FileNotFoundException {
+
+		log = new PrintStream(filename);
+		loopCounter = 0;
+	}
+
+	@Command(abbrev = "command.abbrev.disablelogging", description = "command.description.disablelogging",
+			header = "command.header.disablelogging", name = "command.name.disablelogging")
+	public String disableLogging() {
+		if (log != null) {
+			log.close();
+			log = null;
+			return "Logging disabled";
+		} else return "Logging is already disabled";
+	}
 
 }

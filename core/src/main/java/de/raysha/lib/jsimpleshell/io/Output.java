@@ -16,20 +16,20 @@ import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 public interface Output {
 
 	void setMessageResolver(MessageResolver messageResolver);
-	
-    void output(Object obj, OutputConversionEngine oce);
 
-    void outputException(String input, TokenException error);
+	void output(Object obj, OutputConversionEngine oce);
 
-    void outputException(Throwable e);
+	void outputException(String input, TokenException error);
 
-    void outputHeader(String text);
+	void outputException(Throwable e);
 
-    void print(Object obj);
-    
-    void println(Object obj);
-    
-    void printErr(Object obj);
-    
-    void printlnErr(Object obj);
+	void outputHeader(String text);
+
+	void print(Object obj);
+
+	void println(Object obj);
+
+	void printErr(Object obj);
+
+	void printlnErr(Object obj);
 }

@@ -25,35 +25,35 @@ import de.raysha.lib.jsimpleshell.handler.OutputConverter;
  */
 public class OutputConversionEngine {
 
-    private List<OutputConverter> outputConverters = new ArrayList<OutputConverter>();
+	private List<OutputConverter> outputConverters = new ArrayList<OutputConverter>();
 
-    public void addConverter(OutputConverter converter) {
-        if (converter == null ) {
-            throw new IllegalArgumentException("Converter == null");
-        }
-        outputConverters.add(converter);
-    }
+	public void addConverter(OutputConverter converter) {
+		if (converter == null ) {
+			throw new IllegalArgumentException("Converter == null");
+		}
+		outputConverters.add(converter);
+	}
 
-    public boolean removeConverter(OutputConverter converter) {
-        return outputConverters.remove(converter);
-    }
+	public boolean removeConverter(OutputConverter converter) {
+		return outputConverters.remove(converter);
+	}
 
-    public Object convertOutput(Object anObject) {
-        Object convertedOutput = anObject;
-        for (ListIterator<OutputConverter> it = outputConverters.listIterator(outputConverters.size()); it.hasPrevious();) {
-            OutputConverter outputConverter = it.previous(); // last in --- first called.
-            Object conversionResult = outputConverter.convertOutput(convertedOutput);
-            if (conversionResult != null) {
-                convertedOutput = conversionResult;
-            }
-        }
-        return convertedOutput;
-    }
+	public Object convertOutput(Object anObject) {
+		Object convertedOutput = anObject;
+		for (ListIterator<OutputConverter> it = outputConverters.listIterator(outputConverters.size()); it.hasPrevious();) {
+			OutputConverter outputConverter = it.previous(); // last in --- first called.
+			Object conversionResult = outputConverter.convertOutput(convertedOutput);
+			if (conversionResult != null) {
+				convertedOutput = conversionResult;
+			}
+		}
+		return convertedOutput;
+	}
 
-    public void addDeclaredConverters(Object handler) {
-    	if(handler instanceof OutputConverter){
-    		addConverter((OutputConverter)handler);
-    	}
-    }
+	public void addDeclaredConverters(Object handler) {
+		if(handler instanceof OutputConverter){
+			addConverter((OutputConverter)handler);
+		}
+	}
 
 }

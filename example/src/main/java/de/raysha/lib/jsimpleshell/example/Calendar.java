@@ -9,10 +9,10 @@ import de.raysha.lib.jsimpleshell.handler.InputConverter;
 
 /**
  * This class contains a little time functionality.
- * 
+ *
  * @author rainu
  */
-//If you want to convert user input to a custom type, you must implement 
+//If you want to convert user input to a custom type, you must implement
 //the InputConverter interface. After them you must add it to shell as handler.
 public class Calendar implements InputConverter {
 
@@ -23,12 +23,12 @@ public class Calendar implements InputConverter {
 		}
 		return null;
 	}
-	
+
 	@Command(description = "Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this date.")
 	public long getTime(
 			@Param("date")
 			Date date){
-		
+
 		return date.getTime();
 	}
 }

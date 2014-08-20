@@ -16,7 +16,7 @@ public class List extends IntegrationsTest {
 	@Test
 	public void list() throws IOException {
 		final CommandResult result = executeAndWaitForCommand("?list");
-		
+
 		assertFalse(result.isError());
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandListed(result, "", "exit", "exit");
@@ -25,7 +25,7 @@ public class List extends IntegrationsTest {
 	@Test
 	public void listAll() throws IOException {
 		final CommandResult result = executeAndWaitForCommand("?list-all");
-		
+
 		assertFalse(result.isError());
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandListed(result, "", "exit", "exit");
@@ -45,11 +45,11 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "?", "la", "list-all");
 		isCommandListed(result, "?", "ghh", "generate-HTML-help", "file-name", "include-prefixed");
 	}
-	
+
 	@Test
 	public void listStartWith() throws IOException {
 		final CommandResult result = executeAndWaitForCommand("?list", "!set");
-		
+
 		assertFalse(result.isError());
 		isCommandNotListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandNotListed(result, "", "exit", "exit");
@@ -68,13 +68,13 @@ public class List extends IntegrationsTest {
 		isCommandNotListed(result, "?", "la", "list-all");
 		isCommandNotListed(result, "?", "ghh", "generate-HTML-help", "file-name", "include-prefixed");
 	}
-	
+
 	private void isCommandListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {
 		String line = buildRegexp(prefix, abbrev, name, parameters);
 		assertTrue("The command '" + prefix + name + "(" + Arrays.toString(parameters) + ")' is not listed!",
 				result.containsOutLine(line));
 	}
-	
+
 	private void isCommandNotListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {
 		String line = buildRegexp(prefix, abbrev, name, parameters);
 		assertFalse("The command '" + prefix + name + "(" + Arrays.toString(parameters) + ")' is listed!",
@@ -89,17 +89,17 @@ public class List extends IntegrationsTest {
 		line.append(prefix == null || prefix.isEmpty() ? "" : "\\" + prefix);
 		line.append(name);
 		line.append("\\s*\\(");
-		
+
 		for(int i=0; i < parameters.length; i++){
 			String p = parameters[i];
-			
+
 			if(i >= 1) {
 				line.append("\\s*,\\s*");
 			}
-			
+
 			line.append(p);
 		}
-		
+
 		line.append("\\)");
 		return line.toString();
 	}

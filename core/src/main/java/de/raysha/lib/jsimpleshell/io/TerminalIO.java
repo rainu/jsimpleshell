@@ -37,14 +37,14 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 
 /**
  * This class uses a {@link ConsoleReader} for additional functionality.
- * 
+ *
  * @author rainu
  *
  */
 public class TerminalIO implements Input, Output, ShellManageable {
 	public static final String MACRO_SUFFIX = ".jssm";
 	private static final String PROMPT_SUFFIX = "> ";
-	
+
 	private ConsoleReader console;
 	private PrintStream error;
 	private BufferedReader scriptReader = null;
@@ -53,11 +53,11 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	private File macroHome = new File("./");
 	private File macroFile;
 	private StringBuffer macroRecorder;
-	
+
 	private static enum InputState { USER, SCRIPT }
-    private InputState inputState = InputState.USER;
-    private Map<String, String> scriptParameters;
-	
+	private InputState inputState = InputState.USER;
+	private Map<String, String> scriptParameters;
+
 	private int lastCommandOffset = 0;
 
 	public TerminalIO(ConsoleReader console) {
@@ -68,11 +68,11 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		this.console = console;
 		this.error = error != null ? new PrintStream(error) : null;
 	}
-	
+
 	public ConsoleReader getConsole() {
 		return console;
 	}
-	
+
 	@Override
 	public void setMessageResolver(MessageResolver messageResolver) {
 		this.messageResolver = messageResolver;
@@ -116,10 +116,10 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	@Override
 	public void outputException(Throwable e) {
 		if(e instanceof CommandNotFoundException){
-			printlnErr(e.getMessage());		
+			printlnErr(e.getMessage());
 			return;
 		}
-		
+
 		String stackTrace = extractStacktrace(e);
 		printlnErr(stackTrace);
 	}
@@ -134,167 +134,167 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	@Override
 	public String readCommand(List<PromptElement> path) {
 		try {
-            String prompt = getPrompt(path);
-            lastCommandOffset = prompt.length();
-            
-            if(inputState == InputState.SCRIPT){
-                String command = readCommandFromScript(prompt);
-                if (command != null) {
-                    return command;
-                } else {
-                    closeScript();
-                }
-            }
-            
-            final String line = console.readLine(prompt);
-            recordLine(line);
-            
-            return line;
-        } catch (IOException ex) {
-            throw new Error(ex);
-        }
+			String prompt = getPrompt(path);
+			lastCommandOffset = prompt.length();
+
+			if(inputState == InputState.SCRIPT){
+				String command = readCommandFromScript(prompt);
+				if (command != null) {
+					return command;
+				} else {
+					closeScript();
+				}
+			}
+
+			final String line = console.readLine(prompt);
+			recordLine(line);
+
+			return line;
+		} catch (IOException ex) {
+			throw new Error(ex);
+		}
 	}
-	
+
 	private String readCommandFromScript(String prompt) throws IOException {
 		String command = null;
-		
+
 		do{
 			command = scriptReader.readLine();
 			if(command != null){
 				command = command.replaceAll("#.*$", "");
 			}
 		}while(command != null && "".equals(command.trim()));
-        
+
 		if (command != null) {
 			for(Entry<String, String> scriptParam : scriptParameters.entrySet()){
 				command = command.replaceAll("\\{" + scriptParam.getKey() + "\\}", scriptParam.getValue());
 			}
-			
-            String completeLine = prompt + command;
-            println(completeLine);
-            lastCommandOffset = completeLine.length();
-        }
-        return command;
-    }
 
-    private void closeScript() throws IOException {
-        if (scriptReader != null) {
-            scriptReader.close();
-            scriptReader = null;
-        }
-        inputState = InputState.USER;
-    }
-    
-    @Override
-    public void cliEnterLoop(Shell shell) {
-    	//nothing to do
-    }
-	
-    @Override
-    public void cliLeaveLoop(Shell shell) {
-    	if(inRecordMode()){
-    		try {
+			String completeLine = prompt + command;
+			println(completeLine);
+			lastCommandOffset = completeLine.length();
+		}
+		return command;
+	}
+
+	private void closeScript() throws IOException {
+		if (scriptReader != null) {
+			scriptReader.close();
+			scriptReader = null;
+		}
+		inputState = InputState.USER;
+	}
+
+	@Override
+	public void cliEnterLoop(Shell shell) {
+		//nothing to do
+	}
+
+	@Override
+	public void cliLeaveLoop(Shell shell) {
+		if(inRecordMode()){
+			try {
 				FileUtils.write(macroFile, macroRecorder.toString(), false);
 			} catch (IOException e) { }
-    	}
-    }
+		}
+	}
 
-    @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
-    		header = "command.header.runscript", name = "command.name.runscript")
-    public void runScript(
-    		@Param(value="param.name.runscript", description="param.description.runscript",
-    				type = FileCandidatesChooser.FILES_TYPE) 
-            String filename,
-            @Param(value="param.name.runscript.1", description="param.description.runscript.1")
-            String...parameters) throws FileNotFoundException {
+	@Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript",
+			header = "command.header.runscript", name = "command.name.runscript")
+	public void runScript(
+			@Param(value="param.name.runscript", description="param.description.runscript",
+					type = FileCandidatesChooser.FILES_TYPE)
+			String filename,
+			@Param(value="param.name.runscript.1", description="param.description.runscript.1")
+			String...parameters) throws FileNotFoundException {
 
-        scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-        inputState = InputState.SCRIPT;
-        
-        Pattern parameterPattern = Pattern.compile("^(\\w{1,})=(.*)$");
-        
-        scriptParameters = new HashMap<String, String>();
-        for(String p : parameters){
-        	Matcher m = parameterPattern.matcher(p);
-        	if(m.matches()){
-        		scriptParameters.put(m.group(1), m.group(2));
-        	}
-        }
-    }
-    
-    @Command(abbrev = "command.abbrev.listscriptarguments", description = "command.description.listscriptarguments", 
-    		header = "command.header.listscriptarguments", name = "command.name.listscriptarguments")
-    public Set<String> listScriptArguments(
-    		@Param(value="param.name.listscriptarguments", description="param.description.listscriptarguments",
-    				type = FileCandidatesChooser.FILES_TYPE) 
-            String filename) throws IOException{
-    	
-    	BufferedReader reader = null;
-    	Pattern parameterPattern = Pattern.compile("\\{([^\\{\\}]*)\\}");
-    	TreeSet<String> arguments = new TreeSet<String>();
-    	
-    	try{
-    		reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-    		
-	    	String line = null;
-	    	do{
-	    		line = reader.readLine();
-	    		if(line != null){
-	    			Matcher m = parameterPattern.matcher(line);
-	    			while(m.find()){
-	    				arguments.add(m.group(1));
-	    			}
-	    		}
-	    	}while(line != null);
-    	}finally{
-    		if(reader != null) reader.close();
-    	}
-    	
-    	return arguments;
-    }
-    
-	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome", 
+		scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+		inputState = InputState.SCRIPT;
+
+		Pattern parameterPattern = Pattern.compile("^(\\w{1,})=(.*)$");
+
+		scriptParameters = new HashMap<String, String>();
+		for(String p : parameters){
+			Matcher m = parameterPattern.matcher(p);
+			if(m.matches()){
+				scriptParameters.put(m.group(1), m.group(2));
+			}
+		}
+	}
+
+	@Command(abbrev = "command.abbrev.listscriptarguments", description = "command.description.listscriptarguments",
+			header = "command.header.listscriptarguments", name = "command.name.listscriptarguments")
+	public Set<String> listScriptArguments(
+			@Param(value="param.name.listscriptarguments", description="param.description.listscriptarguments",
+					type = FileCandidatesChooser.FILES_TYPE)
+			String filename) throws IOException{
+
+		BufferedReader reader = null;
+		Pattern parameterPattern = Pattern.compile("\\{([^\\{\\}]*)\\}");
+		TreeSet<String> arguments = new TreeSet<String>();
+
+		try{
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+
+			String line = null;
+			do{
+				line = reader.readLine();
+				if(line != null){
+					Matcher m = parameterPattern.matcher(line);
+					while(m.find()){
+						arguments.add(m.group(1));
+					}
+				}
+			}while(line != null);
+		}finally{
+			if(reader != null) reader.close();
+		}
+
+		return arguments;
+	}
+
+	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome",
 			header = "command.header.setmacrohome", name = "command.name.setmacrohome")
 	public String setMacroHome(
 			@Param(value = "param.name.setmacrohome", description = "param.description.setmacrohome",
-					type = FileCandidatesChooser.DIRECTORY_ONLY_TYPE) 
+					type = FileCandidatesChooser.DIRECTORY_ONLY_TYPE)
 			File homeDir) {
-		
+
 		if(!homeDir.exists() || !homeDir.isDirectory()){
 			return "message.macro.sethome.nodirectory";
 		}
-		
+
 		this.macroHome = homeDir;
-		
+
 		return null;
 	}
-	
-	@Command(abbrev = "command.abbrev.getmacrohome", description = "command.description.getmacrohome", 
+
+	@Command(abbrev = "command.abbrev.getmacrohome", description = "command.description.getmacrohome",
 			header = "command.header.getmacrohome", name = "command.name.getmacrohome")
 	public String getMacroHome() {
 		return macroHome == null ? "" : macroHome.getPath();
 	}
-	
-	@Command(abbrev = "command.abbrev.runmacro", description = "command.description.runmacro", 
+
+	@Command(abbrev = "command.abbrev.runmacro", description = "command.description.runmacro",
 			header = "command.header.runmacro", name = "command.name.runmacro")
 	public void runMacro(
 			@Param(value = "param.name.runmacro", description = "param.description.runmacro",
-					type = MacroNameCandidatesChooser.MACRO_NAME_TYPE) 
+					type = MacroNameCandidatesChooser.MACRO_NAME_TYPE)
 			String name) throws IOException {
-		
+
 		runScript(new File(macroHome, name + MACRO_SUFFIX).getAbsolutePath());
 	}
-    
-	@Command(abbrev = "command.abbrev.startrecord", description = "command.description.startrecord", 
+
+	@Command(abbrev = "command.abbrev.startrecord", description = "command.description.startrecord",
 			header = "command.header.startrecord", name = "command.name.startrecord")
 	public String startRecord(
-			@Param(value = "param.name.startrecord", description = "param.description.startrecord") 
+			@Param(value = "param.name.startrecord", description = "param.description.startrecord")
 			String name) throws IOException {
-		
+
 		if (inRecordMode()) {
 			return "message.macro.record.alreadystarted";
 		}
-		
+
 		this.macroFile = new File(macroHome, name + MACRO_SUFFIX);
 		this.macroRecorder = new StringBuffer(getMacroHead());
 
@@ -305,17 +305,17 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		return (String)resolve("message.macro.record.head");
 	}
 
-	@Command(abbrev = "command.abbrev.stoprecord", description = "command.description.stoprecord", 
+	@Command(abbrev = "command.abbrev.stoprecord", description = "command.description.stoprecord",
 			header = "command.header.stoprecord", name = "command.name.stoprecord")
-    public String stopRecord() throws IOException{
+	public String stopRecord() throws IOException{
 		if (macroFile == null) {
 			return "message.macro.record.notstarted";
 		}
-		
+
 		//remove last line because this is the stop-record command
 		macroRecorder.replace(macroRecorder.length() - 1, macroRecorder.length(), ""); //remove last new line
 		macroRecorder.replace(macroRecorder.lastIndexOf("\n") + 1, macroRecorder.length(), "");
-		
+
 		try{
 			FileUtils.write(macroFile, macroRecorder.toString(), false);
 		}finally{
@@ -324,19 +324,19 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		}
 
 		return "message.macro.record.stop";
-    }
-	
+	}
+
 	private boolean inRecordMode() {
 		return macroFile != null;
 	}
-	
+
 	private void recordLine(String line) throws IOException {
 		if(macroRecorder != null){
 			macroRecorder.append(line);
 			macroRecorder.append("\n");
 		}
 	}
-    
+
 	private String getPrompt(List<PromptElement> path) {
 		return PromptBuilder.joinPromptElements(path, false, '/') + PROMPT_SUFFIX;
 	}
@@ -386,7 +386,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 
 	public void printlnErr(Object o) {
 		o = resolve(o);
-		
+
 		if (error == null) {
 			println("[ERROR] " + o);
 		} else {
@@ -396,7 +396,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 
 	public void printErr(Object o) {
 		o = resolve(o);
-		
+
 		if (error == null) {
 			print("[ERROR] " + o);
 		} else {
@@ -406,7 +406,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 
 	public void println(Object o) {
 		o = resolve(o);
-		
+
 		try {
 			console.println(String.valueOf(o));
 			console.flush();
@@ -417,7 +417,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 
 	public void print(Object o) {
 		o = resolve(o);
-		
+
 		try {
 			console.print(String.valueOf(o));
 			console.flush();
@@ -425,7 +425,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			throw new Error(e);
 		}
 	}
-	
+
 	private Object resolve(Object o){
 		if(o instanceof String){
 			return messageResolver.resolveGeneralMessage((String)o);

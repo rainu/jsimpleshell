@@ -8,23 +8,23 @@ import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 /**
  * This {@link MessageResolver} resolve the default messages. This resolver
  * should be used as fallback.
- * 
+ *
  * @author rainu
  */
 public final class DefaultMessageResolver extends AbstractMessageResolver {
 	private static DefaultMessageResolver instance;
 	private Properties properties;
-	
+
 	private DefaultMessageResolver() {}
-	
+
 	public synchronized static DefaultMessageResolver getInstance() {
 		if(instance == null) {
 			instance = new DefaultMessageResolver();
 		}
-		
+
 		return instance;
 	}
-	
+
 	@Override
 	protected String resolveMessage(String msg) {
 		return getProperties().getProperty(msg, msg);
@@ -39,7 +39,7 @@ public final class DefaultMessageResolver extends AbstractMessageResolver {
 				throw new IllegalStateException("Could not load default-messages.properties from classpath!", e);
 			}
 		}
-		
+
 		return properties;
 	}
 

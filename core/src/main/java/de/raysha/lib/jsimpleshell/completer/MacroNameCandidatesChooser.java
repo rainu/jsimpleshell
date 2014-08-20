@@ -13,23 +13,23 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 /**
  * This {@link CandidatesChooser} is responsible for choosing all available macros.
- * 
+ *
  * @author rainu
  */
 public class MacroNameCandidatesChooser implements CandidatesChooser, ShellDependent {
 	public static final String MACRO_NAME_TYPE = "de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser_macroName";
-	
+
 	private Shell shell;
-	
+
 	@Override
 	public void cliSetShell(Shell theShell) {
 		this.shell = theShell;
 	}
-	
+
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, final String part) {
 		if(!responsibleFor(paramSpec)) return null;
-		
+
 		String[] macros = shell.getMacroHome().list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -43,7 +43,7 @@ public class MacroNameCandidatesChooser implements CandidatesChooser, ShellDepen
 		for(String macro : Arrays.asList(macros)){
 			names.add(macro.replace(TerminalIO.MACRO_SUFFIX, ""));
 		}
-		
+
 		Candidates candidates = new Candidates(names);
 		return candidates;
 	}

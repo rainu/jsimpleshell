@@ -17,7 +17,7 @@ public class History extends IntegrationsTest {
 		executeCommand("DEF");
 		executeCommand("GHI");
 		waitForShellCommandExec();
-		
+
 		movePrev();
 		isLineShown(waitForShell(), "GHI");
 		movePrev();
@@ -30,18 +30,18 @@ public class History extends IntegrationsTest {
 		moveNext();
 		isLineShown(waitForShell(), "GHI");
 	}
-	
+
 	@Test
 	public void searchForward() throws IOException{
 		executeCommand("JKL");
 		executeCommand("MNO");
 		executeCommand("PQR");
 		waitForShellCommandExec();
-		
+
 		searchForward("J\n");
 		isLineShown(waitForShell(), "JKL");
 	}
-	
+
 	private void isLineShown(CommandResult result, String line) {
 		assertTrue("The command-line '" + line + " is not shown!" + result,
 				result.containsOutLine(".*" + line + ".*"));
@@ -51,11 +51,11 @@ public class History extends IntegrationsTest {
 		simulateUserInput(String.valueOf((char)18));
 		simulateUserInput(string);
 	}
-	
+
 	private void movePrev() throws IOException {
 		simulateUserInput("\033[A");
 	}
-	
+
 	private void moveNext() throws IOException {
 		simulateUserInput("\033[B");
 	}

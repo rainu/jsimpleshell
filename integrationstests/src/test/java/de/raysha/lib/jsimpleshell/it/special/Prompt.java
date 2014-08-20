@@ -23,11 +23,11 @@ public class Prompt extends IntegrationsTest {
 					}
 				});
 	}
-	
+
 	@Test
 	public void specialPrompt() throws IOException{
 		CommandResult result = waitForShell();
-		
+
 		assertTrue(result.containsOutLine(System.getProperty("user.name") + ".*"));
 	}
 }

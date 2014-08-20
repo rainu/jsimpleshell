@@ -11,13 +11,13 @@ package de.raysha.lib.jsimpleshell.handler;
  * @author ASG
  */
 public interface OutputConverter {
-    /**
-     * Object-to--user-friendly-object (usually string) conversion method.
-     * The method must check argument's class, since it will be fed virtually all
-     * returned objects. Simply return null when not sure.
-     * @param toBeFormatted Object to be displayed to the user
-     * @return Object representing the object or Null if don't know how to make it.
-     *         Do not return default toString() !!
-     */
-    Object convertOutput(Object toBeFormatted);
+	/**
+	 * Object-to--user-friendly-object (usually string) conversion method.
+	 * The method must check argument's class, since it will be fed virtually all
+	 * returned objects. Simply return null when not sure.
+	 * @param toBeFormatted Object to be displayed to the user
+	 * @return Object representing the object or Null if don't know how to make it.
+	 *         Do not return default toString() !!
+	 */
+	Object convertOutput(Object toBeFormatted);
 }

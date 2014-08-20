@@ -20,12 +20,12 @@ public class AutoComplete extends IntegrationsTest {
 		return super.buildShell()
 					.addHandler(new CompleterCommands());
 	}
-	
+
 	@Test
 	public void commandNameAll() throws IOException{
 		simulateUserInput("\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
 		candidateIsShown(result, "!get-last-exception");
 		candidateIsShown(result, "!get-macro-home");
@@ -42,12 +42,12 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "exit");
 		candidateIsShown(result, MainHandler.SHUTDOWN);
 	}
-	
+
 	@Test
 	public void commandNameCompletion() throws IOException{
 		simulateUserInput("!get-\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
 		candidateIsShown(result, "!get-last-exception");
 		candidateIsShown(result, "!get-macro-home");
@@ -64,12 +64,12 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsNotShown(result, "exit");
 		candidateIsNotShown(result, MainHandler.SHUTDOWN);
 	}
-	
+
 	@Test
 	public void commandNameNothingToComplete() throws IOException{
 		simulateUserInput("doesNotExists\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
 		candidateIsNotShown(result, "!get-last-exception");
 		candidateIsNotShown(result, "!get-macro-home");
@@ -86,12 +86,12 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsNotShown(result, "exit");
 		candidateIsNotShown(result, MainHandler.SHUTDOWN);
 	}
-	
+
 	@Test
 	public void commandNameArgumentCompleter() throws IOException{
 		simulateUserInput("?help \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
 		candidateIsShown(result, "!get-last-exception");
 		candidateIsShown(result, "!get-macro-home");
@@ -108,129 +108,129 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "exit");
 		candidateIsShown(result, MainHandler.SHUTDOWN);
 	}
-	
+
 	@Test
 	public void fileCompleter() throws IOException{
 		simulateUserInput("file \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "pom.xml");
 		candidateIsShown(result, "src");
 	}
-	
+
 	@Test
 	public void fileCompleter2() throws IOException{
 		simulateUserInput("file p\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "pom.xml");
 	}
-	
+
 	@Test
 	public void dirCompleter() throws IOException{
 		simulateUserInput("dir \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsNotShown(result, "pom.xml");
 		candidateIsShown(result, "src");
 	}
-	
+
 	@Test
 	public void dirCompleter2() throws IOException{
 		simulateUserInput("dir s\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsNotShown(result, "pom.xml");
 		candidateIsShown(result, "src/");
 	}
-	
+
 	@Test
 	public void booleanCompleter() throws IOException{
 		simulateUserInput("boolean \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "true");
 		candidateIsShown(result, "false");
 	}
-	
+
 	@Test
 	public void booleanCompleter2() throws IOException{
 		simulateUserInput("boolean t\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "true");
 		candidateIsNotShown(result, "false");
 	}
-	
+
 	@Test
 	public void booleanCompleter3() throws IOException{
 		simulateUserInput("boolean f\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsNotShown(result, "true");
 		candidateIsShown(result, "false");
 	}
-	
+
 	@Test
 	public void booleanCompleter4() throws IOException{
 		simulateUserInput("boolean Tr\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "true");
 		candidateIsNotShown(result, "false");
 	}
-	
+
 	@Test
 	public void booleanCompleter5() throws IOException{
 		simulateUserInput("boolean Fa\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsNotShown(result, "true");
 		candidateIsShown(result, "false");
 	}
-	
+
 	@Test
 	public void enumCompleter() throws IOException{
 		simulateUserInput("enum \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		for(TestEnum e : TestEnum.values()){
 			candidateIsShown(result, e.name());
 		}
 	}
-	
+
 	@Test
 	public void enumCompleter2() throws IOException{
 		simulateUserInput("enum a\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		for(TestEnum e : TestEnum.values()){
 			candidateIsShown(result, e.name());
 		}
 	}
-	
+
 	@Test
 	public void macroCompleter() throws IOException{
 		executeCommand("!start-record", "TestMacro");
@@ -238,34 +238,34 @@ public class AutoComplete extends IntegrationsTest {
 		executeCommand("!start-record", "TestMacro1");
 		executeCommand("!stop-record");
 		waitForShellCommandExec();
-		
+
 		simulateUserInput("!run-macro \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "TestMacro");
 		candidateIsShown(result, "TestMacro1");
 	}
-	
+
 	@Test
 	public void customCompleter() throws IOException{
 		simulateUserInput("custom \t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "Candidate1");
 		candidateIsShown(result, "Candidate2");
 	}
-	
+
 	@Test
 	public void customCompleter2() throws IOException{
 		simulateUserInput("custom C\t");
 		CommandResult result = waitForShellCommandExec();
-		
+
 		assertFalse(result.isError());
-		
+
 		candidateIsShown(result, "Candidate1");
 		candidateIsShown(result, "Candidate2");
 	}
@@ -274,7 +274,7 @@ public class AutoComplete extends IntegrationsTest {
 		assertTrue("Candidate '" + candidate + "' is not shown!",
 				result.getOut().contains(candidate));
 	}
-	
+
 	private void candidateIsNotShown(CommandResult result, String candidate) {
 		assertFalse("Candidate '" + candidate + "' is shown!",
 				result.getOut().contains(candidate));

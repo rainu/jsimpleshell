@@ -13,16 +13,16 @@ package de.raysha.lib.jsimpleshell.exception;
  * @author ASG
  */
 public class CLIException extends Exception {
-    public CLIException() {
-        super();
-    }
-    public CLIException(String message) {
-        super(message);
-    }
-    public CLIException(Throwable cause) {
-        super(cause);
-    }
-    public CLIException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public CLIException() {
+		super();
+	}
+	public CLIException(String message) {
+		super(message);
+	}
+	public CLIException(Throwable cause) {
+		super(cause);
+	}
+	public CLIException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

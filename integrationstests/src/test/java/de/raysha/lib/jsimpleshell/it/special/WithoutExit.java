@@ -18,7 +18,7 @@ public class WithoutExit extends IntegrationsTest {
 		return super.buildShell()
 				.addHandler(new SubShellCommands());
 	}
-	
+
 	@Test
 	public void noExit() throws IOException{
 		executeAndWaitForCommand("sub-shell-without-exit");
@@ -26,7 +26,7 @@ public class WithoutExit extends IntegrationsTest {
 
 		assertFalse(result.containsOutLine(".*exit.*"));
 	}
-	
+
 	@Test
 	public void typeExit() throws IOException{
 		executeAndWaitForCommand("sub-shell-without-exit");
@@ -34,7 +34,7 @@ public class WithoutExit extends IntegrationsTest {
 
 		assertTrue(result.containsErrLine("Unknown command: \\\"exit\\\""));
 	}
-	
+
 	@Test
 	public void exitAlternative() throws IOException{
 		executeAndWaitForCommand("sub-shell-without-exit");

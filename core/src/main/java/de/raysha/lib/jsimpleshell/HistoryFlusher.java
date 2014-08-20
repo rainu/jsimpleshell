@@ -9,7 +9,7 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 /**
  * This handler is responsible for flushing the history (if a {@link ConsoleReader} and {@link FileHistory} will be used)
- * 
+ *
  * @author rainu
  */
 public class HistoryFlusher implements ShellManageable {

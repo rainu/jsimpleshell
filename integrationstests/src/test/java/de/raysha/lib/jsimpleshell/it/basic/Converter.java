@@ -25,7 +25,7 @@ public class Converter extends IntegrationsTest {
 
 		assertTrue(result.containsOutLine("KEY;VALUE"));
 	}
-	
+
 	@Test
 	public void inputConvert() throws IOException{
 		CommandResult result = executeAndWaitForCommand("from-entry", "KEY;VALUE");
