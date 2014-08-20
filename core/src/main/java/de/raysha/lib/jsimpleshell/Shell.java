@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
@@ -346,9 +348,10 @@ public class Shell {
 	 * Comments begins with the '#' character.
 	 *
 	 * @param script Script that should be executed.
+	 * @param parameters Arguments for the script in form of: &lt;argName>=&lt;argValue>
 	 * @throws CLIException
 	 */
-	public void runScript(File script) throws CLIException{
+	public void runScript(File script, String...parameters) throws CLIException{
 		if(script == null){
 			throw new NullPointerException("The script must not be null!");
 		}
@@ -359,7 +362,46 @@ public class Shell {
 			throw new IllegalArgumentException("The script doesn't exists!");
 		}
 
-		processLine("!run-script \"" + script.getAbsolutePath() + "\"");
+		StringBuffer parameterLine = new StringBuffer("");
+		for(String p : parameters){
+			parameterLine.append(" \"");
+			parameterLine.append(p);
+			parameterLine.append("\"");
+		}
+
+		processLine("!run-script \"" + script.getAbsolutePath() + "\" " + parameterLine);
+	}
+
+	/**
+	 * Run the given script. This script should be a text file with including the
+	 * executing commands. It is also possible to write comments in that file.
+	 * Comments begins with the '#' character.
+	 *
+	 * @param script Script that should be executed.
+	 * @param parameters Arguments for the script
+	 * @throws CLIException
+	 */
+	public void runScript(File script, Map<String, String> parameters) throws CLIException{
+		if(script == null){
+			throw new NullPointerException("The script must not be null!");
+		}
+		if(script.isDirectory()){
+			throw new IllegalArgumentException("The script must be a file!");
+		}
+		if(!script.exists()){
+			throw new IllegalArgumentException("The script doesn't exists!");
+		}
+
+		StringBuffer parameterLine = new StringBuffer("");
+		for(Entry<String, String> p : parameters.entrySet()){
+			parameterLine.append(" \"");
+			parameterLine.append(p.getKey());
+			parameterLine.append("=");
+			parameterLine.append(p.getValue());
+			parameterLine.append("\"");
+		}
+
+		processLine("!run-script \"" + script.getAbsolutePath() + "\" " + parameterLine);
 	}
 
 	/**

@@ -18,7 +18,17 @@ public class Starter {
 		shell.processLine("?help");
 
 		if(args.length > 0){
-			shell.runScript(new File(args[0]));
+			String[] scriptArgs = null;
+			if(args.length > 1){
+				scriptArgs = new String[args.length - 1];
+				for(int i=1; i < args.length; i++){
+					scriptArgs[i-1] = args[i];
+				}
+			}else{
+				scriptArgs = new String[]{};
+			}
+
+			shell.runScript(new File(args[0]), scriptArgs);
 		}
 
 		shell.commandLoop();
