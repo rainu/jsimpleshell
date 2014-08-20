@@ -12,7 +12,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jline.console.ConsoleReader;
 import de.raysha.lib.jsimpleshell.PromptElement;
@@ -27,7 +34,6 @@ import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.util.FileUtils;
 import de.raysha.lib.jsimpleshell.util.PromptBuilder;
-import de.raysha.lib.jsimpleshell.util.Strings;
 
 /**
  * This class uses a {@link ConsoleReader} for additional functionality.
@@ -50,6 +56,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 	
 	private static enum InputState { USER, SCRIPT }
     private InputState inputState = InputState.USER;
+    private Map<String, String> scriptParameters;
 	
 	private int lastCommandOffset = 0;
 
@@ -159,6 +166,10 @@ public class TerminalIO implements Input, Output, ShellManageable {
 		}while(command != null && "".equals(command.trim()));
         
 		if (command != null) {
+			for(Entry<String, String> scriptParam : scriptParameters.entrySet()){
+				command = command.replaceAll("\\{" + scriptParam.getKey() + "\\}", scriptParam.getValue());
+			}
+			
             String completeLine = prompt + command;
             println(completeLine);
             lastCommandOffset = completeLine.length();
@@ -193,10 +204,53 @@ public class TerminalIO implements Input, Output, ShellManageable {
     public void runScript(
     		@Param(value="param.name.runscript", description="param.description.runscript",
     				type = FileCandidatesChooser.FILES_TYPE) 
-            String filename) throws FileNotFoundException {
+            String filename,
+            @Param(value="param.name.runscript.1", description="param.description.runscript.1")
+            String...parameters) throws FileNotFoundException {
 
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
         inputState = InputState.SCRIPT;
+        
+        Pattern parameterPattern = Pattern.compile("^(\\w{1,})=(.*)$");
+        
+        scriptParameters = new HashMap<String, String>();
+        for(String p : parameters){
+        	Matcher m = parameterPattern.matcher(p);
+        	if(m.matches()){
+        		scriptParameters.put(m.group(1), m.group(2));
+        	}
+        }
+    }
+    
+    @Command(abbrev = "command.abbrev.listscriptarguments", description = "command.description.listscriptarguments", 
+    		header = "command.header.listscriptarguments", name = "command.name.listscriptarguments")
+    public Set<String> listScriptArguments(
+    		@Param(value="param.name.listscriptarguments", description="param.description.listscriptarguments",
+    				type = FileCandidatesChooser.FILES_TYPE) 
+            String filename) throws IOException{
+    	
+    	BufferedReader reader = null;
+    	Pattern parameterPattern = Pattern.compile("\\{([^\\{\\}]*)\\}");
+    	TreeSet<String> arguments = new TreeSet<String>();
+    	
+    	try{
+    		reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+    		
+	    	String line = null;
+	    	do{
+	    		line = reader.readLine();
+	    		if(line != null){
+	    			Matcher m = parameterPattern.matcher(line);
+	    			while(m.find()){
+	    				arguments.add(m.group(1));
+	    			}
+	    		}
+	    	}while(line != null);
+    	}finally{
+    		if(reader != null) reader.close();
+    	}
+    	
+    	return arguments;
     }
     
 	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome", 
