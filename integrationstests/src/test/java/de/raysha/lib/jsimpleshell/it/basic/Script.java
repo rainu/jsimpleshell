@@ -40,22 +40,13 @@ public class Script extends IntegrationsTest {
 		tmpScript.deleteOnExit();
 		
 		FileUtils.write(tmpScript, "echo {value}\n", true);
-		FileUtils.write(tmpScript, "?help\n", true);
-		FileUtils.write(tmpScript, "#this is a comment line\n", true);
-		FileUtils.write(tmpScript, "\n", true);
-		FileUtils.write(tmpScript, "?help ?list\n", true);
 		FileUtils.write(tmpScript, "echo {value}\n", true);
 		
 		executeAndWaitForCommand("?help", "exit");
 		CommandResult result = executeAndWaitForCommand("!run-script", 
 				tmpScript.getAbsolutePath(), "value=Hello World");
 		
-		assertFalse(result.isError());
-
-		assertTrue(result.containsOutLine("IT\\> echo Hello World"));
-		assertFalse(result.containsOutLine("IT\\> echo {value}"));
-		assertTrue(result.containsOutLine("IT\\> \\?help ?list"));
-		assertTrue(result.containsOutLine("IT\\> \\?help \\?list"));
-		assertFalse(result.containsOutLine("this is a comment line"));
+		assertTrue(result.containsLine("IT\\> echo Hello World"));
+		assertFalse(result.containsLine("IT\\> echo \\{value\\}"));
 	}
 }

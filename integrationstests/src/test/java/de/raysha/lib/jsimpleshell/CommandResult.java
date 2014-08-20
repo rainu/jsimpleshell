@@ -43,6 +43,10 @@ public class CommandResult{
 		}
 		return false;
 	}
+	
+	public boolean containsLine(String string) {
+		return containsErrLine(string) || containsOutLine(string);
+	}
 
 	private String[] outLines;
 	
