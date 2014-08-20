@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -197,8 +199,6 @@ public class TerminalIO implements Input, Output, ShellManageable {
     	}
     }
 
-    private final Pattern scriptParameterPattern = Pattern.compile("^(\\w{1,})=(.*)$");
-    
     @Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript", 
     		header = "command.header.runscript", name = "command.name.runscript")
     public void runScript(
@@ -211,13 +211,46 @@ public class TerminalIO implements Input, Output, ShellManageable {
         scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
         inputState = InputState.SCRIPT;
         
+        Pattern parameterPattern = Pattern.compile("^(\\w{1,})=(.*)$");
+        
         scriptParameters = new HashMap<String, String>();
         for(String p : parameters){
-        	Matcher m = scriptParameterPattern.matcher(p);
+        	Matcher m = parameterPattern.matcher(p);
         	if(m.matches()){
         		scriptParameters.put(m.group(1), m.group(2));
         	}
         }
+    }
+    
+    @Command(abbrev = "command.abbrev.listscriptarguments", description = "command.description.listscriptarguments", 
+    		header = "command.header.listscriptarguments", name = "command.name.listscriptarguments")
+    public Set<String> listScriptArguments(
+    		@Param(value="param.name.listscriptarguments", description="param.description.listscriptarguments",
+    				type = FileCandidatesChooser.FILES_TYPE) 
+            String filename) throws IOException{
+    	
+    	BufferedReader reader = null;
+    	Pattern parameterPattern = Pattern.compile("\\{([^\\{\\}]*)\\}");
+    	TreeSet<String> arguments = new TreeSet<String>();
+    	
+    	try{
+    		reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+    		
+	    	String line = null;
+	    	do{
+	    		line = reader.readLine();
+	    		if(line != null){
+	    			Matcher m = parameterPattern.matcher(line);
+	    			while(m.find()){
+	    				arguments.add(m.group(1));
+	    			}
+	    		}
+	    	}while(line != null);
+    	}finally{
+    		if(reader != null) reader.close();
+    	}
+    	
+    	return arguments;
     }
     
 	@Command(abbrev = "command.abbrev.setmacrohome", description = "command.description.setmacrohome", 

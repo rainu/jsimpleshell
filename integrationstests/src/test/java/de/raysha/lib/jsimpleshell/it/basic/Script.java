@@ -49,4 +49,21 @@ public class Script extends IntegrationsTest {
 		assertTrue(result.containsLine("IT\\> echo Hello World"));
 		assertFalse(result.containsLine("IT\\> echo \\{value\\}"));
 	}
+	
+	@Test
+	public void listScriptArguments() throws IOException{
+		File tmpScript = File.createTempFile("jss", ".script");
+		tmpScript.deleteOnExit();
+		
+		FileUtils.write(tmpScript, "echo {value}\n", true);
+		FileUtils.write(tmpScript, "echo {arg1} {arg2}\n", true);
+		
+		executeAndWaitForCommand("?help", "exit");
+		CommandResult result = executeAndWaitForCommand("!list-script-arguments", 
+				tmpScript.getAbsolutePath());
+		
+		assertTrue(result.containsLine("value"));
+		assertTrue(result.containsLine("arg1"));
+		assertTrue(result.containsLine("arg2"));
+	}
 }
