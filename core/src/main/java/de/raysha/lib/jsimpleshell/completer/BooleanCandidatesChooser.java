@@ -32,7 +32,7 @@ public class BooleanCandidatesChooser implements CandidatesChooser {
 	}
 
 	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return Boolean.class == paramSpec.getValueClass();
+		return Boolean.class == paramSpec.getValueClass() || boolean.class == paramSpec.getValueClass();
 	}
 
 }
