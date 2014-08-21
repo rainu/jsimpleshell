@@ -6,6 +6,7 @@ import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
@@ -19,19 +20,29 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 /**
  * This class contains all Commands for the main shell.
  *
+ * <ul>
+ *		<li>
+ *			If you want that the shell make sub shell's you must implement the {@link ShellDependent} interface
+ *			or annotate a field/method with {@link Inject} to get the parent shell that is needed if you want to create a subshell.
+ *		</li>
+ *		<li>
+ *			If you want to make output within a command you must implement the {@link OutputDependent} interface
+ *			or annotate a field/method with {@link Inject} to get the OutputBuilder. With that builder you can print output to out/err.
+ *		</li>
+ *		<li>
+ *			If you want to get (user-)input directly within a command you must implement the {@link InputDependent} interface
+ *			or annotate a field/method with {@link Inject} to get the InputBuilder. With that builder you have the possibility to read directly the input.
+ *		</li>
+ * </ul>
+ *
  * @author rainu
  */
-//if you want that the shell make sub shell's you must implement the ShellDependent interface
-//to get the parent shell that is needed if you want to create a subshell
-
-//if you want to make output within a command you must implement the OutputDependent interface
-//to get the OutputBuilder. With that builder you can print output to out/err
-
-//if you want to get (user-)input directly within a command you must implement the InputDependent interface
-//to get the InputBuilder. With that builder you have the possibility to read directly the input
-public class MainShell implements ShellDependent, OutputDependent, InputDependent {
+public class MainShell implements ShellDependent {
 	private Shell shell;
-	private OutputBuilder output;
+
+	//field injection
+	@Inject private OutputBuilder output;
+
 	private InputBuilder input;
 
 	@Override
@@ -39,13 +50,9 @@ public class MainShell implements ShellDependent, OutputDependent, InputDependen
 		this.shell = theShell;
 	}
 
-	@Override
-	public void cliSetOutput(OutputBuilder output) {
-		this.output = output;
-	}
-
-	@Override
-	public void cliSetInput(InputBuilder input) {
+	//method injection
+	@Inject
+	public void setInput(InputBuilder input) {
 		this.input = input;
 	}
 
@@ -83,7 +90,7 @@ public class MainShell implements ShellDependent, OutputDependent, InputDependen
 		//the method will be blocked until the shell was abandoned
 		subShell.commandLoop();
 
-		//this command doesnt return the output but use the output directly (this is possible because this class implements the OutputDependent-Interface)
+		//this command doesnt return the output but use the output directly
 		output.out().normal(echoBuilder.build()).println();
 	}
 
