@@ -26,7 +26,7 @@ For possible future changes see [here](https://github.com/rainu/jsimpleshell/lab
 How it works
 ------------
 
-Do you want to see some code? No problem! Look  [here](https://github.com/rainu/jsimpleshell/blob/master/example/src/main/java/de/raysha/lib/jsimpleshell/example/MainShell.java)
+Do you want to see some code? No problem! Look  [here](https://github.com/rainu/jsimpleshell/blob/master/example/src/main/java/de/raysha/lib/jsimpleshell/example)
 
 Demo version
 ------------
