@@ -64,6 +64,7 @@ public class Shell {
 
 	private final CompositeMessageResolver messageResolver;
 	final AggregateCandidatesChooser candidatesChooser;
+	private DependencyResolver dependencyResolver;
 
 	public static class Settings {
 		final Input input;
@@ -98,6 +99,8 @@ public class Shell {
 		if(input instanceof TerminalIO){
 			inputBuilder = new InputBuilder(((TerminalIO)input).getConsole());
 		}
+
+		dependencyResolver = configureDependencyResolver();
 
 		displayTime = s.displayTime;
 		for (String prefix : s.auxHandlers.keySet()) {
@@ -164,6 +167,17 @@ public class Shell {
 
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private List<Object> allHandlers = new ArrayList<Object>();
+
+	private DependencyResolver configureDependencyResolver() {
+		DependencyResolver dependencyResolver = new DependencyResolver();
+
+		dependencyResolver.put(this);
+		dependencyResolver.put(inputBuilder);
+		dependencyResolver.put(outputBuilder);
+		dependencyResolver.put(messageResolver);
+
+		return dependencyResolver;
+	}
 
 	/**
 	 * Enable the exit command. By default it is enabled!
@@ -258,23 +272,13 @@ public class Shell {
 		inputConverter.addDeclaredConverters(handler);
 		outputConverter.addDeclaredConverters(handler);
 
-		if (handler instanceof ShellDependent) {
-			((ShellDependent)handler).cliSetShell(this);
-		}
-		if (handler instanceof OutputDependent) {
-			((OutputDependent) handler).cliSetOutput(outputBuilder);
-		}
-		if (handler instanceof InputDependent) {
-			((InputDependent) handler).cliSetInput(inputBuilder);
-		}
+		dependencyResolver.resolveDependencies(handler);
+
 		if (handler instanceof MessageResolver) {
 			List<MessageResolver> chain = messageResolver.getChain();
 
 			//the default message resolver should be always the latest
 			chain.add(chain.size() - 1, (MessageResolver)handler);
-		}
-		if (handler instanceof MessageResolverDependent) {
-			((MessageResolverDependent) handler).cliSetMessageResolver(messageResolver);
 		}
 		if (handler instanceof CandidatesChooser) {
 			candidatesChooser.addCandidatesChooser((CandidatesChooser)handler);
