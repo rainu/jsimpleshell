@@ -281,7 +281,7 @@ public class AutoComplete extends IntegrationsTest {
 
 		candidateIsNotShown(result, "--p1");
 		candidateIsNotShown(result, "--p2");
-		candidateIsNotShown(result, "--p3");
+		candidateIsNotShown(result, "--p-3");
 
 		simulateUserInput("set \t");
 		result = waitForShellCommandExec();
@@ -290,7 +290,7 @@ public class AutoComplete extends IntegrationsTest {
 
 		candidateIsNotShown(result, "--p1");
 		candidateIsNotShown(result, "--p2");
-		candidateIsNotShown(result, "--p3");
+		candidateIsNotShown(result, "--p-3");
 	}
 
 	@Test
@@ -302,7 +302,7 @@ public class AutoComplete extends IntegrationsTest {
 
 		candidateIsShown(result, "--p1");
 		candidateIsShown(result, "--p2");
-		candidateIsShown(result, "--p3");
+		candidateIsShown(result, "--p-3");
 	}
 
 	@Test
@@ -313,7 +313,7 @@ public class AutoComplete extends IntegrationsTest {
 		assertFalse(result.isError());
 
 		candidateIsNotShown(result, "--p2");
-		candidateIsNotShown(result, "--p3");
+		candidateIsNotShown(result, "--p-3");
 	}
 
 	@Test
