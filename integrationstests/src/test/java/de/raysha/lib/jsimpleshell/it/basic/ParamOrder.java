@@ -21,8 +21,8 @@ public class ParamOrder extends IntegrationsTest {
 
 	@Test
 	public void order() throws IOException, CLIException{
-		CommandResult result = executeAndWaitForCommand("set", "--p3", "p3", "--p1", "p1", "--p2", "p2");
+		CommandResult result = executeAndWaitForCommand("set", "--p3", "p3", "--p1", "p1", "--p2", "true");
 
-		assertTrue(result.toString(), result.containsOutLine("p1, p2, p3"));
+		assertTrue(result.toString(), result.containsOutLine("p1, true, p3"));
 	}
 }

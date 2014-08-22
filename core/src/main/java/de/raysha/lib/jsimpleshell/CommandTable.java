@@ -164,27 +164,12 @@ public class CommandTable {
 	}
 
 	protected int parameterCount(List<Token> tokens) {
-		if(isCustomizedParamOrder(tokens)){
+		if(Token.isCustomizedParamOrder(tokens)){
 			//each parameter has two tokens (--<param name> <param value>)
 			return (tokens.size() - 1) / 2;
 		}
 
 		return tokens.size() - 1;
-	}
-
-	protected boolean isCustomizedParamOrder(List<Token> tokens) {
-		if((tokens.size() - 1) % 2 != 0){
-			//each parameter has two tokens (--<param name> <param value>)
-			return false;
-		}
-
-		for(int i=1; i < tokens.size(); i += 2){
-			if(!tokens.get(i).getString().startsWith("--")){
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	private ShellCommand lookupAmbiguous(List<Token> tokens, List<ShellCommand> reducedTable, InputConversionEngine inputEngine) {

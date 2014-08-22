@@ -113,7 +113,7 @@ public class InputConversionEngine {
 
 
 	protected final List<Token> orderTokens(List<Token> tokens, ShellCommandParamSpec[] specs) {
-		if(!isCustomizedParamOrder(tokens)){
+		if(!Token.isCustomizedParamOrder(tokens)){
 			return tokens;
 		}
 
@@ -142,21 +142,6 @@ public class InputConversionEngine {
 		}
 
 		return result;
-	}
-
-	protected boolean isCustomizedParamOrder(List<Token> tokens) {
-		if((tokens.size() - 1) % 2 != 0){
-			//each parameter has two tokens (--<param name> <param value>)
-			return false;
-		}
-
-		for(int i=1; i < tokens.size(); i += 2){
-			if(!tokens.get(i).getString().startsWith("--")){
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -1,7 +1,10 @@
 package de.raysha.lib.jsimpleshell.completer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import jline.console.completer.Completer;
@@ -39,6 +42,12 @@ public class ParameterCompleter implements Completer {
 		this.cursor = cursor;
 		this.token = Token.tokenize(buffer);
 		this.paramIndex = getParamIndex(token, cursor);
+
+		List<String> possibleParameterNames = getPossibleParameterNames();
+		if(possibleParameterNames != null && !possibleParameterNames.isEmpty()){
+			return complete(candidates,
+					Collections.singletonList(new Candidates(possibleParameterNames)));
+		}
 
 		List<ShellCommandParamSpec> possibleParameters = getPossibleCommandParams();
 		if(possibleParameters.isEmpty()) return -1;
@@ -90,6 +99,68 @@ public class ParameterCompleter implements Completer {
 		return reduced;
 	}
 
+	private List<String> getPossibleParameterNames() {
+		if(token.size() <= 1) return null;
+
+		Token currentToken = null;
+		if(paramIndex < 0){
+			currentToken = token.get(1);
+		}else if((paramIndex + 1) < token.size()){
+			currentToken = token.get(paramIndex + 1);
+		} else {
+			return null; //we are at the position of new parameter without "--" as prefix
+		}
+
+		final String cmdName = token.get(0).getString();
+		final String prevValue = token.get(paramIndex).getString();
+
+		if(!currentToken.getString().startsWith("--") || prevValue.startsWith("--")){
+			return null;
+		}
+
+		final String currentParameter = currentToken.getString().substring(2);
+
+		List<String> alreadyUsed = new ArrayList<String>();
+		for(int i=1; i < token.size(); i++){
+			final String param = token.get(i).getString();
+
+			if(param.startsWith("--") && !param.substring(2).equals(currentParameter)){
+				alreadyUsed.add(param.substring(2));
+			}
+		}
+
+		List<String> candidates = new ArrayList<String>();
+
+		for(ShellCommand cmd : commandTable.getCommandTable()){
+			if(	cmdName.equals(cmd.getPrefix() + cmd.getAbbreviation()) ||
+				cmdName.equals(cmd.getPrefix() + cmd.getName())){
+
+				List<ShellCommandParamSpec> availableSpecs =
+						new ArrayList<ShellCommandParamSpec>(Arrays.asList(cmd.getParamSpecs()));
+
+				Iterator<ShellCommandParamSpec> iter = availableSpecs.iterator();
+				while(iter.hasNext()){
+					final ShellCommandParamSpec currentSpec = iter.next();
+
+					if(alreadyUsed.contains(currentSpec.getName())){
+						iter.remove();
+					} else if(!currentSpec.getName().startsWith(currentParameter)) {
+						iter.remove();
+					}
+				}
+
+				if(!availableSpecs.isEmpty()){
+					for(ShellCommandParamSpec spec : availableSpecs){
+						String inputParam = "--" + spec.getName() + " ";
+						candidates.add(inputParam);
+					}
+				}
+			}
+		}
+
+		return candidates;
+	}
+
 	private List<ShellCommandParamSpec> getPossibleCommandParams() {
 		List<ShellCommandParamSpec> possibleParameters = new ArrayList<ShellCommandParamSpec>();
 
@@ -105,12 +176,20 @@ public class ParameterCompleter implements Completer {
 		}
 
 		final String cmdName = token.get(0).getString();
+		final String prevParamToken = token.get(paramIndex).getString();
 
 		for(ShellCommand cmd : commandTable.getCommandTable()){
 			if(	cmdName.equals(cmd.getPrefix() + cmd.getAbbreviation()) ||
 				cmdName.equals(cmd.getPrefix() + cmd.getName())){
 
-				if(paramIndex < cmd.getParamSpecs().length){
+				if(prevParamToken != null && prevParamToken.startsWith("--")){
+					final String paramName = prevParamToken.substring(2);
+					for(ShellCommandParamSpec spec : cmd.getParamSpecs()){
+						if(spec.getName().equals(paramName)){
+							possibleParameters.add(spec);
+						}
+					}
+				}else if(paramIndex < cmd.getParamSpecs().length){
 					possibleParameters.add(cmd.getParamSpecs()[paramIndex]);
 				}
 			}

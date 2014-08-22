@@ -10,7 +10,7 @@ public class ParamOrderCommands {
 			@Param(value="p1")
 			String p1,
 			@Param(value="p2")
-			String p2,
+			Boolean p2,
 			@Param(value="p3")
 			String p3){
 		return p1 + ", " + p2 + ", " + p3;

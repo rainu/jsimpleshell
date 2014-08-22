@@ -11,6 +11,7 @@ import de.raysha.lib.jsimpleshell.CompleterCommands;
 import de.raysha.lib.jsimpleshell.CompleterCommands.TestEnum;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
+import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 
 public class AutoComplete extends IntegrationsTest {
@@ -18,7 +19,8 @@ public class AutoComplete extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new CompleterCommands());
+					.addHandler(new CompleterCommands())
+					.addHandler(new ParamOrderCommands());
 	}
 
 	@Test
@@ -268,6 +270,61 @@ public class AutoComplete extends IntegrationsTest {
 
 		candidateIsShown(result, "Candidate1");
 		candidateIsShown(result, "Candidate2");
+	}
+
+	@Test
+	public void parameterNameCompleter_doesntTrigger() throws IOException{
+		simulateUserInput("set -\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsNotShown(result, "--p1");
+		candidateIsNotShown(result, "--p2");
+		candidateIsNotShown(result, "--p3");
+
+		simulateUserInput("set \t");
+		result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsNotShown(result, "--p1");
+		candidateIsNotShown(result, "--p2");
+		candidateIsNotShown(result, "--p3");
+	}
+
+	@Test
+	public void parameterNameCompleter() throws IOException{
+		simulateUserInput("set --\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsShown(result, "--p1");
+		candidateIsShown(result, "--p2");
+		candidateIsShown(result, "--p3");
+	}
+
+	@Test
+	public void parameterNameCompleter_noTrailingParameterName() throws IOException{
+		simulateUserInput("set --p1 --\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsNotShown(result, "--p2");
+		candidateIsNotShown(result, "--p3");
+	}
+
+	@Test
+	public void parameterNameCompleter_argumentType() throws IOException{
+		simulateUserInput("set --p2 \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsShown(result, "true");
+		candidateIsShown(result, "false");
 	}
 
 	private void candidateIsShown(CommandResult result, String candidate) {
