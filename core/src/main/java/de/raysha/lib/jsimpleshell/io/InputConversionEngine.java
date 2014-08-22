@@ -123,13 +123,20 @@ public class InputConversionEngine {
 		for(int i=1; i < tokens.size(); i += 2){
 			final String paramName = tokens.get(i).getString().substring(2); //remove trailing "--"
 
+			boolean found = false;
 			for(int j=0; j < specs.length; j++){
 				ShellCommandParamSpec currentSpec = specs[j];
 
 				if(paramName.equals(currentSpec.getName())){
 					newOrder[j + 1] = tokens.get(i + 1);
+					found = true;
 					break;
 				}
+			}
+
+			if(!found){
+				//one of the parameter was not found
+				return tokens;
 			}
 		}
 
