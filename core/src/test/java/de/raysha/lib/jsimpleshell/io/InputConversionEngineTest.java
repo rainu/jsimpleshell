@@ -3,19 +3,25 @@
  * and open the template in the editor.
  */
 
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.io;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
+import de.raysha.lib.jsimpleshell.Token;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
 
 /**
- * 
+ *
  * @author ASG
  */
 public class InputConversionEngineTest implements InputConverter {
@@ -34,32 +40,32 @@ public class InputConversionEngineTest implements InputConverter {
 	@Test
 	public void testElementaryTypes() throws Exception {
 		System.out.println("testElementaryTypes");
-		String[] strings = { 
-				"aString", 
-				"some-object", 
+		String[] strings = {
+				"aString",
+				"some-object",
 				"1243",
-				"12432141231256", 
-				"12.6", 
-				"12.6", 
-				"true", 
+				"12432141231256",
+				"12.6",
+				"12.6",
+				"true",
 			};
-		Class[] classes = { 
-				String.class, 
-				Object.class, 
+		Class[] classes = {
+				String.class,
+				Object.class,
 				Integer.class,
-				Long.class, 
-				Double.class, 
-				Float.class, 
-				Boolean.class, 
+				Long.class,
+				Double.class,
+				Float.class,
+				Boolean.class,
 			};
-		Object[] results = { 
-				"aString", 
+		Object[] results = {
+				"aString",
 				(Object) "some-object",
-				new Integer(1243), 
-				new Long(12432141231256l), 
+				new Integer(1243),
+				new Long(12432141231256l),
 				new Double(12.6),
-				new Float(12.6f), 
-				new Boolean(true), 
+				new Float(12.6f),
+				new Boolean(true),
 			};
 
 		for (int i = 0; i < strings.length; i++) {
@@ -107,4 +113,24 @@ public class InputConversionEngineTest implements InputConverter {
 				otherConverter.convertInput("10", Integer.class));
 	}
 
+	@Test
+	public void orderTokens(){
+		InputConversionEngine engine = new InputConversionEngine();
+
+		ShellCommandParamSpec[] specs = new ShellCommandParamSpec[]{
+			new ShellCommandParamSpec("arg1", null, null, 1, null),
+			new ShellCommandParamSpec("arg2", null, null, 2, null)
+		};
+
+		List<Token> tokens = Arrays.asList(
+			new Token(0, "cmd"), new Token(1, "--arg2"), new Token(2, "arg2Value"),
+			new Token(3, "--arg1"), new Token(4, "arg1Value")
+		);
+
+		List<Token> result = engine.orderTokens(tokens, specs);
+		assertEquals(3, result.size());
+		assertSame(result.get(0), tokens.get(0));
+		assertSame(result.get(1), tokens.get(4));
+		assertSame(result.get(2), tokens.get(2));
+	}
 }

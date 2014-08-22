@@ -140,8 +140,8 @@ public class CommandTable {
 		// reduction
 		List<ShellCommand> reducedTable = new ArrayList<ShellCommand>();
 		for (ShellCommand cs : collectedTable) {
-			if (cs.getMethod().getParameterTypes().length == tokens.size()-1 ||
-				(cs.getMethod().isVarArgs() && (cs.getMethod().getParameterTypes().length-1 <= tokens.size()-1))) {
+			if (cs.getMethod().getParameterTypes().length == parameterCount(tokens) ||
+				(cs.getMethod().isVarArgs() && (cs.getMethod().getParameterTypes().length-1 <= parameterCount(tokens)))) {
 
 				reducedTable.add(cs);
 			}
@@ -150,17 +150,41 @@ public class CommandTable {
 		if (collectedTable.size() == 0) {
 			throw new CommandNotFoundException(discriminator);
 		} else if (reducedTable.size() == 0) {
-			throw new CommandNotFoundException(discriminator, tokens.size()-1, false);
+			throw new CommandNotFoundException(discriminator, parameterCount(tokens), false);
 		} else if (reducedTable.size() > 1) {
 			ShellCommand resolved = lookupAmbiguous(tokens, reducedTable, inputEngine);
 			if(resolved == null){
-				throw new CommandNotFoundException(discriminator, tokens.size()-1, true);
+				throw new CommandNotFoundException(discriminator, parameterCount(tokens), true);
 			}
 
 			return resolved;
 		} else {
 			return reducedTable.get(0);
 		}
+	}
+
+	protected int parameterCount(List<Token> tokens) {
+		if(isCustomizedParamOrder(tokens)){
+			//each parameter has two tokens (--<param name> <param value>)
+			return (tokens.size() - 1) / 2;
+		}
+
+		return tokens.size() - 1;
+	}
+
+	protected boolean isCustomizedParamOrder(List<Token> tokens) {
+		if((tokens.size() - 1) % 2 != 0){
+			//each parameter has two tokens (--<param name> <param value>)
+			return false;
+		}
+
+		for(int i=1; i < tokens.size(); i += 2){
+			if(!tokens.get(i).getString().startsWith("--")){
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private ShellCommand lookupAmbiguous(List<Token> tokens, List<ShellCommand> reducedTable, InputConversionEngine inputEngine) {
@@ -200,6 +224,7 @@ public class CommandTable {
 
 			try{
 				inputEngine.convertToParameters(tokens,
+						cmd.getParamSpecs(),
 						cmd.getMethod().getParameterTypes(),
 						cmd.getMethod().isVarArgs());
 			}catch(Exception e){
