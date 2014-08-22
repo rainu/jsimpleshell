@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -32,5 +33,12 @@ public class ParamOrder extends IntegrationsTest {
 		CommandResult result = executeAndWaitForCommand("set", "--unknownParam", "unknown", "--p1", "p1", "--p2", "true");
 
 		assertFalse(result.toString(), result.containsOutLine("p1, true, p3"));
+	}
+
+	@Test
+	public void varArgs() throws IOException, CLIException{
+		CommandResult result = executeAndWaitForCommand("set", "--opt", "op1", "--p1", "p1", "--opt", "op2", "--opt", "op3");
+
+		assertTrue(result.toString(), result.containsOutLine("p1, " + Arrays.toString(new String[]{"op1", "op2", "op3"})));
 	}
 }

@@ -327,6 +327,29 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "false");
 	}
 
+	@Test
+	public void parameterNameCompleter_multipleComands() throws IOException{
+		simulateUserInput("set --opt o1 --\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsShown(result, "--p1");
+		candidateIsNotShown(result, "--p2");
+		candidateIsNotShown(result, "--p-3");
+	}
+
+	@Test
+	public void parameterNameCompleter_varArgs() throws IOException{
+		simulateUserInput("set --p1 p1 --opt op1 --\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsShown(result, "--opt");
+		assertTrue(result.toString(), result.containsLine("^--opt$"));
+	}
+
 	private void candidateIsShown(CommandResult result, String candidate) {
 		assertTrue("Candidate '" + candidate + "' is not shown!",
 				result.getOut().contains(candidate));
