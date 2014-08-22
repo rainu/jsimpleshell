@@ -81,7 +81,7 @@ public class ShellCommandParamSpec {
 
 	public ShellCommandParamSpec(String name, Class valueClass, String description, int position, String type) {
 		super();
-		this.name = name;
+		this.name = name.replaceAll("\\s", "-");
 		this.description = description;
 		this.position = position;
 		this.valueClass = valueClass;
