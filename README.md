@@ -98,12 +98,14 @@ Maven Usage
 
 If you want to add ___JSimpleShell___ to your maven project, you can add the following dependency in your __pom.xml__:
 
-    <dependency>
-      <groupId>de.raysha.lib</groupId>
-      <artifactId>jsimpleshell</artifactId>
-      <version>2.0</version>
-    </dependency>
-    
+```xml
+<dependency>
+	<groupId>de.raysha.lib</groupId>
+	<artifactId>jsimpleshell</artifactId>
+	<version>2.1</version>
+</dependency>
+```
+
 Building
 --------
 
