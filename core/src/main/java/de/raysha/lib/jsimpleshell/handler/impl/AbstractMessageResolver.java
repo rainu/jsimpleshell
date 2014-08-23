@@ -1,6 +1,7 @@
 package de.raysha.lib.jsimpleshell.handler.impl;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
@@ -13,6 +14,8 @@ import de.raysha.lib.jsimpleshell.handler.MessageResolver;
  * @author rainu
  */
 public abstract class AbstractMessageResolver implements MessageResolver {
+
+	protected Locale locale = Locale.getDefault();
 
 	@Override
 	public String resolveCommandDescription(Command command, Method annotatedMethod) {
@@ -47,6 +50,11 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 	@Override
 	public String resolveGeneralMessage(String message) {
 		return resolveMessage(message);
+	}
+
+	@Override
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	/**

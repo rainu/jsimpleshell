@@ -1,5 +1,7 @@
 package de.raysha.lib.jsimpleshell.example;
 
+import java.util.Locale;
+
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -22,6 +24,11 @@ public class MessageResolving extends AbstractMessageResolver {
 	//get access to the currently used message resolver
 	@Inject
 	private MessageResolver resolver;
+
+	@Override
+	public boolean supportsLocale(Locale locale) {
+		return true;
+	}
 
 	@Override
 	protected String resolveMessage(String msg) {

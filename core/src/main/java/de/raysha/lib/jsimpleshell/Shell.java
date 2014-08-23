@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -81,7 +82,6 @@ public class Shell {
 			allAuxHandlers.putAll(addAuxHandlers);
 			return new Settings(input, output, allAuxHandlers, displayTime);
 		}
-
 	}
 
 	public Settings getSettings() {
@@ -123,7 +123,7 @@ public class Shell {
 		this.path = path;
 
 		this.messageResolver = new CompositeMessageResolver();
-		this.messageResolver.getChain().add(DefaultMessageResolver.getInstance());
+		this.messageResolver.setLocale(DefaultMessageResolver.getInstance().getLocale());
 		this.commandTable.setMessageResolver(messageResolver);
 
 		this.candidatesChooser = new AggregateCandidatesChooser();
@@ -273,9 +273,7 @@ public class Shell {
 
 		if (handler instanceof MessageResolver) {
 			List<MessageResolver> chain = messageResolver.getChain();
-
-			//the default message resolver should be always the latest
-			chain.add(chain.size() - 1, (MessageResolver)handler);
+			chain.add((MessageResolver)handler);
 		}
 		if (handler instanceof CandidatesChooser) {
 			candidatesChooser.addCandidatesChooser((CandidatesChooser)handler);
@@ -322,6 +320,21 @@ public class Shell {
 			header = "command.header.lastexception", name = "command.name.lastexception") // Shell is self-manageable, isn't it?
 	public Throwable getLastException() {
 		return lastException;
+	}
+
+	@Command(abbrev = "command.abbrev.changelocale", description = "command.description.changelocale",
+			header = "command.header.changelocale", name = "command.name.changelocale")
+	public String changeLocale(
+			@Param(value="param.name.changelocale", description="param.description.changelocale")
+			Locale locale){
+
+		if(messageResolver.supportsLocale(locale)){
+			messageResolver.setLocale(locale);
+
+			return messageResolver.resolveGeneralMessage("message.general.locale.changed");
+		}else{
+			return messageResolver.resolveGeneralMessage("message.general.locale.notsupported");
+		}
 	}
 
 	private List<PromptElement> path;

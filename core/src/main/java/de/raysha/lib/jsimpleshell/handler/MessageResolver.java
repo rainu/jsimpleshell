@@ -1,6 +1,7 @@
 package de.raysha.lib.jsimpleshell.handler;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
@@ -75,4 +76,18 @@ public interface MessageResolver {
 	 */
 	public String resolveGeneralMessage(String message);
 
+	/**
+	 * Checks if this {@link MessageResolver} supports the given locale.
+	 *
+	 * @param locale Locale to check.
+	 * @return True if the given locale will be supported. Otherwise false.
+	 */
+	public boolean supportsLocale(Locale locale);
+
+	/**
+	 * Set the {@link Locale} that should be used!
+	 *
+	 * @param locale The locale.
+	 */
+	public void setLocale(Locale locale);
 }

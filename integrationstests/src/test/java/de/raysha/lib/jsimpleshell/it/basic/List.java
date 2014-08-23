@@ -43,7 +43,7 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "?", "h", "help", "command-name");
 		isCommandListed(result, "?", "h", "help");
 		isCommandListed(result, "?", "la", "list-all");
-		isCommandListed(result, "?", "ghh", "generate-HTML-help", "file-name", "include-prefixed");
+		isCommandListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class List extends IntegrationsTest {
 		isCommandNotListed(result, "?", "h", "help", "command-name");
 		isCommandNotListed(result, "?", "h", "help");
 		isCommandNotListed(result, "?", "la", "list-all");
-		isCommandNotListed(result, "?", "ghh", "generate-HTML-help", "file-name", "include-prefixed");
+		isCommandNotListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
 	}
 
 	private void isCommandListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {

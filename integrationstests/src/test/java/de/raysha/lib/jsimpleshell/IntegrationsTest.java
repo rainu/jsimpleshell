@@ -2,6 +2,7 @@ package de.raysha.lib.jsimpleshell;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,6 +13,8 @@ public abstract class IntegrationsTest {
 
 	@Before
 	public void setup() throws IOException{
+		Locale.setDefault(Locale.ENGLISH);
+
 		this.shellInterface = new SilentShell(buildShell());
 		this.shellInterface.start();
 	}
