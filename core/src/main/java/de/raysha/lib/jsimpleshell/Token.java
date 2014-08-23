@@ -74,8 +74,8 @@ public class Token {
 	 * @param input String to be tokenized
 	 * @return List of tokens
 	 *
-	 * @see de.raysha.lib.jsimpleshell.Shell.Token
-	 * @see de.raysha.lib.jsimpleshell.Shell.escapeString
+	 * @see de.raysha.lib.jsimpleshell.Token
+	 * @see de.raysha.lib.jsimpleshell.Token#escapeString
 	 */
 	public static List<Token> tokenize(final String input) {
 		List<Token> result = new ArrayList<Token>();
