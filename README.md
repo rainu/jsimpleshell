@@ -26,7 +26,60 @@ For possible future changes see [here](https://github.com/rainu/jsimpleshell/lab
 How it works
 ------------
 
-Do you want to see some code? No problem! Look  [here](https://github.com/rainu/jsimpleshell/blob/master/example/src/main/java/de/raysha/lib/jsimpleshell/example)
+The following code is a simple example. This code starts a shell that contains two custom commands.
+
+```java
+import java.io.IOException;
+
+import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.annotation.Param;
+
+public class Example {
+
+	public static void main(String[] args) throws IOException {
+		Shell shell = ShellBuilder.shell("MyShell")
+				.addHandler(new Example())
+			.build();
+
+		shell.commandLoop();
+	}
+
+	@Command(abbrev="add")
+	public Long addition(Integer...integers){
+		Long result = 0L;
+		for(Integer i : integers){
+			result += i;
+		}
+
+		return result;
+	}
+
+	@Command(name="division", abbrev="div")
+	public Double div(
+			@Param("dividend") Double a,
+			@Param("divisor") Double b){
+
+		return a / b;
+	}
+}
+```
+
+If you run this little application you will see the following:
+
+```
+MyShell> ?list
+abbrev    name       parameter
+exit      exit       ()
+add       addition   (p1...)
+div       division   (dividend, divisor)
+MyShell> div 10 5
+2.0
+MyShell> exit
+```
+
+Look here for an addition example: [here](https://github.com/rainu/jsimpleshell/blob/master/example/src/main/java/de/raysha/lib/jsimpleshell/example)
 
 Demo version
 ------------
