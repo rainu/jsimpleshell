@@ -347,7 +347,19 @@ public class AutoComplete extends IntegrationsTest {
 		assertFalse(result.isError());
 
 		candidateIsShown(result, "--opt");
-		assertTrue(result.toString(), result.containsLine("^--opt$"));
+		assertTrue(result.getOut().indexOf("--opt") != result.getOut().lastIndexOf("--opt"));
+	}
+
+	@Test
+	public void parameterNameCompleter_dontMixModes() throws IOException{
+		simulateUserInput("set --p1 test \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsNotShown(result, "pom.xml");
+		candidateIsShown(result, "--opt");
+		candidateIsShown(result, "--p-3");
+		candidateIsShown(result, "--p2");
 	}
 
 	private void candidateIsShown(CommandResult result, String candidate) {

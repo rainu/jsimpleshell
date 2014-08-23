@@ -216,6 +216,28 @@ public class CommandTable {
 				iter.remove();
 			}
 		}
+
+		for(Token token : tokens){
+			if(token.getString().startsWith("--")){
+				final String paramName = token.getString().substring(2);
+
+				iter = reducedTable.iterator();
+				while(iter.hasNext()){
+					ShellCommand cmd = iter.next();
+					boolean found = false;
+					for(ShellCommandParamSpec spec : cmd.getParamSpecs()){
+						if(spec.getName().equals(paramName)){
+							found = true;
+							break;
+						}
+					}
+
+					if(!found){
+						iter.remove();
+					}
+				}
+			}
+		}
 	}
 
 	private void sortPossibleCommands(List<ShellCommand> commands){

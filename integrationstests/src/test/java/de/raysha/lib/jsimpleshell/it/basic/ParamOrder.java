@@ -39,6 +39,6 @@ public class ParamOrder extends IntegrationsTest {
 	public void varArgs() throws IOException, CLIException{
 		CommandResult result = executeAndWaitForCommand("set", "--opt", "op1", "--p1", "p1", "--opt", "op2", "--opt", "op3");
 
-		assertTrue(result.toString(), result.containsOutLine("p1, " + Arrays.toString(new String[]{"op1", "op2", "op3"})));
+		assertTrue(result.toString(), result.getOut().contains("p1, " + Arrays.toString(new String[]{"op1", "op2", "op3"})));
 	}
 }

@@ -118,19 +118,26 @@ public class InputConversionEngineTest implements InputConverter {
 		InputConversionEngine engine = new InputConversionEngine();
 
 		ShellCommandParamSpec[] specs = new ShellCommandParamSpec[]{
-			new ShellCommandParamSpec("arg1", null, null, 1, null),
-			new ShellCommandParamSpec("arg2", null, null, 2, null)
+			new ShellCommandParamSpec("arg1", null, null, 1, null, false),
+			new ShellCommandParamSpec("arg2", null, null, 2, null, false),
+			new ShellCommandParamSpec("varArg", null, null, 3, null, true)
 		};
 
 		List<Token> tokens = Arrays.asList(
 			new Token(0, "cmd"), new Token(1, "--arg2"), new Token(2, "arg2Value"),
-			new Token(3, "--arg1"), new Token(4, "arg1Value")
+			new Token(3, "--varArg"), new Token(4, "varArg1"),
+			new Token(5, "--arg1"), new Token(6, "arg1Value"),
+			new Token(7, "--varArg"), new Token(8, "varArg2"),
+			new Token(9, "--varArg"), new Token(10, "varArg3")
 		);
 
 		List<Token> result = engine.orderTokens(tokens, specs);
-		assertEquals(3, result.size());
+		assertEquals(6, result.size());
 		assertSame(result.get(0), tokens.get(0));
-		assertSame(result.get(1), tokens.get(4));
+		assertSame(result.get(1), tokens.get(6));
 		assertSame(result.get(2), tokens.get(2));
+		assertSame(result.get(3), tokens.get(4));
+		assertSame(result.get(4), tokens.get(8));
+		assertSame(result.get(5), tokens.get(10));
 	}
 }

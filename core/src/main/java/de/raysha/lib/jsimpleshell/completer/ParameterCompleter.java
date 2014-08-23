@@ -108,17 +108,21 @@ public class ParameterCompleter implements Completer {
 		}else if((paramIndex + 1) < token.size()){
 			currentToken = token.get(paramIndex + 1);
 		} else {
-			return null; //we are at the position of new parameter without "--" as prefix
+			boolean found = false;
+			for(Token t : token){
+				if(t.getString().startsWith("--")){
+					found = true;
+				}
+			}
+
+			if(!found) return null; //we are at the position of new parameter without "--" as prefix
 		}
 
 		final String cmdName = token.get(0).getString();
 		final String prevValue = token.get(paramIndex).getString();
 
-		if(!currentToken.getString().startsWith("--") || prevValue.startsWith("--")){
-			return null;
-		}
-
-		final String currentParameter = currentToken.getString().substring(2);
+		final String tokenValue = currentToken == null ? "" : currentToken.getString();
+		final String currentParameter = tokenValue.startsWith("--") ? tokenValue.substring(2) : "";
 
 		List<String> alreadyUsed = new ArrayList<String>();
 		for(int i=1; i < token.size(); i++){
@@ -129,23 +133,49 @@ public class ParameterCompleter implements Completer {
 			}
 		}
 
+		if(paramIndex % 2 == 0){
+			if(!tokenValue.startsWith("--") && alreadyUsed.isEmpty()){
+				return null;
+			}
+		}else{
+			if(!tokenValue.startsWith("--") || prevValue.startsWith("--")){
+				return null;
+			}
+		}
+
 		List<String> candidates = new ArrayList<String>();
 
-		for(ShellCommand cmd : commandTable.getCommandTable()){
+		cmdLoop: for(ShellCommand cmd : commandTable.getCommandTable()){
 			if(	cmdName.equals(cmd.getPrefix() + cmd.getAbbreviation()) ||
 				cmdName.equals(cmd.getPrefix() + cmd.getName())){
 
 				List<ShellCommandParamSpec> availableSpecs =
 						new ArrayList<ShellCommandParamSpec>(Arrays.asList(cmd.getParamSpecs()));
 
+				for(String usedParam : alreadyUsed){
+					boolean found = false;
+					for(ShellCommandParamSpec spec : availableSpecs){
+						if(usedParam.equals(spec.getName())){
+							found = true;
+							break;
+						}
+					}
+					if(!found){
+						//this command version is presumably not used
+						continue cmdLoop;
+					}
+				}
+
 				Iterator<ShellCommandParamSpec> iter = availableSpecs.iterator();
 				while(iter.hasNext()){
 					final ShellCommandParamSpec currentSpec = iter.next();
 
-					if(alreadyUsed.contains(currentSpec.getName())){
-						iter.remove();
-					} else if(!currentSpec.getName().startsWith(currentParameter)) {
-						iter.remove();
+					if(!currentSpec.isVarArgs()){
+						if(alreadyUsed.contains(currentSpec.getName())){
+							iter.remove();
+						} else if(!currentSpec.getName().startsWith(currentParameter)) {
+							iter.remove();
+						}
 					}
 				}
 

@@ -119,6 +119,7 @@ public class InputConversionEngine {
 
 		Token[] newOrder = new Token[tokens.size()];
 		newOrder[0] = tokens.get(0);
+		List<Token> varArgs = new ArrayList<Token>();
 
 		for(int i=1; i < tokens.size(); i += 2){
 			final String paramName = tokens.get(i).getString().substring(2); //remove trailing "--"
@@ -128,7 +129,12 @@ public class InputConversionEngine {
 				ShellCommandParamSpec currentSpec = specs[j];
 
 				if(paramName.equals(currentSpec.getName())){
-					newOrder[j + 1] = tokens.get(i + 1);
+					if(currentSpec.isVarArgs()){
+						varArgs.add(tokens.get(i + 1));
+					}else{
+						newOrder[j + 1] = tokens.get(i + 1);
+					}
+
 					found = true;
 					break;
 				}
@@ -141,6 +147,8 @@ public class InputConversionEngine {
 		}
 
 		List<Token> result = new ArrayList<Token>(Arrays.asList(newOrder));
+		result.addAll(varArgs);
+
 		Iterator<Token> iter = result.iterator();
 		while(iter.hasNext()){
 			if(iter.next() == null){

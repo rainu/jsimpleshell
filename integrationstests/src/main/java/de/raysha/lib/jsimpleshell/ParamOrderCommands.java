@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 
 public class ParamOrderCommands {
 
@@ -13,7 +14,7 @@ public class ParamOrderCommands {
 			String p1,
 			@Param(value="p2")
 			Boolean p2,
-			@Param(value="p 3")
+			@Param(value="p 3", type = FileCandidatesChooser.FILES_TYPE)
 			String p3){
 		return p1 + ", " + p2 + ", " + p3;
 	}
