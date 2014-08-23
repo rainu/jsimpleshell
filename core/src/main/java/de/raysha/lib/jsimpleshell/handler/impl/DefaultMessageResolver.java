@@ -1,7 +1,6 @@
 package de.raysha.lib.jsimpleshell.handler.impl;
 
-import java.io.IOException;
-import java.util.Properties;
+import java.util.ResourceBundle;
 
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
@@ -13,7 +12,7 @@ import de.raysha.lib.jsimpleshell.handler.MessageResolver;
  */
 public final class DefaultMessageResolver extends AbstractMessageResolver {
 	private static DefaultMessageResolver instance;
-	private Properties properties;
+	private ResourceBundle resourceBundle;
 
 	private DefaultMessageResolver() {}
 
@@ -27,20 +26,24 @@ public final class DefaultMessageResolver extends AbstractMessageResolver {
 
 	@Override
 	protected String resolveMessage(String msg) {
-		return getProperties().getProperty(msg, msg);
+		String resolved = msg;
+		try{
+			resolved = getResourceBundle().getString(msg);
+		}catch(Exception e){ }
+
+		return resolved;
 	}
 
-	private synchronized Properties getProperties() {
-		if(properties == null) {
-			properties = new Properties();
+	private synchronized ResourceBundle getResourceBundle() {
+		if(resourceBundle == null) {
 			try {
-				properties.load(getClass().getResourceAsStream("/default-messages.properties"));
-			} catch (IOException e) {
-				throw new IllegalStateException("Could not load default-messages.properties from classpath!", e);
+				resourceBundle = ResourceBundle.getBundle("jss-default-messages");
+			} catch (Exception e) {
+				throw new IllegalStateException("Could not load resource bundle from classpath!", e);
 			}
 		}
 
-		return properties;
+		return resourceBundle;
 	}
 
 }
