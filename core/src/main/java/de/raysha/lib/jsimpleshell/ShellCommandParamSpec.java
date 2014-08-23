@@ -26,6 +26,10 @@ public class ShellCommandParamSpec {
 					break;
 				}
 			}
+
+			//only the last parameter can be a varArg
+			boolean isVarArg = i + 1 == result.length && theMethod.isVarArgs();
+
 			if (paramAnnotation != null) {
 				assert !paramAnnotation.value().isEmpty() : "@Param.value mustn\'t be empty";
 
@@ -33,9 +37,9 @@ public class ShellCommandParamSpec {
 				String desc = resolveDescription(paramAnnotation, theMethod, msgResolver);
 				String type = paramAnnotation.type();
 
-				result[i] = new ShellCommandParamSpec(name, paramTypes[i], desc, i, type);
+				result[i] = new ShellCommandParamSpec(name, paramTypes[i], desc, i, type, isVarArg);
 			} else {
-				result[i] = new ShellCommandParamSpec(String.format("p%d", i + 1), paramTypes[i], "", i, "");
+				result[i] = new ShellCommandParamSpec(String.format("p%d", i + 1), paramTypes[i], "", i, "", isVarArg);
 			}
 		}
 		return result;
@@ -58,6 +62,7 @@ public class ShellCommandParamSpec {
 	private int position;
 	private Class valueClass;
 	private String type;
+	private boolean isVarArgs;
 
 	public Class getValueClass() {
 		return valueClass;
@@ -79,12 +84,17 @@ public class ShellCommandParamSpec {
 		return type;
 	}
 
-	public ShellCommandParamSpec(String name, Class valueClass, String description, int position, String type) {
+	public boolean isVarArgs() {
+		return isVarArgs;
+	}
+
+	public ShellCommandParamSpec(String name, Class valueClass, String description, int position, String type, boolean isVarArgs) {
 		super();
-		this.name = name;
+		this.name = name.replaceAll("\\s", "-");
 		this.description = description;
 		this.position = position;
 		this.valueClass = valueClass;
 		this.type = type;
+		this.isVarArgs = isVarArgs;
 	}
 }

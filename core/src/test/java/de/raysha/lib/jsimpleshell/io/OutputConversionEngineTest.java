@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.io;
 
 import static org.junit.Assert.assertEquals;
 

@@ -10,8 +10,11 @@ import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
+import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import de.raysha.lib.jsimpleshell.Token;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
@@ -58,8 +61,10 @@ public class InputConversionEngine {
 		return convertArgToElementaryType(string, aClass);
 	}
 
-	public final Object[] convertToParameters(List<Token> tokens, Class[] paramClasses, boolean isVarArgs)
+	public final Object[] convertToParameters(List<Token> tokens, ShellCommandParamSpec[] specs, Class[] paramClasses, boolean isVarArgs)
 			throws TokenException {
+
+		tokens = orderTokens(tokens, specs);
 
 		assert isVarArgs || paramClasses.length == tokens.size()-1;
 
@@ -106,6 +111,53 @@ public class InputConversionEngine {
 		return parameters;
 	}
 
+
+	protected final List<Token> orderTokens(List<Token> tokens, ShellCommandParamSpec[] specs) {
+		if(!Token.isCustomizedParamOrder(tokens)){
+			return tokens;
+		}
+
+		Token[] newOrder = new Token[tokens.size()];
+		newOrder[0] = tokens.get(0);
+		List<Token> varArgs = new ArrayList<Token>();
+
+		for(int i=1; i < tokens.size(); i += 2){
+			final String paramName = tokens.get(i).getString().substring(2); //remove trailing "--"
+
+			boolean found = false;
+			for(int j=0; j < specs.length; j++){
+				ShellCommandParamSpec currentSpec = specs[j];
+
+				if(paramName.equals(currentSpec.getName())){
+					if(currentSpec.isVarArgs()){
+						varArgs.add(tokens.get(i + 1));
+					}else{
+						newOrder[j + 1] = tokens.get(i + 1);
+					}
+
+					found = true;
+					break;
+				}
+			}
+
+			if(!found){
+				//one of the parameter was not found
+				return tokens;
+			}
+		}
+
+		List<Token> result = new ArrayList<Token>(Arrays.asList(newOrder));
+		result.addAll(varArgs);
+
+		Iterator<Token> iter = result.iterator();
+		while(iter.hasNext()){
+			if(iter.next() == null){
+				iter.remove();
+			}
+		}
+
+		return result;
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object convertArgToElementaryType(String string, Class aClass) throws CLIException {

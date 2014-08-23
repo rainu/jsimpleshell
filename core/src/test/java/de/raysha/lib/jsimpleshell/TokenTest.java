@@ -15,7 +15,7 @@ import java.util.Map.Entry;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author ASG
  */
 public class TokenTest {
@@ -25,18 +25,19 @@ public class TokenTest {
 	 */
 	@Test
 	public void testTokenize() {
-		String[] cases = { 
-				"", 
-				"aSingleToken", 
+		String[] cases = {
+				"",
+				"aSingleToken",
 				"a b c",
 				"an's g'ri # quotation test",
 				"Shell instance = new Shell(new ShellTest(), System.out",
 				"dir \"E:\\ASG\\!dynamic\\projects\" \t-l 3492.9  ",
-				"a b c ''", 
-				" \\\" " 
+				"a b c ''",
+				" \\\" ",
+				"--b bValue --a aValue"
 			};
 
-		int[] sizes = { 0, 1, 3, 1, 7, 4, 4, 1 };
+		int[] sizes = { 0, 1, 3, 1, 7, 4, 4, 1, 4};
 
 		for (int i = 0; i < cases.length; i++) {
 			List<Token> result = Token.tokenize(cases[i]);
@@ -57,10 +58,11 @@ public class TokenTest {
 		cases.put(" \\\' ", "\'");
 		cases.put("\\\" ", "\"");
 		cases.put("\\\' ", "\'");
+		cases.put("--arg", "--arg");
+		cases.put("\\\"--arg\\\"", "\"--arg\"");
 
 		for (Entry<String, String> curCase : cases.entrySet()) {
 			List<Token> result = Token.tokenize(curCase.getKey());
-			System.out.println(curCase + "|\t" + result);
 			assertEquals(curCase.getValue(), result.get(0).getString());
 		}
 	}
@@ -70,18 +72,18 @@ public class TokenTest {
 	 */
 	@Test
 	public void testEscapeString() {
-		String[] cases = { 
-				"aSingleToken", 
+		String[] cases = {
+				"aSingleToken",
 				"a b c",
 				"an's g'ri # quotation test",
 				"Shell instance = new Shell(new ShellTest(), System.out",
 				"dir \"E:\\ASG\\!dynamic\\projects\" \t-l 3492.9  ",
 				"param1 \"par\\\"am2\"", "param1 'par\\'am2'", "\\\"param",
-				"'param", 
-				"'", 
-				"\"", 
-				"\\'", 
-				"\\\"" 
+				"'param",
+				"'",
+				"\"",
+				"\\'",
+				"\\\""
 			};
 
 		for (int i = 0; i < cases.length; i++) {

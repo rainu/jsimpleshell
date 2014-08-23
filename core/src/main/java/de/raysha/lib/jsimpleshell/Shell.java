@@ -30,11 +30,8 @@ import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
-import de.raysha.lib.jsimpleshell.handler.InputDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
-import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
-import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeMessageResolver;
 import de.raysha.lib.jsimpleshell.handler.impl.DefaultMessageResolver;
@@ -485,7 +482,8 @@ public class Shell {
 		ShellCommand commandToInvoke = commandTable.lookupCommand(discriminator, tokens, inputConverter);
 
 		Class[] paramClasses = commandToInvoke.getMethod().getParameterTypes();
-		Object[] parameters = inputConverter.convertToParameters(tokens, paramClasses,
+		Object[] parameters = inputConverter.convertToParameters(tokens,
+				commandToInvoke.getParamSpecs(), paramClasses,
 				commandToInvoke.getMethod().isVarArgs());
 
 		outputHeader(commandToInvoke.getHeader(), parameters);

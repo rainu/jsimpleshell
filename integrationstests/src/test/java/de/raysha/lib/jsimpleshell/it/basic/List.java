@@ -30,7 +30,7 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandListed(result, "", "exit", "exit");
 		isCommandListed(result, "!", "smh", "set-macro-home", "path");
-		isCommandListed(result, "!", "rs", "run-script", "filename", "script arguments...");
+		isCommandListed(result, "!", "rs", "run-script", "filename", "script-argument...");
 		isCommandListed(result, "!", "lsa", "list-script-arguments", "filename");
 		isCommandListed(result, "!", "gmh", "get-macro-home");
 		isCommandListed(result, "!", "rm", "run-macro", "macroName");
