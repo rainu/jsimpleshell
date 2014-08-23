@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import de.raysha.lib.jsimpleshell.Token;
@@ -176,6 +179,12 @@ public class InputConversionEngine {
 			if("false".equalsIgnoreCase(string)) return false;
 
 			throw new CLIException("Can't convert string to " + aClass.getName());
+		} else if (aClass.equals(Locale.class)) {
+			try {
+				return convertToLocale(string);
+			}catch(Exception e){
+				throw new CLIException("Can't convert string to locale.", e);
+			}
 		} else if (aClass.equals(BigDecimal.class)) {
 			return new BigDecimal(string);
 		} else if (aClass.equals(BigInteger.class)) {
@@ -199,6 +208,17 @@ public class InputConversionEngine {
 				throw new CLIException("Can't convert string to " + aClass.getName());
 			}
 		}
+	}
+
+	private static final Pattern localePattern = Pattern.compile("^([a-z]{2})_{0,1}(|[A-Z]{2})$");
+	private static Locale convertToLocale(String string) {
+		Matcher m = localePattern.matcher(string);
+		m.matches();
+
+		final String language = m.group(1);
+		final String country = m.group(2);
+
+		return new Locale(language, country);
 	}
 
 	public void addDeclaredConverters(Object handler) {

@@ -3,6 +3,7 @@ package de.raysha.lib.jsimpleshell.it.basic;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -248,6 +249,20 @@ public class AutoComplete extends IntegrationsTest {
 
 		candidateIsShown(result, "TestMacro");
 		candidateIsShown(result, "TestMacro1");
+	}
+
+	@Test
+	public void localeCompleter() throws IOException {
+		simulateUserInput("!change-locale \ty\n");
+		CommandResult result = waitForShellCommandExec();
+
+		for(Locale l : Locale.getAvailableLocales()){
+			if(l.getCountry() != null && !l.getCountry().equals("")){
+				candidateIsShown(result, l.getLanguage() + "_" + l.getCountry());
+			}else{
+				candidateIsShown(result, l.getLanguage());
+			}
+		}
 	}
 
 	@Test
