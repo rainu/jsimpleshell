@@ -69,8 +69,6 @@ public class InputConversionEngine {
 
 		tokens = orderTokens(tokens, specs);
 
-		assert isVarArgs || paramClasses.length == tokens.size()-1;
-
 		Object[] parameters = new Object[paramClasses.length];
 		for (int i = 0; i < parameters.length-1; i++) {
 			try {

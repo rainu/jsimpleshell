@@ -149,7 +149,7 @@ public class CompositeMessageResolver implements MessageResolver {
 
 	@Override
 	public boolean supportsLocale(Locale locale) {
-		for(MessageResolver r : resolverChain){
+		for(MessageResolver r : getChainWithDefault()){
 			if(r.supportsLocale(locale)){
 				return true;
 			}
