@@ -84,9 +84,8 @@ Look here for an addition example: [here](https://github.com/rainu/jsimpleshell/
 Demo version
 ------------
 
-You can build the demo project (runnable jar file) for your own to checkout the functionality of ___JSimpleShell___. The only thing what you have to do is checkout and build the project (see below). After that you can run the jar-file which is created under the exaples/target folder.
+Checkout the [release area](https://github.com/rainu/jsimpleshell/releases) to download the JSimpleShell-Demo. For each release exists a __runnable-jar-file__, a __zip-file__ and a __tar.gz-file__. Choose which you want and start the Demo :)
 
-    java -jar example/target/JSimpleShell-Demo.jar 
 
 License
 -------
