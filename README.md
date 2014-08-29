@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rainu/jsimpleshell.svg?branch=master)](https://travis-ci.org/rainu/jsimpleshell)
+
 JSimpleShell
 ============
 
