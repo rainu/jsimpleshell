@@ -264,4 +264,17 @@ public class CommandTable {
 		}
 		return false;
 	}
+
+	/**
+	 * Refresh all commands stored in this table. This is needed if the locale was changed
+	 * This ensures that the name, description, etc. be read again.
+	 */
+	public void refreshCommands() {
+		List<ShellCommand> oldTable = new ArrayList<ShellCommand>(commandTable);
+		commandTable.clear();
+
+		for(ShellCommand cmd : oldTable){
+			addMethod(cmd.getMethod(), cmd.getHandler(), cmd.getPrefix());
+		}
+	}
 }

@@ -363,6 +363,7 @@ public class Shell {
 
 		if(messageResolver.supportsLocale(locale)){
 			messageResolver.setLocale(locale);
+			commandTable.refreshCommands();
 
 			return messageResolver.resolveGeneralMessage("message.general.locale.changed");
 		}else{

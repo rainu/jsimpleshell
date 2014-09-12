@@ -16,9 +16,9 @@ public abstract class IntegrationsTest {
 		Locale.setDefault(Locale.ENGLISH);
 
 		this.shellInterface = new SilentShell(buildShell());
-		this.shellInterface.start();
-
 		this.shellInterface.getShell().changeLocale(Locale.ENGLISH);
+
+		this.shellInterface.start();
 	}
 
 	@After
