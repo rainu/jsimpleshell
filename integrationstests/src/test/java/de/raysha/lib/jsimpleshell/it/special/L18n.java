@@ -36,6 +36,7 @@ public class L18n extends IntegrationsTest {
 
 	@Test
 	public void testResolvingCommand() throws IOException {
+		executeCommand("!change-locale", "en");
 		executeCommand("?help", "test");
 
 		CommandResult result = waitForShell();
