@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -88,7 +89,7 @@ public class Shell {
 		return new Settings(input, output, auxHandlers, displayTime);
 	}
 
-	public void setSettings(Settings s) {
+	private void setSettings(Settings s, Collection<Object> initialHandlers) {
 		input = s.input;
 		output = s.output;
 		outputBuilder = new OutputBuilder(output);
@@ -105,6 +106,9 @@ public class Shell {
 				addAuxHandler(handler, prefix);
 			}
 		}
+		for(Object handler : initialHandlers){
+			addMainHandler(handler, "");
+		}
 
 		output.setMessageResolver(messageResolver);
 	}
@@ -114,23 +118,55 @@ public class Shell {
 	 * You probably don't need this one, see methods of the ShellFactory.
 	 * @see de.raysha.lib.jsimpleshell.ShellFactory
 	 *
-	 * @param s Settings object for the shell instance
+	 * @param settings Settings object for the shell instance
+	 * @param initialHandlers The initial main handlers for this shell
 	 * @param commandTable CommandTable to store commands
 	 * @param path Shell's location: list of path elements.
 	 */
-	Shell(Settings s, CommandTable commandTable, List<PromptElement> path) {
+	Shell(Settings settings, Collection<Object> initialHandlers,
+			CommandTable commandTable, List<PromptElement> path) {
+
 		this.commandTable = commandTable;
 		this.path = path;
 
-		this.messageResolver = new CompositeMessageResolver();
-		this.messageResolver.setLocale(DefaultMessageResolver.getInstance().getLocale());
+		this.messageResolver = configureMessageResolver(settings, initialHandlers);
 		this.commandTable.setMessageResolver(messageResolver);
 
 		this.candidatesChooser = new AggregateCandidatesChooser();
 
-		setSettings(s);
+		//pay attention! at this point all message resolver must be configured before!
+		setSettings(settings, initialHandlers);
 
 		enableExitCommand();
+	}
+
+	private CompositeMessageResolver configureMessageResolver(
+			Settings settings, Collection<Object> initialHandlers) {
+
+		CompositeMessageResolver messageResolver = new CompositeMessageResolver();
+		messageResolver.setLocale(DefaultMessageResolver.getInstance().getLocale());
+
+		for (String prefix : settings.auxHandlers.keySet()) {
+			for (Object handler : settings.auxHandlers.get(prefix)) {
+				addMessageResolver(messageResolver, handler);
+			}
+		}
+		for(Object handler : initialHandlers){
+			addMessageResolver(messageResolver, handler);
+		}
+
+		return messageResolver;
+	}
+
+	private void addMessageResolver(CompositeMessageResolver messageResolver,
+			Object handler) {
+
+		if(handler instanceof MessageResolver){
+			List<MessageResolver> chain = messageResolver.getChain();
+			if(!chain.contains(handler)){
+				chain.add((MessageResolver)handler);
+			}
+		}
 	}
 
 	private CommandTable commandTable;
@@ -271,10 +307,7 @@ public class Shell {
 
 		dependencyResolver.resolveDependencies(handler);
 
-		if (handler instanceof MessageResolver) {
-			List<MessageResolver> chain = messageResolver.getChain();
-			chain.add((MessageResolver)handler);
-		}
+		addMessageResolver(messageResolver, handler);
 		if (handler instanceof CandidatesChooser) {
 			candidatesChooser.addCandidatesChooser((CandidatesChooser)handler);
 		}

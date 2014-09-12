@@ -376,7 +376,7 @@ public class ShellBuilder {
 		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
 		modifAuxHandlers.put("!", io);
 
-		Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false),
+		Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false), handlers,
 				new CommandTable(new DashJoinedNamer(true)), path);
 
 		configureShell(theShell);
@@ -387,7 +387,7 @@ public class ShellBuilder {
 		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
 		newPath.add(prompt);
 
-		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers),
+		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers), handlers,
 				new CommandTable(parent.getCommandTable().getNamer()), newPath);
 
 		configureShell(subshell);
@@ -414,10 +414,6 @@ public class ShellBuilder {
 
 		if(macroHome != null){
 			shell.setMacroHome(macroHome);
-		}
-
-		for (Object h : handlers) {
-			shell.addMainHandler(h, "");
 		}
 	}
 
