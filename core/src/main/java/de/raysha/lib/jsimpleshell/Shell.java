@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +31,7 @@ import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
+import de.raysha.lib.jsimpleshell.handler.CommandHookDependent.ExecutionResult;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
@@ -537,12 +537,20 @@ public class Shell {
 
 		informHooks(commandToInvoke);
 
-		long timeBefore = Calendar.getInstance().getTimeInMillis();
-		Object invocationResult = commandToInvoke.invoke(parameters);
-		long timeAfter = Calendar.getInstance().getTimeInMillis();
+		long timeBefore = System.currentTimeMillis();
+		CLIException thrown = null;
+		Object invocationResult = null;
+
+		try {
+			invocationResult = commandToInvoke.invoke(parameters);
+		} catch (CLIException e) {
+			thrown = e;
+		}
+
+		long timeAfter = System.currentTimeMillis();
 		final long time = timeAfter - timeBefore;
 
-		informHooks(commandToInvoke, invocationResult, time);
+		informHooks(commandToInvoke, invocationResult, thrown, time);
 
 		if (displayTime) {
 			if (time != 0L) {
@@ -551,11 +559,14 @@ public class Shell {
 		}
 
 		if (invocationResult != null) {
-			if(invocationResult instanceof ExitException){
-				throw (ExitException)invocationResult;
+			output.output(invocationResult, outputConverter);
+		}
+		if(thrown != null){
+			if(thrown.getCause() instanceof ExitException){
+				throw (ExitException)thrown.getCause();
 			}
 
-			output.output(invocationResult, outputConverter);
+			throw thrown;
 		}
 	}
 
@@ -567,10 +578,14 @@ public class Shell {
 		}
 	}
 
-	private void informHooks(ShellCommand commandToInvoke, Object invocationResult, long time) {
+	private void informHooks(ShellCommand commandToInvoke, Object invocationResult, CLIException thrown, long time) {
 		for(Object handler : allHandlers){
 			if(handler instanceof CommandHookDependent){
-				((CommandHookDependent)handler).cliAfterCommand(commandToInvoke, invocationResult, time);
+				ExecutionResult result = thrown != null ?
+						new ExecutionResult(thrown.getCause(), time) :
+						new ExecutionResult(invocationResult, time);
+
+				((CommandHookDependent)handler).cliAfterCommand(commandToInvoke, result);
 			}
 		}
 	}

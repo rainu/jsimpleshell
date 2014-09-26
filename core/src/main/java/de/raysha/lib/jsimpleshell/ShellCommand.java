@@ -71,8 +71,8 @@ public class ShellCommand {
 		try {
 			Object result = method.invoke(handler, parameters);
 			return result;
-		} catch (InvocationTargetException ite) {
-			return ite.getCause();
+		} catch(InvocationTargetException ex){
+			throw new CLIException(ex.getTargetException());
 		} catch (Exception ex) {
 			throw new CLIException(ex);
 		}

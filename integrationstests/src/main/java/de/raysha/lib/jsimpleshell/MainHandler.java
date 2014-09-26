@@ -12,4 +12,11 @@ public class MainHandler {
 	public void shutdown() throws InterruptedIOException {
 		throw new InterruptedIOException();
 	}
+
+	@Command
+	public void causeException() throws InterruptedException {
+		Thread.sleep(5);
+
+		throw new RuntimeException("Error!");
+	}
 }
