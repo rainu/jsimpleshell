@@ -2,6 +2,7 @@ package de.raysha.lib.jsimpleshell.handler;
 
 import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 
 /**
  * Classes that want to inform about command executing should implement this interface.
@@ -69,14 +70,25 @@ public interface CommandHookDependent {
 	 * This method will be called before a command will be executed.
 	 *
 	 * @param command Which command will be executed.
+	 * @param parameter The used command parameters.
 	 */
-	public void cliBeforeCommand(ShellCommand command);
+	public void cliBeforeCommand(ShellCommand command, Object[] parameter);
 
 	/**
 	 * This method will be called after a command was executed.
 	 *
 	 * @param command Which command was executed.
+	 * @param parameter The used command parameters.
 	 * @param result The execution result.
 	 */
-	public void cliAfterCommand(ShellCommand command, ExecutionResult result);
+	public void cliAfterCommand(ShellCommand command, Object[] parameter, ExecutionResult result);
+
+	/**
+	 * This method will be called if a execution of command was denied.
+	 *
+	 * @param command Which command was denied.
+	 * @param parameter The used command parameters.
+	 * @param decision The decision.
+	 */
+	public void cliDeniedCommand(ShellCommand command, Object[] parameter, AccessDecision decision);
 }
