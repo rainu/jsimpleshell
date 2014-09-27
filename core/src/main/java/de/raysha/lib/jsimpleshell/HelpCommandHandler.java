@@ -13,31 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
-import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
-import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 /**
  * Help command handler (usually prefixed by '?').
  * @author ASG
  */
-public class HelpCommandHandler implements ShellDependent, MessageResolverDependent {
+public class HelpCommandHandler {
 
-	private Shell owner;
-	private MessageResolver messageResolver;
-
-	public void cliSetShell(Shell theShell) {
-		this.owner = theShell;
-	}
-
-	@Override
-	public void cliSetMessageResolver(MessageResolver resolver) {
-		this.messageResolver = resolver;
-	}
+	@Inject private Shell owner;
+	@Inject private MessageResolver messageResolver;
 
 	@Command(abbrev = "command.abbrev.listall", description = "command.description.listall",
 			header = "command.header.listall", name = "command.name.listall")

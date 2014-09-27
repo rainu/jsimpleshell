@@ -1,18 +1,12 @@
 package de.raysha.lib.jsimpleshell;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.handler.OutputDependent;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 
-public class OutputCommands implements OutputDependent {
+public class OutputCommands {
 
-	private OutputBuilder output;
-	
-	@Override
-	public void cliSetOutput(OutputBuilder output) {
-		this.output = output;
-	}
-	
+	@Inject private OutputBuilder output;
 
 	@Command
 	public void outColor(){
@@ -24,7 +18,7 @@ public class OutputCommands implements OutputDependent {
     	output.out().red("text").println();
     	output.out().white("text").println();
     	output.out().yellow("text").println();
-    	
+
     	output.out().blackBG("text").println();
     	output.out().blueBG("text").println();
     	output.out().cyanBG("text").println();
@@ -34,7 +28,7 @@ public class OutputCommands implements OutputDependent {
     	output.out().whiteBG("text").println();
     	output.out().yellowBG("text").println();
 	}
-	
+
 	@Command
 	public void outWithoutColor(){
 		output.disableColor();
@@ -46,7 +40,7 @@ public class OutputCommands implements OutputDependent {
     	output.out().red("text").println();
     	output.out().white("text").println();
     	output.out().yellow("text").println();
-    	
+
     	output.out().blackBG("text").println();
     	output.out().blueBG("text").println();
     	output.out().cyanBG("text").println();
@@ -56,7 +50,7 @@ public class OutputCommands implements OutputDependent {
     	output.out().whiteBG("text").println();
     	output.out().yellowBG("text").println();
 	}
-	
+
 	@Command
 	public void errColor(){
 		output.err().black("text").println();
@@ -67,7 +61,7 @@ public class OutputCommands implements OutputDependent {
     	output.err().red("text").println();
     	output.err().white("text").println();
     	output.err().yellow("text").println();
-    	
+
     	output.err().blackBG("text").println();
     	output.err().blueBG("text").println();
     	output.err().cyanBG("text").println();
@@ -77,7 +71,7 @@ public class OutputCommands implements OutputDependent {
     	output.err().whiteBG("text").println();
     	output.err().yellowBG("text").println();
 	}
-	
+
 	@Command
 	public void errWithoutColor(){
 		output.disableColor();
@@ -89,7 +83,7 @@ public class OutputCommands implements OutputDependent {
     	output.err().red("text").println();
     	output.err().white("text").println();
     	output.err().yellow("text").println();
-    	
+
     	output.err().blackBG("text").println();
     	output.err().blueBG("text").println();
     	output.err().cyanBG("text").println();

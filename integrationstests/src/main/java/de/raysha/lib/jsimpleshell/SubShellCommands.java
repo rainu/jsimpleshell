@@ -3,21 +3,16 @@ package de.raysha.lib.jsimpleshell;
 import java.io.IOException;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.handler.ShellDependent;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 
-public class SubShellCommands implements ShellDependent {
-	private Shell shell;
-	
-	@Override
-	public void cliSetShell(Shell theShell) {
-		this.shell = theShell;
-	}
-	
+public class SubShellCommands {
+	@Inject private Shell shell;
+
 	@Command
 	public void newSubShell() throws IOException{
 		ShellBuilder.subshell("sub", shell).build().commandLoop();
 	}
-	
+
 	@Command
 	public void subShellWithoutExit() throws IOException{
 		ShellBuilder.subshell("sub", shell)

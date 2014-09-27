@@ -8,7 +8,7 @@ import java.util.List;
 
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
-import de.raysha.lib.jsimpleshell.handler.ShellDependent;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
 /**
@@ -16,15 +16,10 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
  *
  * @author rainu
  */
-public class MacroNameCandidatesChooser implements CandidatesChooser, ShellDependent {
+public class MacroNameCandidatesChooser implements CandidatesChooser {
 	public static final String MACRO_NAME_TYPE = "de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser_macroName";
 
-	private Shell shell;
-
-	@Override
-	public void cliSetShell(Shell theShell) {
-		this.shell = theShell;
-	}
+	@Inject private Shell shell;
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, final String part) {

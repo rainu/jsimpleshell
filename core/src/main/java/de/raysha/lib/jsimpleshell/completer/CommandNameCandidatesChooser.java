@@ -6,7 +6,7 @@ import java.util.Set;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
-import de.raysha.lib.jsimpleshell.handler.ShellDependent;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 
 /**
  * This {@link CandidatesChooser} chooses the command names in the current shell.
@@ -14,15 +14,10 @@ import de.raysha.lib.jsimpleshell.handler.ShellDependent;
  * @author rainu
  *
  */
-public class CommandNameCandidatesChooser implements CandidatesChooser, ShellDependent {
+public class CommandNameCandidatesChooser implements CandidatesChooser {
 	public static final String COMMAND_NAME_TYPE = "de.raysha.lib.jsimpleshell.Shell_commandName";
 
-	private Shell shell;
-
-	@Override
-	public void cliSetShell(Shell theShell) {
-		this.shell = theShell;
-	}
+	@Inject private Shell shell;
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
