@@ -8,10 +8,20 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
+import de.raysha.lib.jsimpleshell.CompleterCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
+import de.raysha.lib.jsimpleshell.ParamOrderCommands;
+import de.raysha.lib.jsimpleshell.SecurityCommands;
+import de.raysha.lib.jsimpleshell.ShellBuilder;
 
 public class List extends IntegrationsTest {
+
+	@Override
+	protected ShellBuilder buildShell() throws IOException {
+		return super.buildShell()
+					.addHandler(new SecurityCommands());
+	}
 
 	@Test
 	public void list() throws IOException {
@@ -20,6 +30,7 @@ public class List extends IntegrationsTest {
 		assertFalse(result.isError());
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandListed(result, "", "exit", "exit");
+		isCommandNotListed(result, "", "ds", "do-something");
 	}
 
 	@Test
@@ -44,6 +55,7 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "?", "h", "help");
 		isCommandListed(result, "?", "la", "list-all");
 		isCommandListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
+		isCommandNotListed(result, "", "ds", "do-something");
 	}
 
 	@Test

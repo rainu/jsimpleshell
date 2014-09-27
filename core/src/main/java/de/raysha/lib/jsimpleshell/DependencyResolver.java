@@ -13,6 +13,8 @@ import java.util.WeakHashMap;
 
 import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.exception.NotResolvableDependencyException;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
@@ -65,6 +67,9 @@ public class DependencyResolver {
 		}
 		if (object instanceof MessageResolverDependent) {
 			((MessageResolverDependent) object).cliSetMessageResolver(get(MessageResolver.class));
+		}
+		if (object instanceof CommandAccessManagerDependent) {
+			((CommandAccessManagerDependent) object).cliSetCommandAccessManager(get(CommandAccessManager.class));
 		}
 	}
 

@@ -10,7 +10,9 @@ import de.raysha.lib.jsimpleshell.ShellCommand;
 public interface CommandAccessManager {
 
 	/**
-	 * Checks whether the given command may be executed.
+	 * Checks whether the given command may be executed. Attention: If the parameters in the context
+	 * is <b>null</b>, the check-duration <b>should be as minimal as possible</b>! See {@link Context#getCommandParameters()}
+	 * for more details.
 	 *
 	 * @param context The command context.
 	 * @return The {@link AccessDecision}. If the decision is negative, the command is not executed.
@@ -25,6 +27,10 @@ public interface CommandAccessManager {
 	public static class Context {
 		private final ShellCommand command;
 		private final Object[] commandParameters;
+
+		public Context(ShellCommand command) {
+			this(command, null);
+		}
 
 		public Context(ShellCommand command, Object[] commandParameters) {
 			this.command = command;
@@ -42,7 +48,9 @@ public interface CommandAccessManager {
 		/**
 		 * Get the used command parameters. An <b>empty array</b> means the user entered no parameters.
 		 * But <b>null</b> means the user dosen't have execute the command and the shell wants to know if the
-		 * user has general access to this command (Maybe for auto completion reason).
+		 * user has general access to this command (Maybe for auto completion reason). In this case the check-
+		 * duration <b>should be as minimal as possible</b>! Because each command in the current command-
+		 * table will be checked from the access manager.
 		 *
 		 * @return The used command parameters.
 		 */

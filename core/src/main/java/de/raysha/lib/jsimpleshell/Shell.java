@@ -70,7 +70,7 @@ public class Shell {
 	private final CompositeMessageResolver messageResolver;
 	final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
-	private final CompositeCommandAccessManager accessManager;
+	final CompositeCommandAccessManager accessManager;
 
 	public static class Settings {
 		final Input input;
@@ -217,6 +217,7 @@ public class Shell {
 		dependencyResolver.put(inputBuilder);
 		dependencyResolver.put(outputBuilder);
 		dependencyResolver.put(messageResolver);
+		dependencyResolver.put(accessManager);
 
 		return dependencyResolver;
 	}

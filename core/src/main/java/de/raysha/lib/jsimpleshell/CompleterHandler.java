@@ -2,14 +2,13 @@ package de.raysha.lib.jsimpleshell;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.WeakHashMap;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
+import de.raysha.lib.jsimpleshell.completer.CommandNameCompleter;
 import de.raysha.lib.jsimpleshell.completer.ParameterCompleter;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
@@ -89,13 +88,8 @@ class CompleterHandler implements ShellManageable {
 
 		AggregateCompleter completerContainer = aggregateCompleter.get(console);
 
-		Collection<String> commandNames = new HashSet<String>();
-		for(ShellCommand cmd : shell.getCommandTable().getCommandTable()){
-			commandNames.add(cmd.getPrefix() + cmd.getName());
-		}
-
 		List<Completer> completer = new ArrayList<Completer>();
-		completer.add(new StringsCompleter(commandNames));
+		completer.add(new CommandNameCompleter(shell.accessManager, shell.getCommandTable().getCommandTable()));
 		completer.add(new ParameterCompleter(shell.getCommandTable(), shell.candidatesChooser));
 
 		for(Completer c : completer){

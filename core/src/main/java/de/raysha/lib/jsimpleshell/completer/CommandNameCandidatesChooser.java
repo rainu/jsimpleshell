@@ -7,6 +7,10 @@ import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.Context;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.Decision;
 
 /**
  * This {@link CandidatesChooser} chooses the command names in the current shell.
@@ -18,6 +22,7 @@ public class CommandNameCandidatesChooser implements CandidatesChooser {
 	public static final String COMMAND_NAME_TYPE = "de.raysha.lib.jsimpleshell.Shell_commandName";
 
 	@Inject private Shell shell;
+	@Inject private CommandAccessManager accessManager;
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
@@ -35,7 +40,10 @@ public class CommandNameCandidatesChooser implements CandidatesChooser {
 			String cmdLine = cmd.getPrefix() + cmd.getName();
 
 			if(cmdLine.startsWith(part)){
-				result.add(cmdLine);
+				AccessDecision decision = accessManager.checkCommandPermission(new Context(cmd));
+				if(decision.getDecision() == Decision.ALLOWED){
+					result.add(cmdLine);
+				}
 			}
 		}
 

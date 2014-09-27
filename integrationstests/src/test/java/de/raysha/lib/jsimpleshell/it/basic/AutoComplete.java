@@ -13,6 +13,7 @@ import de.raysha.lib.jsimpleshell.CompleterCommands.TestEnum;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
 import de.raysha.lib.jsimpleshell.ParamOrderCommands;
+import de.raysha.lib.jsimpleshell.SecurityCommands;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 
 public class AutoComplete extends IntegrationsTest {
@@ -21,7 +22,8 @@ public class AutoComplete extends IntegrationsTest {
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
 					.addHandler(new CompleterCommands())
-					.addHandler(new ParamOrderCommands());
+					.addHandler(new ParamOrderCommands())
+					.addHandler(new SecurityCommands());
 	}
 
 	@Test
@@ -110,6 +112,14 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "?list-all");
 		candidateIsShown(result, "exit");
 		candidateIsShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
+	public void deniedCommandsShouldNotCompleted() throws IOException{
+		simulateUserInput("\t");
+		CommandResult result = waitForShellCommandExec();
+
+		candidateIsNotShown(result, "do-something");
 	}
 
 	@Test

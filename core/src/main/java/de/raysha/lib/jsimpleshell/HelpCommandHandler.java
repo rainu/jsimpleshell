@@ -17,6 +17,10 @@ import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.Decision;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.Context;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 
@@ -28,6 +32,7 @@ public class HelpCommandHandler {
 
 	@Inject private Shell owner;
 	@Inject private MessageResolver messageResolver;
+	@Inject private CommandAccessManager accessManager;
 
 	@Command(abbrev = "command.abbrev.listall", description = "command.description.listall",
 			header = "command.header.listall", name = "command.name.listall")
@@ -35,7 +40,10 @@ public class HelpCommandHandler {
 		List<ShellCommand> commands = owner.getCommandTable().getCommandTable();
 		List<String> result = new ArrayList<String>(commands.size());
 		for (ShellCommand command : commands) {
-			result.add(formatCommandShort(command));
+			AccessDecision decision = accessManager.checkCommandPermission(new Context(command));
+			if(decision.getDecision() == Decision.ALLOWED){
+				result.add(formatCommandShort(command));
+			}
 		}
 		return result;
 	}
@@ -47,7 +55,10 @@ public class HelpCommandHandler {
 		List<String> result = new ArrayList<String>(commands.size());
 		for (ShellCommand command : commands) {
 			if (command.getPrefix() == null || command.getPrefix().isEmpty()) {
-				result.add(formatCommandShort(command));
+				AccessDecision decision = accessManager.checkCommandPermission(new Context(command));
+				if(decision.getDecision() == Decision.ALLOWED){
+					result.add(formatCommandShort(command));
+				}
 			}
 		}
 		return result;
@@ -138,7 +149,10 @@ public class HelpCommandHandler {
 		List<String> result = new ArrayList<String>(commands.size());
 		for (ShellCommand command : commands) {
 			if (command.startsWith(startsWith)) {
-				result.add(formatCommandShort(command));
+				AccessDecision decision = accessManager.checkCommandPermission(new Context(command));
+				if(decision.getDecision() == Decision.ALLOWED){
+					result.add(formatCommandShort(command));
+				}
 			}
 		}
 		return result;

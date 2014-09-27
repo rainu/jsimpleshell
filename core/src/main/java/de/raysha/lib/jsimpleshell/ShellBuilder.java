@@ -166,6 +166,7 @@ public class ShellBuilder {
 	 * <li>Implements the {@link InputDependent} interface to get the possibility to read anything in</li>
 	 * <li>Implements the {@link CommandHookDependent} interface to get the possibility to inform about command executions</li>
 	 * <li>Implements the {@link CommandAccessManager} interface to get the possibility to allow/deny command executions</li>
+	 * <li>Implements the {@link CommandAccessManagerDependent} interface to get access to the used {@link CommandAccessManager}</li>
 	 * <li>Implements the {@link MessageResolver} interface to get the possibility to resolve {@link Command} / {@link Param}eter messages</li>
 	 * <li>Implements the {@link MessageResolverDependent} interface to get access to the used {@link MessageResolver}</li>
 	 * <li>Implements the {@link CandidatesChooser} interface to choose your own parameter candidates</li>
