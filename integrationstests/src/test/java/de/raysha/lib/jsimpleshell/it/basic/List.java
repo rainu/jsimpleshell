@@ -37,6 +37,8 @@ public class List extends IntegrationsTest {
 	public void listAll() throws IOException {
 		final CommandResult result = executeAndWaitForCommand("?list-all");
 
+		System.out.println(result);
+
 		assertFalse(result.isError());
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
 		isCommandListed(result, "", "exit", "exit");
@@ -55,6 +57,8 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "?", "h", "help");
 		isCommandListed(result, "?", "la", "list-all");
 		isCommandListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
+		isCommandListed(result, ".", "var", "lvar", "name", "value");
+		isCommandListed(result, ".", "gvar", "gvar", "name", "value");
 		isCommandNotListed(result, "", "ds", "do-something");
 	}
 
@@ -79,6 +83,8 @@ public class List extends IntegrationsTest {
 		isCommandNotListed(result, "?", "h", "help");
 		isCommandNotListed(result, "?", "la", "list-all");
 		isCommandNotListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
+		isCommandNotListed(result, ".", "var", "lvar", "name", "value");
+		isCommandNotListed(result, ".", "gvar", "gvar", "name", "value");
 	}
 
 	private void isCommandListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {

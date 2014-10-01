@@ -44,6 +44,8 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "?help");
 		candidateIsShown(result, "?list");
 		candidateIsShown(result, "?list-all");
+		candidateIsShown(result, ".lvar");
+		candidateIsShown(result, ".gvar");
 		candidateIsShown(result, "exit");
 		candidateIsShown(result, MainHandler.SHUTDOWN);
 	}
@@ -66,6 +68,8 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsNotShown(result, "?help");
 		candidateIsNotShown(result, "?list");
 		candidateIsNotShown(result, "?list-all");
+		candidateIsNotShown(result, ".lvar");
+		candidateIsNotShown(result, ".gvar");
 		candidateIsNotShown(result, "exit");
 		candidateIsNotShown(result, MainHandler.SHUTDOWN);
 	}
