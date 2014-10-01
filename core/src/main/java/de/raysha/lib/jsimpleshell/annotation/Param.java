@@ -9,8 +9,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Locale;
 
+import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.LocaleCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 
 /**
  * Annotation for parameters of Command-marked methods.
@@ -39,9 +45,42 @@ public @interface Param {
 
 	/**
 	 * Specify a custom type for the parameter. It can be used by a {@link CandidatesChooser}
-	 * to determine the special type.
+	 * to determine the special type. See {@link DefaultTypes} for a list a´of a list of
+	 * types that are available by default.
+	 *
 	 * @return The custom type for that parameter.
 	 */
 	String type() default "";
 
+	public static abstract class DefaultTypes {
+		/**
+		 * Type for a {@link Boolean} parameter.
+		 */
+		public static final String BOOLEAN = BooleanCandidatesChooser.BOOLEAN_TYPE;
+
+		/**
+		 * Type for a (available) command name.
+		 */
+		public static final String COMMAND_NAME = CommandNameCandidatesChooser.COMMAND_NAME_TYPE;
+
+		/**
+		 * Type for files (includes directories).
+		 */
+		public static final String FILE = FileCandidatesChooser.FILES_TYPE;
+
+		/**
+		 * Type for directories.
+		 */
+		public static final String DIRECTORY = FileCandidatesChooser.DIRECTORY_ONLY_TYPE;
+
+		/**
+		 * Type for {@link Locale}.
+		 */
+		public static final String LOCALE = LocaleCandidatesChooser.LOCALE_TYPE;
+
+		/**
+		 * Type for a macro name.
+		 */
+		public static final String MACRO_NAME = MacroNameCandidatesChooser.MACRO_NAME_TYPE;
+	}
 }

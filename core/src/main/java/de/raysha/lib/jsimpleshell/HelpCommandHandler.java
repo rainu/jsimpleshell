@@ -15,8 +15,6 @@ import java.util.List;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.annotation.Param;
-import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.Decision;
@@ -68,7 +66,7 @@ public class HelpCommandHandler {
 			header = "command.header.generatehelp", name = "command.name.generatehelp")
 	public String generateHTMLHelp(
 			@Param(value="param.name.generatehelp", description="param.description.generatehelp",
-					type = FileCandidatesChooser.FILES_TYPE)
+					type = Param.DefaultTypes.FILE)
 			String fileName,
 			@Param(value="param.name.generatehelp.1", description="param.description.generatehelp.1")
 			boolean includePrefixed) throws IOException {
@@ -200,7 +198,7 @@ public class HelpCommandHandler {
 			header = "command.header.helpdetail", name = "command.name.helpdetail")
 	public Object help(
 			@Param(value="param.name.helpdetail", description="param.description.helpdetail",
-					type = CommandNameCandidatesChooser.COMMAND_NAME_TYPE)
+					type = Param.DefaultTypes.COMMAND_NAME)
 			String commandName) {
 		List<ShellCommand> commands = owner.getCommandTable().commandsByName(commandName);
 		StringBuilder result = new StringBuilder();

@@ -26,8 +26,6 @@ import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
-import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -203,7 +201,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			header = "command.header.runscript", name = "command.name.runscript")
 	public void runScript(
 			@Param(value="param.name.runscript", description="param.description.runscript",
-					type = FileCandidatesChooser.FILES_TYPE)
+					type = Param.DefaultTypes.FILE)
 			String filename,
 			@Param(value="param.name.runscript.1", description="param.description.runscript.1")
 			String...parameters) throws FileNotFoundException {
@@ -226,7 +224,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			header = "command.header.listscriptarguments", name = "command.name.listscriptarguments")
 	public Set<String> listScriptArguments(
 			@Param(value="param.name.listscriptarguments", description="param.description.listscriptarguments",
-					type = FileCandidatesChooser.FILES_TYPE)
+					type = Param.DefaultTypes.FILE)
 			String filename) throws IOException{
 
 		BufferedReader reader = null;
@@ -257,7 +255,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			header = "command.header.setmacrohome", name = "command.name.setmacrohome")
 	public String setMacroHome(
 			@Param(value = "param.name.setmacrohome", description = "param.description.setmacrohome",
-					type = FileCandidatesChooser.DIRECTORY_ONLY_TYPE)
+					type = Param.DefaultTypes.DIRECTORY)
 			File homeDir) {
 
 		if(!homeDir.exists() || !homeDir.isDirectory()){
@@ -279,7 +277,7 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			header = "command.header.runmacro", name = "command.name.runmacro")
 	public void runMacro(
 			@Param(value = "param.name.runmacro", description = "param.description.runmacro",
-					type = MacroNameCandidatesChooser.MACRO_NAME_TYPE)
+					type = Param.DefaultTypes.MACRO_NAME)
 			String name) throws IOException {
 
 		runScript(new File(macroHome, name + MACRO_SUFFIX).getAbsolutePath());

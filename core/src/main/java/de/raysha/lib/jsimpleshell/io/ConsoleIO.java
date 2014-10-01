@@ -19,7 +19,6 @@ import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
-import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
@@ -121,7 +120,7 @@ public class ConsoleIO implements Input, Output, ShellManageable {
 			header = "command.header.runscript", name = "command.name.runscript")
 	public void runScript(
 			@Param(value="param.name.runscript", description="param.description.runscript",
-					type = FileCandidatesChooser.FILES_TYPE) String filename ) throws FileNotFoundException {
+					type = Param.DefaultTypes.FILE) String filename ) throws FileNotFoundException {
 
 		scriptReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
 		inputState = InputState.SCRIPT;
@@ -281,7 +280,7 @@ public class ConsoleIO implements Input, Output, ShellManageable {
 			header = "command.header.enablelogging", name = "command.name.enablelogging")
 	public void l(
 			@Param(value="param.name.enablelogging", description="param.description.enablelogging",
-					type = FileCandidatesChooser.FILES_TYPE)
+					type = Param.DefaultTypes.FILE)
 			String filename ) throws FileNotFoundException {
 
 		log = new PrintStream(filename);
