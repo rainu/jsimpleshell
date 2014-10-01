@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -44,13 +45,17 @@ public class Hooks extends IntegrationsTest {
 		executeAndWaitForCommand("to-entry key value");
 
 		ArgumentCaptor<ShellCommand> cmdCap = ArgumentCaptor.forClass(ShellCommand.class);
+		ArgumentCaptor<Object[]> paramCap = ArgumentCaptor.forClass(Object[].class);
 		ArgumentCaptor<ExecutionResult> resultCap = ArgumentCaptor.forClass(ExecutionResult.class);
 
-		verify(hookMock, times(1)).cliBeforeCommand(cmdCap.capture());
-		verify(hookMock, times(1)).cliAfterCommand(cmdCap.capture(), resultCap.capture());
+		verify(hookMock, times(1)).cliBeforeCommand(cmdCap.capture(), paramCap.capture());
+		verify(hookMock, times(1)).cliAfterCommand(cmdCap.capture(), paramCap.capture(), resultCap.capture());
 
 		assertEquals("to-entry", cmdCap.getAllValues().get(0).getName());
 		assertEquals("to-entry", cmdCap.getAllValues().get(1).getName());
+
+		assertTrue(Arrays.equals(paramCap.getAllValues().get(0), new Object[]{"key", "value"}));
+		assertTrue(Arrays.equals(paramCap.getAllValues().get(0), paramCap.getAllValues().get(0)));
 
 		assertTrue(resultCap.getValue().wasExecutionSuccessful());
 		assertNull(resultCap.getValue().getThrown());
@@ -65,13 +70,17 @@ public class Hooks extends IntegrationsTest {
 		executeAndWaitForCommand("cause-exception");
 
 		ArgumentCaptor<ShellCommand> cmdCap = ArgumentCaptor.forClass(ShellCommand.class);
+		ArgumentCaptor<Object[]> paramCap = ArgumentCaptor.forClass(Object[].class);
 		ArgumentCaptor<ExecutionResult> resultCap = ArgumentCaptor.forClass(ExecutionResult.class);
 
-		verify(hookMock, times(1)).cliBeforeCommand(cmdCap.capture());
-		verify(hookMock, times(1)).cliAfterCommand(cmdCap.capture(), resultCap.capture());
+		verify(hookMock, times(1)).cliBeforeCommand(cmdCap.capture(), paramCap.capture());
+		verify(hookMock, times(1)).cliAfterCommand(cmdCap.capture(), paramCap.capture(), resultCap.capture());
 
 		assertEquals("cause-exception", cmdCap.getAllValues().get(0).getName());
 		assertEquals("cause-exception", cmdCap.getAllValues().get(1).getName());
+
+		assertTrue(Arrays.equals(paramCap.getAllValues().get(0), new Object[]{}));
+		assertTrue(Arrays.equals(paramCap.getAllValues().get(0), paramCap.getAllValues().get(0)));
 
 		assertFalse(resultCap.getValue().wasExecutionSuccessful());
 		assertNull(resultCap.getValue().getResult());
@@ -86,13 +95,17 @@ public class Hooks extends IntegrationsTest {
 		executeAndWaitForCommand("quit");
 
 		ArgumentCaptor<ShellCommand> cmdCap = ArgumentCaptor.forClass(ShellCommand.class);
+		ArgumentCaptor<Object[]> paramCap = ArgumentCaptor.forClass(Object[].class);
 		ArgumentCaptor<ExecutionResult> resultCap = ArgumentCaptor.forClass(ExecutionResult.class);
 
-		verify(hookMock, times(2)).cliBeforeCommand(cmdCap.capture());
-		verify(hookMock, times(2)).cliAfterCommand(cmdCap.capture(), resultCap.capture());
+		verify(hookMock, times(2)).cliBeforeCommand(cmdCap.capture(), paramCap.capture());
+		verify(hookMock, times(2)).cliAfterCommand(cmdCap.capture(), paramCap.capture(), resultCap.capture());
 
 		assertEquals("quit", cmdCap.getAllValues().get(1).getName());
 		assertEquals("quit", cmdCap.getAllValues().get(2).getName());
+
+		assertTrue(Arrays.equals(paramCap.getAllValues().get(0), new Object[]{}));
+		assertTrue(Arrays.equals(paramCap.getAllValues().get(0), paramCap.getAllValues().get(0)));
 
 		assertTrue(resultCap.getAllValues().get(0).wasExecutionSuccessful());
 		assertNull(resultCap.getAllValues().get(0).getResult());

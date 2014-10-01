@@ -27,14 +27,20 @@ import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+import de.raysha.lib.jsimpleshell.exception.AccessDeniedException;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.Decision;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.Context;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent.ExecutionResult;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
+import de.raysha.lib.jsimpleshell.handler.impl.CompositeCommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeMessageResolver;
 import de.raysha.lib.jsimpleshell.handler.impl.DefaultMessageResolver;
 import de.raysha.lib.jsimpleshell.io.Input;
@@ -64,6 +70,7 @@ public class Shell {
 	private final CompositeMessageResolver messageResolver;
 	final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
+	final CompositeCommandAccessManager accessManager;
 
 	public static class Settings {
 		final Input input;
@@ -131,6 +138,8 @@ public class Shell {
 
 		this.messageResolver = configureMessageResolver(settings, initialHandlers);
 		this.commandTable.setMessageResolver(messageResolver);
+
+		this.accessManager = new CompositeCommandAccessManager(messageResolver);
 
 		this.candidatesChooser = new AggregateCandidatesChooser();
 
@@ -208,6 +217,7 @@ public class Shell {
 		dependencyResolver.put(inputBuilder);
 		dependencyResolver.put(outputBuilder);
 		dependencyResolver.put(messageResolver);
+		dependencyResolver.put(accessManager);
 
 		return dependencyResolver;
 	}
@@ -310,6 +320,9 @@ public class Shell {
 		addMessageResolver(messageResolver, handler);
 		if (handler instanceof CandidatesChooser) {
 			candidatesChooser.addCandidatesChooser((CandidatesChooser)handler);
+		}
+		if (handler instanceof CommandAccessManager) {
+			accessManager.addCommandAccessManager((CommandAccessManager)handler);
 		}
 	}
 
@@ -533,9 +546,9 @@ public class Shell {
 				commandToInvoke.getParamSpecs(), paramClasses,
 				commandToInvoke.getMethod().isVarArgs());
 
+		checkAccess(commandToInvoke, parameters);
 		outputHeader(commandToInvoke.getHeader(), parameters);
-
-		informHooks(commandToInvoke);
+		informHooks(commandToInvoke, parameters);
 
 		long timeBefore = System.currentTimeMillis();
 		CLIException thrown = null;
@@ -550,7 +563,7 @@ public class Shell {
 		long timeAfter = System.currentTimeMillis();
 		final long time = timeAfter - timeBefore;
 
-		informHooks(commandToInvoke, invocationResult, thrown, time);
+		informHooks(commandToInvoke, parameters, invocationResult, thrown, time);
 
 		if (displayTime) {
 			if (time != 0L) {
@@ -570,22 +583,45 @@ public class Shell {
 		}
 	}
 
-	private void informHooks(ShellCommand commandToInvoke) {
-		for(Object handler : allHandlers){
-			if(handler instanceof CommandHookDependent){
-				((CommandHookDependent)handler).cliBeforeCommand(commandToInvoke);
+	private void checkAccess(ShellCommand commandToInvoke, Object[] parameters) throws AccessDeniedException {
+		final Context context = new Context(commandToInvoke, parameters);
+		final AccessDecision decision = accessManager.checkCommandPermission(context);
+
+		if(decision.getDecision() == Decision.DENIED){
+			informHooks(commandToInvoke, parameters, decision);
+
+			if(decision.getReason() != null){
+				throw new AccessDeniedException(decision.getReason());
+			}else{
+				throw new AccessDeniedException();
 			}
 		}
 	}
 
-	private void informHooks(ShellCommand commandToInvoke, Object invocationResult, CLIException thrown, long time) {
+	private void informHooks(ShellCommand commandToInvoke, Object[] parameters, AccessDecision decision) {
+		for(Object handler : allHandlers){
+			if(handler instanceof CommandHookDependent){
+				((CommandHookDependent)handler).cliDeniedCommand(commandToInvoke, parameters, decision);
+			}
+		}
+	}
+
+	private void informHooks(ShellCommand commandToInvoke, Object[] parameters) {
+		for(Object handler : allHandlers){
+			if(handler instanceof CommandHookDependent){
+				((CommandHookDependent)handler).cliBeforeCommand(commandToInvoke, parameters);
+			}
+		}
+	}
+
+	private void informHooks(ShellCommand commandToInvoke, Object[] parameters, Object invocationResult, CLIException thrown, long time) {
 		for(Object handler : allHandlers){
 			if(handler instanceof CommandHookDependent){
 				ExecutionResult result = thrown != null ?
 						new ExecutionResult(thrown.getCause(), time) :
 						new ExecutionResult(invocationResult, time);
 
-				((CommandHookDependent)handler).cliAfterCommand(commandToInvoke, result);
+				((CommandHookDependent)handler).cliAfterCommand(commandToInvoke, parameters, result);
 			}
 		}
 	}
