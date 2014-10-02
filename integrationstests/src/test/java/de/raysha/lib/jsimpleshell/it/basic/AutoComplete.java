@@ -391,6 +391,16 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "--p2");
 	}
 
+	@Test
+	public void variableNames() throws IOException{
+		executeCommand(".lvar", "local");
+		simulateUserInput(".show-variable \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.toString(), result.isError());
+		candidateIsShown(result, "local");
+	}
+
 	private void candidateIsShown(CommandResult result, String candidate) {
 		assertTrue("Candidate '" + candidate + "' is not shown!",
 				result.getOut().contains(candidate));

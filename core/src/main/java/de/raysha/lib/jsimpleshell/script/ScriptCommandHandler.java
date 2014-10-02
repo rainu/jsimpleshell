@@ -93,7 +93,8 @@ public class ScriptCommandHandler {
 	@Command(abbrev = "command.abbrev.showvar", description = "command.description.showvar",
 			header = "command.header.showvar", name = "command.name.showvar")
 	public String showVariableDetails(
-			@Param(value = "param.name.showvar", description = "param.description.showvar")
+			@Param(value = "param.name.showvar", description = "param.description.showvar",
+					type = Param.DefaultTypes.VARIABLE)
 			String name){
 
 		final Variable var = environment.getVariable(name);

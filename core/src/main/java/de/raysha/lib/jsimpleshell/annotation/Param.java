@@ -17,6 +17,7 @@ import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.LocaleCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.VariableCandidatesChooser;
 
 /**
  * Annotation for parameters of Command-marked methods.
@@ -82,5 +83,10 @@ public @interface Param {
 		 * Type for a macro name.
 		 */
 		public static final String MACRO_NAME = MacroNameCandidatesChooser.MACRO_NAME_TYPE;
+
+		/**
+		 * Type for a variable name in the current environment.
+		 */
+		public static final String VARIABLE = VariableCandidatesChooser.VARIABLE_NAME_TYPE;
 	}
 }
