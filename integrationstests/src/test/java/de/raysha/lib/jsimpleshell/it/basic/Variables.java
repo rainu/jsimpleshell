@@ -8,15 +8,28 @@ import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
+import de.raysha.lib.jsimpleshell.SecurityCommands;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.SubShellCommands;
+import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
+import de.raysha.lib.jsimpleshell.script.ScriptCommandHandler;
 
 public class Variables extends IntegrationsTest {
 
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.addHandler(new SubShellCommands());
+				.addHandler(new SubShellCommands())
+				.addHandler(new SecurityCommands())
+				.addHandler(new ExceptionTestCommand());
+	}
+
+	public static class ExceptionTestCommand{
+		@Command
+		public void exception(){
+			throw new RuntimeException();
+		}
 	}
 
 	@Test
@@ -126,7 +139,7 @@ public class Variables extends IntegrationsTest {
 	}
 
 	@Test
-	public void changeGlobalVariableInSubshell()throws IOException{
+	public void changeGlobalVariableInSubshell() throws IOException{
 		executeCommand(".gvar", "g");
 		executeCommand("new-sub-shell");
 		executeCommand(".gvar", "g", "value");
@@ -139,5 +152,68 @@ public class Variables extends IntegrationsTest {
 
 		//the changes should effect the parent shell too
 		assertTrue(result.toString(), result.containsLine("g\\=value"));
+	}
+
+	@Test
+	public void specialVariablesAvailable() throws IOException {
+		executeCommand("?help");
+		CommandResult result = executeAndWaitForCommand(".show-environment");
+
+		assertTrue(result.toString(), result.containsLine("\\?\\?=0"));
+		assertTrue(result.toString(), result.containsLine("\\?=.*"));
+	}
+
+	@Test
+	public void specialVariablesReturnCodeSuccessful() throws IOException {
+		executeCommand("?help");
+		CommandResult result = executeAndWaitForCommand(".show-variable", "?");
+
+		assertTrue(result.toString(), result.containsLine(".*\\?"));
+		assertTrue(result.toString(), result.containsLine(".*global"));
+		assertTrue(result.toString(), result.containsLine(".*" + String.class.getName()));
+
+		executeCommand("?help");
+		result = executeAndWaitForCommand(".show-variable", "??");
+
+		assertTrue(result.toString(), result.containsLine(".*\\?\\?"));
+		assertTrue(result.toString(), result.containsLine(".*global"));
+		assertTrue(result.toString(), result.containsLine(".*" + Integer.class.getName()));
+		assertTrue(result.toString(), result.containsLine(".*0"));
+	}
+
+	@Test
+	public void specialVariablesReturnCodeUnsuccessful() throws IOException {
+		executeCommand("exception");
+		CommandResult result = executeAndWaitForCommand(".show-variable", "?");
+
+		assertTrue(result.toString(), result.containsLine(".*\\?"));
+		assertTrue(result.toString(), result.containsLine(".*global"));
+		assertTrue(result.toString(), result.containsLine(".*" + RuntimeException.class.getName()));
+
+		executeCommand("exception");
+		result = executeAndWaitForCommand(".show-variable", "??");
+
+		assertTrue(result.toString(), result.containsLine(".*\\?\\?"));
+		assertTrue(result.toString(), result.containsLine(".*global"));
+		assertTrue(result.toString(), result.containsLine(".*" + Integer.class.getName()));
+		assertTrue(result.toString(), result.containsLine(".*1"));
+	}
+
+	@Test
+	public void specialVariablesReturnCodeForbidden() throws IOException {
+		executeCommand("do-something");
+		CommandResult result = executeAndWaitForCommand(".show-variable", "?");
+
+		assertTrue(result.toString(), result.containsLine(".*\\?"));
+		assertTrue(result.toString(), result.containsLine(".*global"));
+		assertTrue(result.toString(), result.containsLine(".*" + AccessDecision.class.getName().replace("$", "\\$")));
+
+		executeCommand("do-something");
+		result = executeAndWaitForCommand(".show-variable", "??");
+
+		assertTrue(result.toString(), result.containsLine(".*\\?\\?"));
+		assertTrue(result.toString(), result.containsLine(".*global"));
+		assertTrue(result.toString(), result.containsLine(".*" + Integer.class.getName()));
+		assertTrue(result.toString(), result.containsLine(".*2"));
 	}
 }

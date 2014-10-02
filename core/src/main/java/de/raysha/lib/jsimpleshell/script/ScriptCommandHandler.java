@@ -1,10 +1,13 @@
 package de.raysha.lib.jsimpleshell.script;
 
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 
 /**
@@ -12,7 +15,14 @@ import de.raysha.lib.jsimpleshell.io.OutputBuilder;
  *
  * @author rainu
  */
-public class ScriptCommandHandler {
+public class ScriptCommandHandler implements CommandHookDependent {
+
+	public static final String RETURN_VALUE_VARIABLE_NAME = "?";
+	public static final String RETURN_STATUS_VARIABLE_NAME = "??";
+
+	public static final Integer STATUS_CODE_SUCCESSFUL = 0;
+	public static final Integer STATUS_CODE_UNSUCCESSFUL = 1;
+	public static final Integer STATUS_CODE_FORBIDDEN = 2;
 
 	@Inject
 	private Environment environment;
@@ -92,13 +102,13 @@ public class ScriptCommandHandler {
 
 	@Command(abbrev = "command.abbrev.showvar", description = "command.description.showvar",
 			header = "command.header.showvar", name = "command.name.showvar")
-	public String showVariableDetails(
+	public void showVariableDetails(
 			@Param(value = "param.name.showvar", description = "param.description.showvar",
 					type = Param.DefaultTypes.VARIABLE)
 			String name){
 
 		final Variable var = environment.getVariable(name);
-		if(var == null) return null;
+		if(var == null) return;
 
 		String type = null;
 
@@ -108,12 +118,34 @@ public class ScriptCommandHandler {
 			type = messageResolver.resolveGeneralMessage("message.showvar.local");
 		}
 
-		return messageResolver.resolveGeneralMessage("message.showvar.details")
+		String out = messageResolver.resolveGeneralMessage("message.showvar.details")
 			.replace("{name}", name)
 			.replace("{value}", String.valueOf(getOutputValue(var)))
 			.replace("{value-type}", var.getValue() != null ? var.getValue().getClass().getName() : "-")
 			.replace("{type}", type);
 
+		output.out().normal(out).println();
+	}
 
+	@Override
+	public void cliBeforeCommand(ShellCommand command, Object[] parameter) {
+		// do nothing
+	}
+
+	@Override
+	public void cliAfterCommand(ShellCommand command, Object[] parameter, ExecutionResult result) {
+		if(result.wasExecutionSuccessful()){
+			setGlobalVariable(RETURN_STATUS_VARIABLE_NAME, STATUS_CODE_SUCCESSFUL);
+			setGlobalVariable(RETURN_VALUE_VARIABLE_NAME, result.getResult());
+		}else{
+			setGlobalVariable(RETURN_STATUS_VARIABLE_NAME, STATUS_CODE_UNSUCCESSFUL);
+			setGlobalVariable(RETURN_VALUE_VARIABLE_NAME, result.getThrown());
+		}
+	}
+
+	@Override
+	public void cliDeniedCommand(ShellCommand command, Object[] parameter, AccessDecision decision) {
+		setGlobalVariable(RETURN_STATUS_VARIABLE_NAME, STATUS_CODE_FORBIDDEN);
+		setGlobalVariable(RETURN_VALUE_VARIABLE_NAME, decision);
 	}
 }
