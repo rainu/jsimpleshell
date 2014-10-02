@@ -409,7 +409,7 @@ public class ShellBuilder {
 	private Environment copyEnvironment(Shell shell) {
 		Environment env = new Environment();
 
-		for(Variable var : env.getVariables()){
+		for(Variable var : shell.environment.getVariables()){
 			//transfer only global variables between shells
 			if(var.isGlobal()){
 				env.setVariable(var);

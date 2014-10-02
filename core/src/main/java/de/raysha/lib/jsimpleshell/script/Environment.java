@@ -30,6 +30,18 @@ public class Environment {
 	 * @param var The variable instance.
 	 */
 	public void setVariable(Variable var){
+		_setVariable(var);
+
+		if(var.isGlobal()){
+			for(WeakReference<Environment> envRef : allEnvironments){
+				if(envRef.get() == this) continue; //prevent endless loop
+
+				envRef.get()._setVariable(var);
+			}
+		}
+	}
+
+	private void _setVariable(Variable var) {
 		if(existsVariable(var.getName())) {
 			//refresh content of variable
 			Variable v = getVariable(var.getName());
@@ -37,14 +49,6 @@ public class Environment {
 		}else{
 			//store this one
 			variables.put(var.getName(), var);
-		}
-
-		if(var.isGlobal()){
-			for(WeakReference<Environment> envRef : allEnvironments){
-				if(envRef.get() == this) continue; //prevent endless loop
-
-				envRef.get().setVariable(var);
-			}
 		}
 	}
 

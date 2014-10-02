@@ -72,7 +72,7 @@ public class Shell {
 	final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
 	final CompositeCommandAccessManager accessManager;
-	private final Environment environment;
+	final Environment environment;
 
 	public static class Settings {
 		final Input input;

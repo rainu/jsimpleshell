@@ -8,10 +8,8 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
-import de.raysha.lib.jsimpleshell.CompleterCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
-import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 
@@ -36,8 +34,6 @@ public class List extends IntegrationsTest {
 	@Test
 	public void listAll() throws IOException {
 		final CommandResult result = executeAndWaitForCommand("?list-all");
-
-		System.out.println(result);
 
 		assertFalse(result.isError());
 		isCommandListed(result, "", "s", MainHandler.SHUTDOWN);
