@@ -14,7 +14,9 @@ Feature-List
 * Searching through the command history
 * Arrow-Key navigation
 * Sub-Shells
-* Scriptable (execute command line by line)
+* Scriptable
+	* execute command line by line
+	* define and use variables
 * Clear screen function
 * Platform independent
 * Maven integration (artifacts are stored in maven central)
