@@ -20,8 +20,10 @@ import de.raysha.lib.jsimpleshell.completer.EnumCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.LocaleCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.VariableCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
+import de.raysha.lib.jsimpleshell.handler.EnvironmentDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -30,6 +32,10 @@ import de.raysha.lib.jsimpleshell.handler.OutputConverter;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
+import de.raysha.lib.jsimpleshell.script.Environment;
+import de.raysha.lib.jsimpleshell.script.ScriptCommandHandler;
+import de.raysha.lib.jsimpleshell.script.Variable;
+import de.raysha.lib.jsimpleshell.script.VariableInputConverter;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 import de.raysha.lib.jsimpleshell.util.PromptBuilder;
@@ -170,6 +176,7 @@ public class ShellBuilder {
 	 * <li>Implements the {@link MessageResolver} interface to get the possibility to resolve {@link Command} / {@link Param}eter messages</li>
 	 * <li>Implements the {@link MessageResolverDependent} interface to get access to the used {@link MessageResolver}</li>
 	 * <li>Implements the {@link CandidatesChooser} interface to choose your own parameter candidates</li>
+	 * <li>Implements the {@link EnvironmentDependent} interface to get access to the used {@link Environment}</li>
 	 * </ul>
 	 *
 	 * @param handler A command handler.
@@ -380,10 +387,14 @@ public class ShellBuilder {
 		modifAuxHandlers.put("!", io);
 
 		Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false), handlers,
-				new CommandTable(new DashJoinedNamer(true)), path);
+				new CommandTable(new DashJoinedNamer(true)), path, buildInitialEnvironment());
 
 		configureShell(theShell);
 		return theShell;
+	}
+
+	private Environment buildInitialEnvironment() {
+		return new Environment();
 	}
 
 	private Shell buildSubShell() {
@@ -391,10 +402,23 @@ public class ShellBuilder {
 		newPath.add(prompt);
 
 		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers), handlers,
-				new CommandTable(parent.getCommandTable().getNamer()), newPath);
+				new CommandTable(parent.getCommandTable().getNamer()), newPath, copyEnvironment(parent));
 
 		configureShell(subshell);
 		return subshell;
+	}
+
+	private Environment copyEnvironment(Shell shell) {
+		Environment env = new Environment();
+
+		for(Variable var : shell.getEnvironment().getVariables()){
+			//transfer only global variables between shells
+			if(var.isGlobal()){
+				env.setVariable(var);
+			}
+		}
+
+		return env;
 	}
 
 	private void configureShell(Shell shell) {
@@ -423,12 +447,15 @@ public class ShellBuilder {
 	private void addDefaultHandler(Shell shell) {
 		shell.addMainHandler(shell, "!");
 		shell.addMainHandler(new HelpCommandHandler(), "?");
+		shell.addMainHandler(new ScriptCommandHandler(), ".");
+		shell.addMainHandler(new VariableInputConverter(), "");
 		shell.addMainHandler(new CompleterHandler(), "");
 		shell.addMainHandler(new CommandNameCandidatesChooser(), "");
 		shell.addMainHandler(new MacroNameCandidatesChooser(), "");
 		shell.addMainHandler(new BooleanCandidatesChooser(), "");
 		shell.addMainHandler(new EnumCandidatesChooser(), "");
 		shell.addMainHandler(new LocaleCandidatesChooser(), "");
+		shell.addMainHandler(new VariableCandidatesChooser(), "");
 	}
 
 	/**

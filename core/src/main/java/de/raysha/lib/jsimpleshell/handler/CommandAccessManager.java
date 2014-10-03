@@ -98,5 +98,11 @@ public interface CommandAccessManager {
 		public String getReason() {
 			return reason;
 		}
+
+		@Override
+		public String toString() {
+			return "AccessDecision [decision=" + decision + ", reason="
+					+ reason + "]";
+		}
 	}
 }

@@ -22,5 +22,5 @@ public interface InputConverter {
 	 *
 	 * @see de.raysha.lib.jsimpleshell.Shell
 	 */
-	Object convertInput(String original, Class toClass) throws Exception;
+	Object convertInput(String original, Class<?> toClass) throws Exception;
 }

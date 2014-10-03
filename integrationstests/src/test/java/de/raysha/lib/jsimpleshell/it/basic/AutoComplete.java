@@ -44,6 +44,8 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "?help");
 		candidateIsShown(result, "?list");
 		candidateIsShown(result, "?list-all");
+		candidateIsShown(result, ".lvar");
+		candidateIsShown(result, ".gvar");
 		candidateIsShown(result, "exit");
 		candidateIsShown(result, MainHandler.SHUTDOWN);
 	}
@@ -66,6 +68,8 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsNotShown(result, "?help");
 		candidateIsNotShown(result, "?list");
 		candidateIsNotShown(result, "?list-all");
+		candidateIsNotShown(result, ".lvar");
+		candidateIsNotShown(result, ".gvar");
 		candidateIsNotShown(result, "exit");
 		candidateIsNotShown(result, MainHandler.SHUTDOWN);
 	}
@@ -386,6 +390,29 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "--p-3");
 		candidateIsShown(result, "--p2");
 	}
+
+	@Test
+	public void variableNames() throws IOException{
+		executeCommand(".lvar", "local");
+		simulateUserInput(".show-variable \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.toString(), result.isError());
+		candidateIsShown(result, "local");
+	}
+
+	@Test
+	public void variableNamesAsParameter() throws IOException{
+		executeCommand(".lvar", "local", "string-value");
+		simulateUserInput("set $\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.toString(), result.isError());
+		candidateIsShown(result, "$local"); //this var contains a string value
+		candidateIsShown(result, "$?"); //this var contains "null"
+		candidateIsNotShown(result, "$??");	//this is always an integer and it is not assignable to string
+	}
+
 
 	private void candidateIsShown(CommandResult result, String candidate) {
 		assertTrue("Candidate '" + candidate + "' is not shown!",

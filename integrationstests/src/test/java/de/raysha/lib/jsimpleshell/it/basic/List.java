@@ -8,10 +8,8 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
-import de.raysha.lib.jsimpleshell.CompleterCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
-import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 
@@ -55,6 +53,8 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "?", "h", "help");
 		isCommandListed(result, "?", "la", "list-all");
 		isCommandListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
+		isCommandListed(result, ".", "var", "lvar", "name", "value");
+		isCommandListed(result, ".", "gvar", "gvar", "name", "value");
 		isCommandNotListed(result, "", "ds", "do-something");
 	}
 
@@ -79,6 +79,8 @@ public class List extends IntegrationsTest {
 		isCommandNotListed(result, "?", "h", "help");
 		isCommandNotListed(result, "?", "la", "list-all");
 		isCommandNotListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
+		isCommandNotListed(result, ".", "var", "lvar", "name", "value");
+		isCommandNotListed(result, ".", "gvar", "gvar", "name", "value");
 	}
 
 	private void isCommandListed(final CommandResult result, String prefix, String abbrev, String name, String...parameters) {

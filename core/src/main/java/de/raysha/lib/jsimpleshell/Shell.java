@@ -50,6 +50,7 @@ import de.raysha.lib.jsimpleshell.io.Output;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
+import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 
@@ -71,6 +72,7 @@ public class Shell {
 	final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
 	final CompositeCommandAccessManager accessManager;
+	private final Environment environment;
 
 	public static class Settings {
 		final Input input;
@@ -116,6 +118,7 @@ public class Shell {
 		for(Object handler : initialHandlers){
 			addMainHandler(handler, "");
 		}
+		addMainHandler(environment, "");
 
 		output.setMessageResolver(messageResolver);
 	}
@@ -129,13 +132,20 @@ public class Shell {
 	 * @param initialHandlers The initial main handlers for this shell
 	 * @param commandTable CommandTable to store commands
 	 * @param path Shell's location: list of path elements.
+	 * @param environment The shell's environment.
 	 */
 	Shell(Settings settings, Collection<Object> initialHandlers,
-			CommandTable commandTable, List<PromptElement> path) {
+			CommandTable commandTable, List<PromptElement> path,
+			Environment environment) {
+
+		if(environment == null){
+			throw new NullPointerException("The environment must not be null!");
+		}
 
 		this.commandTable = commandTable;
 		this.path = path;
 
+		this.environment = environment;
 		this.messageResolver = configureMessageResolver(settings, initialHandlers);
 		this.commandTable.setMessageResolver(messageResolver);
 
@@ -207,6 +217,15 @@ public class Shell {
 		return inputConverter;
 	}
 
+	/**
+	 * Get the environment of this shell.
+	 *
+	 * @return The environment.
+	 */
+	public Environment getEnvironment() {
+		return environment;
+	}
+
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private List<Object> allHandlers = new ArrayList<Object>();
 
@@ -214,10 +233,13 @@ public class Shell {
 		DependencyResolver dependencyResolver = new DependencyResolver();
 
 		dependencyResolver.put(this);
+		dependencyResolver.put(getInputConverter());
+		dependencyResolver.put(getOutputConverter());
 		dependencyResolver.put(inputBuilder);
 		dependencyResolver.put(outputBuilder);
 		dependencyResolver.put(messageResolver);
 		dependencyResolver.put(accessManager);
+		dependencyResolver.put(environment);
 
 		return dependencyResolver;
 	}
@@ -662,5 +684,4 @@ public class Shell {
 			throw new ExitException();
 		}
 	}
-
 }
