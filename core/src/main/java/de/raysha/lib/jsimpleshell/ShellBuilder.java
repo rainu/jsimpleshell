@@ -35,6 +35,7 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.ScriptCommandHandler;
 import de.raysha.lib.jsimpleshell.script.Variable;
+import de.raysha.lib.jsimpleshell.script.VariableInputConverter;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 import de.raysha.lib.jsimpleshell.util.PromptBuilder;
@@ -447,6 +448,7 @@ public class ShellBuilder {
 		shell.addMainHandler(shell, "!");
 		shell.addMainHandler(new HelpCommandHandler(), "?");
 		shell.addMainHandler(new ScriptCommandHandler(), ".");
+		shell.addMainHandler(new VariableInputConverter(), "");
 		shell.addMainHandler(new CompleterHandler(), "");
 		shell.addMainHandler(new CommandNameCandidatesChooser(), "");
 		shell.addMainHandler(new MacroNameCandidatesChooser(), "");

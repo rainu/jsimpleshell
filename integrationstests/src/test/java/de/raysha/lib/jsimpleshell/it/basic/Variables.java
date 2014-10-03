@@ -11,9 +11,9 @@ import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
 import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.SubShellCommands;
+import de.raysha.lib.jsimpleshell.VariablePlaygroundCommands;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
-import de.raysha.lib.jsimpleshell.script.ScriptCommandHandler;
 
 public class Variables extends IntegrationsTest {
 
@@ -22,7 +22,8 @@ public class Variables extends IntegrationsTest {
 		return super.buildShell()
 				.addHandler(new SubShellCommands())
 				.addHandler(new SecurityCommands())
-				.addHandler(new ExceptionTestCommand());
+				.addHandler(new ExceptionTestCommand())
+				.addHandler(new VariablePlaygroundCommands());
 	}
 
 	public static class ExceptionTestCommand{
@@ -215,5 +216,39 @@ public class Variables extends IntegrationsTest {
 		assertTrue(result.toString(), result.containsLine(".*global"));
 		assertTrue(result.toString(), result.containsLine(".*" + Integer.class.getName()));
 		assertTrue(result.toString(), result.containsLine(".*2"));
+	}
+
+	@Test
+	public void transferStringVariable() throws IOException {
+		executeCommand(".lvar", "var", "value");
+		CommandResult result = executeAndWaitForCommand("set", "$var");
+
+		assertTrue(result.toString(), result.containsLine("String: value"));
+	}
+
+	@Test
+	public void transferComplexVariable() throws IOException {
+		executeCommand("get-integer");
+		CommandResult result = executeAndWaitForCommand("set", "$?");
+
+		assertTrue(result.toString(), result.containsLine("Integer: 13"));
+	}
+
+	@Test
+	public void transferComplexVariableShouldForceStringValue() throws IOException {
+		executeCommand("get-integer");
+		CommandResult result = executeAndWaitForCommand("set-string", "$?");
+
+		assertTrue(result.toString(), result.containsLine("String: 13"));
+	}
+
+	@Test
+	public void saveHelpTextTransferItToOtherCommand() throws IOException {
+		executeCommand("?help");
+		executeCommand(".lvar", "HELP_TEXT", "$?");
+
+		CommandResult result = executeAndWaitForCommand("set-anything", "$HELP_TEXT");
+
+		assertTrue(result.toString(), result.containsLine("Object: ####.*"));
 	}
 }

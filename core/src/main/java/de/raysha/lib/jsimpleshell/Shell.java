@@ -223,6 +223,8 @@ public class Shell {
 		DependencyResolver dependencyResolver = new DependencyResolver();
 
 		dependencyResolver.put(this);
+		dependencyResolver.put(getInputConverter());
+		dependencyResolver.put(getOutputConverter());
 		dependencyResolver.put(inputBuilder);
 		dependencyResolver.put(outputBuilder);
 		dependencyResolver.put(messageResolver);
