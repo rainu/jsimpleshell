@@ -31,7 +31,7 @@
         <h2>
 <a name="1-what-is-jsimpleshell" class="anchor" href="#1-what-is-jsimpleshell"><span class="octicon octicon-link"></span></a>1) What is JSimpleShell?</h2>
 
-<p>JSimpleShell is a java library that allows you to implement easily a shell environment. This shell can be used such like the bash shell in linux systems: You can execute commands; jump through the history; navigate with the arrow-keys; and many more...</p>
+<p>JSimpleShell is a java library that allows you to implement easily a shell environment. This shell can be used such like the bash shell in linux systems: You can execute commands; jump through the history; navigate with the arrow-keys; and many more... And the best: it is system independent! That means you can use this functions also on windows systems as well as linux systems.</p>
 
 <p>This is the perfect solution if you dont't have much time or no desire to develop a beautiful grafical user interface. You can very simple define a command - just one annotation is enough!</p>
 
@@ -58,11 +58,41 @@
 <h3>
 <a name="22-shell-builder" class="anchor" href="#22-shell-builder"><span class="octicon octicon-link"></span></a>2.2) Shell-Builder</h3>
 
+<p>Let us starts with a plain shell. To create a shell instance you have to use the <em>ShellBuilder</em>. With this builder you can build a <em>main shell</em> or a <em>sub shell</em>. The following code starts an plain shell. This plain shell contains all default commands such like the command for listing all available commands.</p>
+
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">de.raysha.lib.jsimpleshell.Shell</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">de.raysha.lib.jsimpleshell.ShellBuilder</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">Shell</span> <span class="n">shell</span> <span class="o">=</span> <span class="n">ShellBuilder</span><span class="o">.</span><span class="na">shell</span><span class="o">(</span><span class="s">"MyShell"</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+        <span class="n">shell</span><span class="o">.</span><span class="na">commandLoop</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>With the <em>ShellBuilder</em> you can configure your shell. You can add handlers (see Handler section); define the style of prompt and many more. Look at the <em>ShellBuilder</em> functions for more useful functions.</p>
+
+<p>The <em>commandLoop</em> method starts the input loop. This loop will be leave if the user leave the current shell. By default it happens if the user enter <em>exit</em>. </p>
+
 <h3>
 <a name="23-handler" class="anchor" href="#23-handler"><span class="octicon octicon-link"></span></a>2.3) Handler</h3>
 
+<p>There are two general types of handler:</p>
+
+<ul>
+<li>main handler</li>
+<li>aux handler</li>
+</ul><p>The <em>main handler</em> are <strong>only</strong> in the current shell available! If this shell starts a sub shell, this main handler is not available in there! However an <em>aux handler</em> will be <strong>shared</strong> with all following sub shells. If a shell starts a sub shell, this aux handler will be available!</p>
+
+<p>For example:
+If you want to implement a command that is everywhere available you should use a <em>aux handler</em> which contains this command. </p>
+
 <h4>
-<a name="231-command-handler" class="anchor" href="#231-command-handler"><span class="octicon octicon-link"></span></a>2.3.1) Command-Handler</h4>
+<a name="231-command-handler" class="anchor" href="#231-command-handler"><span class="octicon octicon-link"></span></a>2.3.1) Command(-Handler)</h4>
 
 <h4>
 <a name="232-access-manager" class="anchor" href="#232-access-manager"><span class="octicon octicon-link"></span></a>2.3.2) Access-Manager</h4>
