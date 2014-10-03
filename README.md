@@ -105,7 +105,7 @@ If you want to add ___JSimpleShell___ to your maven project, you can add the fol
 <dependency>
 	<groupId>de.raysha.lib</groupId>
 	<artifactId>jsimpleshell</artifactId>
-	<version>2.1</version>
+	<version>2.2</version>
 </dependency>
 ```
 
