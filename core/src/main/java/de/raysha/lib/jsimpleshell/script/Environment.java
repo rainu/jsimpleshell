@@ -1,13 +1,13 @@
 package de.raysha.lib.jsimpleshell.script;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 
 /**
  * This class represents a environment of a {@link Shell}. The environment
@@ -15,13 +15,23 @@ import de.raysha.lib.jsimpleshell.Shell;
  *
  * @author rainu
  */
-public class Environment {
-	private static final List<WeakReference<Environment>> allEnvironments = new ArrayList<WeakReference<Environment>>();
+public class Environment implements ShellManageable {
+	private static final List<Environment> allEnvironments = new ArrayList<Environment>();
 
-	private Map<String, Variable> variables = new HashMap<String, Variable>();
+	private Map<String, Variable> variables = new WeakHashMap<String, Variable>();
 
 	public Environment() {
-		allEnvironments.add(new WeakReference<Environment>(this));
+		allEnvironments.add(this);
+	}
+
+	@Override
+	public void cliEnterLoop(Shell shell) {
+		//do nothing
+	}
+
+	@Override
+	public void cliLeaveLoop(Shell shell) {
+		allEnvironments.remove(shell.getEnvironment());
 	}
 
 	/**
@@ -33,10 +43,10 @@ public class Environment {
 		_setVariable(var);
 
 		if(var.isGlobal()){
-			for(WeakReference<Environment> envRef : allEnvironments){
-				if(envRef.get() == this) continue; //prevent endless loop
+			for(Environment env : allEnvironments){
+				if(env == this) continue; //prevent endless loop
 
-				envRef.get()._setVariable(var);
+				env._setVariable(var);
 			}
 		}
 	}

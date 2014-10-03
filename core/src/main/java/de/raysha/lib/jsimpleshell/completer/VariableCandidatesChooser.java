@@ -21,8 +21,55 @@ public class VariableCandidatesChooser implements CandidatesChooser {
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
-		if(!responsibleFor(paramSpec)) return null;
+		if(!responsibleFor(paramSpec, part)) return null;
 
+		List<String> values = null;
+
+		if(part.startsWith("$")){
+			values = getVariables(paramSpec, part);
+		}else{
+			values = getVariableNames(part);
+		}
+
+		Candidates candidates = new Candidates(values);
+		return candidates;
+	}
+
+	private List<String> getVariables(ShellCommandParamSpec paramSpec, String part) {
+		final String varNamePart = part.substring(1);
+
+		List<Variable> possibleVars = new ArrayList<Variable>();
+
+		for(Variable var : environment.getVariables()){
+			if(var.getName().startsWith(varNamePart)){
+				boolean add = false;
+
+				if(var.getValue() == null){
+					add = true;
+				}else {
+					final Class<?> paramClass = paramSpec.getValueClass();
+					final Class<?> varClass = var.getValue().getClass();
+
+					if(paramClass.isAssignableFrom(varClass)){
+						add = true;
+					}
+				}
+
+				if(add){
+					possibleVars.add(var);
+				}
+			}
+		}
+
+		List<String> names = new ArrayList<String>(possibleVars.size());
+		for(Variable var : possibleVars){
+			names.add("$" + var.getName());
+		}
+
+		return names;
+	}
+
+	private List<String> getVariableNames(String part) {
 		List<String> names = new ArrayList<String>();
 		for(Variable var : environment.getVariables()){
 			if(var.getName().startsWith(part)){
@@ -30,11 +77,10 @@ public class VariableCandidatesChooser implements CandidatesChooser {
 			}
 		}
 
-		Candidates candidates = new Candidates(names);
-		return candidates;
+		return names;
 	}
 
-	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return VARIABLE_NAME_TYPE.equals(paramSpec.getType());
+	private boolean responsibleFor(ShellCommandParamSpec paramSpec, String part) {
+		return VARIABLE_NAME_TYPE.equals(paramSpec.getType()) || part.startsWith("$");
 	}
 }

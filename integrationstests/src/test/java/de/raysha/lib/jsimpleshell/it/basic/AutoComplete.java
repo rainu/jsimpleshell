@@ -401,6 +401,19 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsShown(result, "local");
 	}
 
+	@Test
+	public void variableNamesAsParameter() throws IOException{
+		executeCommand(".lvar", "local", "string-value");
+		simulateUserInput("set $\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.toString(), result.isError());
+		candidateIsShown(result, "$local"); //this var contains a string value
+		candidateIsShown(result, "$?"); //this var contains "null"
+		candidateIsNotShown(result, "$??");	//this is always an integer and it is not assignable to string
+	}
+
+
 	private void candidateIsShown(CommandResult result, String candidate) {
 		assertTrue("Candidate '" + candidate + "' is not shown!",
 				result.getOut().contains(candidate));

@@ -72,7 +72,7 @@ public class Shell {
 	final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
 	final CompositeCommandAccessManager accessManager;
-	final Environment environment;
+	private final Environment environment;
 
 	public static class Settings {
 		final Input input;
@@ -118,6 +118,7 @@ public class Shell {
 		for(Object handler : initialHandlers){
 			addMainHandler(handler, "");
 		}
+		addMainHandler(environment, "");
 
 		output.setMessageResolver(messageResolver);
 	}
@@ -214,6 +215,15 @@ public class Shell {
 	 */
 	public InputConversionEngine getInputConverter() {
 		return inputConverter;
+	}
+
+	/**
+	 * Get the environment of this shell.
+	 *
+	 * @return The environment.
+	 */
+	public Environment getEnvironment() {
+		return environment;
 	}
 
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
@@ -674,5 +684,4 @@ public class Shell {
 			throw new ExitException();
 		}
 	}
-
 }
