@@ -91,8 +91,31 @@
 <p>For example:
 If you want to implement a command that is everywhere available you should use a <em>aux handler</em> which contains this command. </p>
 
+<p>For all the following handler-types you must know which kind of handlers they are (aux or main?). After you know it you have to add it to your shell - via <em>ShellBuilder</em> or directely to the shell:</p>
+
+<div class="highlight highlight-java"><pre>
+<span class="n">Shell</span> <span class="n">shell</span> <span class="o">=</span> <span class="n">ShellBuilder</span><span class="o">.</span><span class="na">shell</span><span class="o">(</span><span class="s">"MyShell"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">addHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">MyMainHandler</span><span class="o">())</span> <span class="c1">//adds a main handler</span>
+                <span class="o">.</span><span class="na">addAuxHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">MyAuxHandler</span><span class="o">())</span> <span class="c1">//adds an aux handler</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+<span class="c1">//adds an aux handler where all contains commands have the prefix "!"</span>
+<span class="c1">//that means the user must enter the ! followed by the command-name</span>
+<span class="n">shell</span><span class="o">.</span><span class="na">addAuxHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">OtherAuxHandler</span><span class="o">(),</span> <span class="s">"!"</span><span class="o">);</span>
+</pre></div>
+
+<p>One handler can be quite more than one type. For example: One handler can contains commands (command handler) but can also be an Input-/Ouput- Converter. Thus it is possible to have one huge class that manage all things - but you should do it only if you have realy little time :)</p>
+
 <h4>
 <a name="231-command-handler" class="anchor" href="#231-command-handler"><span class="octicon octicon-link"></span></a>2.3.1) Command(-Handler)</h4>
+
+<p>A command-handler is a class that contains methods wich are annotated with the <strong>Command</strong>-Annotation. All methods which have these annotation are commands. Methods without these annotation will be ignored by the shell! </p>
+
+<h5>
+<a name="2311-command-annotation" class="anchor" href="#2311-command-annotation"><span class="octicon octicon-link"></span></a>2.3.1.1) Command-Annotation</h5>
+
+<h5>
+<a name="2311-param-annotation" class="anchor" href="#2311-param-annotation"><span class="octicon octicon-link"></span></a>2.3.1.1) Param-Annotation</h5>
 
 <h4>
 <a name="232-access-manager" class="anchor" href="#232-access-manager"><span class="octicon octicon-link"></span></a>2.3.2) Access-Manager</h4>
