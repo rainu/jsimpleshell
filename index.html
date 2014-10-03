@@ -31,38 +31,59 @@
         <h2>
 <a name="1-what-is-jsimpleshell" class="anchor" href="#1-what-is-jsimpleshell"><span class="octicon octicon-link"></span></a>1) What is JSimpleShell?</h2>
 
+<p>JSimpleShell is a java library that allows you to implement easily a shell environment. This shell can be used such like the bash shell in linux systems: You can execute commands; jump through the history; navigate with the arrow-keys; and many more...</p>
+
+<p>This is the perfect solution if you dont't have much time or no desire to develop a beautiful grafical user interface. You can very simple define a command - just one annotation is enough!</p>
+
+<h3>
+<a name="11-license" class="anchor" href="#11-license"><span class="octicon octicon-link"></span></a>1.1) License</h3>
+
+<p>Of curse JSimpleShell is open-source! This library is distributed under the <a href="http://opensource.org/licenses/BSD-3-Clause">BSD License (3-Clause)</a>.</p>
+
 <h2>
 <a name="2-integration" class="anchor" href="#2-integration"><span class="octicon octicon-link"></span></a>2) Integration</h2>
 
 <h3>
 <a name="21-maven" class="anchor" href="#21-maven"><span class="octicon octicon-link"></span></a>2.1) Maven</h3>
 
-<h3>
-<a name="22-handler" class="anchor" href="#22-handler"><span class="octicon octicon-link"></span></a>2.2) Handler</h3>
+<p>JSimpleShell is deployed on <a href="http://search.maven.org/#search%7Cga%7C1%7Cjsimpleshell">maven-central</a>. That means that you can integrate it easily into your maven project. Just one dependency is enough:</p>
 
-<h4>
-<a name="221-command-handler" class="anchor" href="#221-command-handler"><span class="octicon octicon-link"></span></a>2.2.1) Command-Handler</h4>
-
-<h4>
-<a name="222-access-manager" class="anchor" href="#222-access-manager"><span class="octicon octicon-link"></span></a>2.2.2) Access-Manager</h4>
-
-<h4>
-<a name="223-command-execution-hooks" class="anchor" href="#223-command-execution-hooks"><span class="octicon octicon-link"></span></a>2.2.3) Command execution hooks</h4>
-
-<h4>
-<a name="224-message-resolver" class="anchor" href="#224-message-resolver"><span class="octicon octicon-link"></span></a>2.2.4) Message-Resolver</h4>
-
-<h4>
-<a name="225-candidates-chooser" class="anchor" href="#225-candidates-chooser"><span class="octicon octicon-link"></span></a>2.2.5) Candidates-Chooser</h4>
-
-<h4>
-<a name="226-converter" class="anchor" href="#226-converter"><span class="octicon octicon-link"></span></a>2.2.6) Converter</h4>
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>de.raysha.lib<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>jsimpleshell<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>2.2<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
 
 <h3>
-<a name="23-dependency-injection" class="anchor" href="#23-dependency-injection"><span class="octicon octicon-link"></span></a>2.3) Dependency injection</h3>
+<a name="22-shell-builder" class="anchor" href="#22-shell-builder"><span class="octicon octicon-link"></span></a>2.2) Shell-Builder</h3>
 
 <h3>
-<a name="24-input-and-output" class="anchor" href="#24-input-and-output"><span class="octicon octicon-link"></span></a>2.4) Input and Output</h3>
+<a name="23-handler" class="anchor" href="#23-handler"><span class="octicon octicon-link"></span></a>2.3) Handler</h3>
+
+<h4>
+<a name="231-command-handler" class="anchor" href="#231-command-handler"><span class="octicon octicon-link"></span></a>2.3.1) Command-Handler</h4>
+
+<h4>
+<a name="232-access-manager" class="anchor" href="#232-access-manager"><span class="octicon octicon-link"></span></a>2.3.2) Access-Manager</h4>
+
+<h4>
+<a name="233-command-execution-hooks" class="anchor" href="#233-command-execution-hooks"><span class="octicon octicon-link"></span></a>2.3.3) Command execution hooks</h4>
+
+<h4>
+<a name="234-message-resolver" class="anchor" href="#234-message-resolver"><span class="octicon octicon-link"></span></a>2.3.4) Message-Resolver</h4>
+
+<h4>
+<a name="235-candidates-chooser" class="anchor" href="#235-candidates-chooser"><span class="octicon octicon-link"></span></a>2.3.5) Candidates-Chooser</h4>
+
+<h4>
+<a name="236-converter" class="anchor" href="#236-converter"><span class="octicon octicon-link"></span></a>2.3.6) Converter</h4>
+
+<h3>
+<a name="24-dependency-injection" class="anchor" href="#24-dependency-injection"><span class="octicon octicon-link"></span></a>2.4) Dependency injection</h3>
+
+<h3>
+<a name="25-input-and-output" class="anchor" href="#25-input-and-output"><span class="octicon octicon-link"></span></a>2.5) Input and Output</h3>
 
 <h2>
 <a name="3-usage" class="anchor" href="#3-usage"><span class="octicon octicon-link"></span></a>3) Usage</h2>
