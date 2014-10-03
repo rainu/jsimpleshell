@@ -59,7 +59,29 @@ The _main handler_ are __only__ in the current shell available! If this shell st
 For example:
 If you want to implement a command that is everywhere available you should use a _aux handler_ which contains this command. 
 
+For all the following handler-types you must know which kind of handlers they are (aux or main?). After you know it you have to add it to your shell - via _ShellBuilder_ or directely to the shell:
+
+```java
+
+Shell shell = ShellBuilder.shell("MyShell")
+				.addHandler(new MyMainHandler()) //adds a main handler
+				.addAuxHandler(new MyAuxHandler()) //adds an aux handler
+			.build();
+
+//adds an aux handler where all contains commands have the prefix "!"
+//that means the user must enter the ! followed by the command-name
+shell.addAuxHandler(new OtherAuxHandler(), "!");
+```
+
+One handler can be quite more than one type. For example: One handler can contains commands (command handler) but can also be an Input-/Ouput- Converter. Thus it is possible to have one huge class that manage all things - but you should do it only if you have realy little time :)
+
 #### 2.3.1) Command(-Handler)
+
+A command-handler is a class that contains methods wich are annotated with the __Command__-Annotation. All methods which have these annotation are commands. Methods without these annotation will be ignored by the shell! 
+
+##### 2.3.1.1) Command-Annotation
+
+##### 2.3.1.1) Param-Annotation
 
 #### 2.3.2) Access-Manager
 
