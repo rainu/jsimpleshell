@@ -507,17 +507,13 @@ public class Shell {
 			try {
 				command = input.readCommand(path);
 				processLine(command);
-			} catch (TokenException te) {
-				lastException = te;
-				output.outputException(command, te);
 			} catch(ExitException ee){
 				if(ee.getMessage() != null){
 					output.println(ee.getMessage());
 				}
 				break;
-			} catch (CLIException clie) {
-				lastException = clie;
-				output.outputException(clie);
+			} catch (CLIException e) {
+				//do noting (proccessLine handle it for us)
 			}
 		}
 		for (Object handler : allHandlers) {
@@ -554,11 +550,36 @@ public class Shell {
 			List<CommandLine> chain = CommandChainInterpreter.interpretTokens(Token.tokenize(line));
 
 			if (chain.size() > 0) {
-				List<Token> tokens = chain.get(0).getTokens();
+				for(CommandLine commandLine : chain){
+					try{
+						if(commandLine.isOr() || lastException == null){
+							lastException = null;
+							processLine(commandLine.getTokens());
+						}else if(commandLine.isAnd() && lastException != null){
+							break;
+						}
+					} catch (TokenException te) {
+						lastException = te;
+						output.outputException(line, te);
+					} catch(ExitException ee){
+						throw ee;
+					} catch (CLIException clie) {
+						lastException = clie;
+						output.outputException(clie);
+					}
+				}
 
-				String discriminator = tokens.get(0).getString();
-				processCommand(discriminator, tokens);
+				if(lastException != null) {
+					throw (CLIException)lastException;
+				}
 			}
+		}
+	}
+
+	private void processLine(List<Token> tokens) throws CLIException {
+		if(!tokens.isEmpty()){
+			String discriminator = tokens.get(0).getString();
+			processCommand(discriminator, tokens);
 		}
 	}
 
