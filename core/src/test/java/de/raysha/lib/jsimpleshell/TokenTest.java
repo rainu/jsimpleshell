@@ -34,10 +34,12 @@ public class TokenTest {
 				"dir \"E:\\ASG\\!dynamic\\projects\" \t-l 3492.9  ",
 				"a b c ''",
 				" \\\" ",
-				"--b bValue --a aValue"
+				"--b bValue --a aValue",
+				"command1 param1 && command2 param2",
+				"command1 param1 ; command2 param2"
 			};
 
-		int[] sizes = { 0, 1, 3, 1, 7, 4, 4, 1, 4};
+		int[] sizes = { 0, 1, 3, 1, 7, 4, 4, 1, 4, 5, 5};
 
 		for (int i = 0; i < cases.length; i++) {
 			List<Token> result = Token.tokenize(cases[i]);
