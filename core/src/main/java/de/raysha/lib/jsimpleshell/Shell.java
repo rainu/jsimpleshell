@@ -52,6 +52,8 @@ import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
+import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter;
+import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter.CommandLine;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 
 /**
@@ -549,8 +551,11 @@ public class Shell {
 		if (line.trim().equals("?")) {
 			output.output(String.format(HINT_FORMAT, appName), outputConverter);
 		} else {
-			List<Token> tokens = Token.tokenize(line);
-			if (tokens.size() > 0) {
+			List<CommandLine> chain = CommandChainInterpreter.interpretTokens(Token.tokenize(line));
+
+			if (chain.size() > 0) {
+				List<Token> tokens = chain.get(0).getTokens();
+
 				String discriminator = tokens.get(0).getString();
 				processCommand(discriminator, tokens);
 			}

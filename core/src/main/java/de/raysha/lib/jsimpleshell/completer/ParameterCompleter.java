@@ -13,6 +13,8 @@ import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import de.raysha.lib.jsimpleshell.Token;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser.Candidates;
+import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter;
+import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter.CommandLine;
 
 /**
  * This {@link ParameterCompleter} is only active when the cursor is at an argument position after any command.
@@ -40,7 +42,7 @@ public class ParameterCompleter implements Completer {
 
 		this.buffer = buffer;
 		this.cursor = cursor;
-		this.token = Token.tokenize(buffer);
+		this.token = getCurrentTokens(buffer, cursor);
 		this.paramIndex = getParamIndex(token, cursor);
 
 		List<String> possibleParameterNames = getPossibleParameterNames();
@@ -59,6 +61,25 @@ public class ParameterCompleter implements Completer {
 		}
 
 		return complete(candidates, possibleCandidates);
+	}
+
+	private List<Token> getCurrentTokens(String buffer, int cursor) {
+		List<CommandLine> chain = CommandChainInterpreter.interpretTokens(Token.tokenize(buffer));
+
+		if(chain.isEmpty()) return Collections.emptyList();
+
+		for(int i = chain.size() - 1; i >= 0 ; i--){
+			List<Token> curTokens = chain.get(i).getTokens();
+			for(int j = curTokens.size() - 1; j >= 0; j--){
+				Token token = curTokens.get(j);
+
+				if(cursor >= token.getIndex()) {
+					return curTokens;
+				}
+			}
+		}
+
+		return Collections.emptyList();
 	}
 
 	private int complete(List<CharSequence> candidates, List<Candidates> possibleCandidates) {
@@ -195,7 +216,8 @@ public class ParameterCompleter implements Completer {
 		List<ShellCommandParamSpec> possibleParameters = new ArrayList<ShellCommandParamSpec>();
 
 		if(token.isEmpty()) return possibleParameters;
-		if(token.size() == 1 && !buffer.matches("\\s*[^\\s]{1,}\\s{1,}$")) return possibleParameters;
+		//it must be one whitespace between command name and begin of parameter
+		if(token.size() == 1 && !buffer.matches(".*\\s{1,}$")) return possibleParameters;
 
 		if(paramIndex < 0){
 			if(cursor == buffer.length()){

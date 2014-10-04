@@ -51,6 +51,30 @@ public class AutoComplete extends IntegrationsTest {
 	}
 
 	@Test
+	public void commandNameAllAfterConcat() throws IOException{
+		simulateUserInput("?help && \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "!get-last-exception");
+		candidateIsShown(result, "!get-macro-home");
+		candidateIsShown(result, "!run-macro");
+		candidateIsShown(result, "!run-script");
+		candidateIsShown(result, "!set-display-time");
+		candidateIsShown(result, "!set-macro-home");
+		candidateIsShown(result, "!start-record");
+		candidateIsShown(result, "!stop-record");
+		candidateIsShown(result, "?generate-HTML-help");
+		candidateIsShown(result, "?help");
+		candidateIsShown(result, "?list");
+		candidateIsShown(result, "?list-all");
+		candidateIsShown(result, ".lvar");
+		candidateIsShown(result, ".gvar");
+		candidateIsShown(result, "exit");
+		candidateIsShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
 	public void commandNameCompletion() throws IOException{
 		simulateUserInput("!get-\t");
 		CommandResult result = waitForShellCommandExec();
@@ -66,6 +90,78 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsNotShown(result, "!stop-record");
 		candidateIsNotShown(result, "?generate-HTML-help");
 		candidateIsNotShown(result, "?help");
+		candidateIsNotShown(result, "?list");
+		candidateIsNotShown(result, "?list-all");
+		candidateIsNotShown(result, ".lvar");
+		candidateIsNotShown(result, ".gvar");
+		candidateIsNotShown(result, "exit");
+		candidateIsNotShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
+	public void commandNameCompletionAfterConcat() throws IOException{
+		simulateUserInput("set && !get-\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "!get-last-exception");
+		candidateIsShown(result, "!get-macro-home");
+		candidateIsNotShown(result, "!run-macro");
+		candidateIsNotShown(result, "!run-script");
+		candidateIsNotShown(result, "!set-display-time");
+		candidateIsNotShown(result, "!set-macro-home");
+		candidateIsNotShown(result, "!start-record");
+		candidateIsNotShown(result, "!stop-record");
+		candidateIsNotShown(result, "?generate-HTML-help");
+		candidateIsNotShown(result, "?help");
+		candidateIsNotShown(result, "?list");
+		candidateIsNotShown(result, "?list-all");
+		candidateIsNotShown(result, ".lvar");
+		candidateIsNotShown(result, ".gvar");
+		candidateIsNotShown(result, "exit");
+		candidateIsNotShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
+	public void commandNameUniqueCompletion() throws IOException{
+		simulateUserInput("?hel\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "?help");
+		candidateIsNotShown(result, "!get-last-exception");
+		candidateIsNotShown(result, "!get-macro-home");
+		candidateIsNotShown(result, "!run-macro");
+		candidateIsNotShown(result, "!run-script");
+		candidateIsNotShown(result, "!set-display-time");
+		candidateIsNotShown(result, "!set-macro-home");
+		candidateIsNotShown(result, "!start-record");
+		candidateIsNotShown(result, "!stop-record");
+		candidateIsNotShown(result, "?generate-HTML-help");
+		candidateIsNotShown(result, "?list");
+		candidateIsNotShown(result, "?list-all");
+		candidateIsNotShown(result, ".lvar");
+		candidateIsNotShown(result, ".gvar");
+		candidateIsNotShown(result, "exit");
+		candidateIsNotShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
+	public void commandNameUniqueCompletionAfterConcat() throws IOException{
+		simulateUserInput("set && ?h\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "?help");
+		candidateIsNotShown(result, "!get-last-exception");
+		candidateIsNotShown(result, "!get-macro-home");
+		candidateIsNotShown(result, "!run-macro");
+		candidateIsNotShown(result, "!run-script");
+		candidateIsNotShown(result, "!set-display-time");
+		candidateIsNotShown(result, "!set-macro-home");
+		candidateIsNotShown(result, "!start-record");
+		candidateIsNotShown(result, "!stop-record");
+		candidateIsNotShown(result, "?generate-HTML-help");
 		candidateIsNotShown(result, "?list");
 		candidateIsNotShown(result, "?list-all");
 		candidateIsNotShown(result, ".lvar");
@@ -97,8 +193,52 @@ public class AutoComplete extends IntegrationsTest {
 	}
 
 	@Test
+	public void commandNameNothingToCompleteAfterConcat() throws IOException{
+		simulateUserInput("set && doesNotExists\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsNotShown(result, "!get-last-exception");
+		candidateIsNotShown(result, "!get-macro-home");
+		candidateIsNotShown(result, "!run-macro");
+		candidateIsNotShown(result, "!run-script");
+		candidateIsNotShown(result, "!set-display-time");
+		candidateIsNotShown(result, "!set-macro-home");
+		candidateIsNotShown(result, "!start-record");
+		candidateIsNotShown(result, "!stop-record");
+		candidateIsNotShown(result, "?generate-HTML-help");
+		candidateIsNotShown(result, "?help");
+		candidateIsNotShown(result, "?list");
+		candidateIsNotShown(result, "?list-all");
+		candidateIsNotShown(result, "exit");
+		candidateIsNotShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
 	public void commandNameArgumentCompleter() throws IOException{
 		simulateUserInput("?help \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "!get-last-exception");
+		candidateIsShown(result, "!get-macro-home");
+		candidateIsShown(result, "!run-macro");
+		candidateIsShown(result, "!run-script");
+		candidateIsShown(result, "!set-display-time");
+		candidateIsShown(result, "!set-macro-home");
+		candidateIsShown(result, "!start-record");
+		candidateIsShown(result, "!stop-record");
+		candidateIsShown(result, "?generate-HTML-help");
+		candidateIsShown(result, "?help");
+		candidateIsShown(result, "?list");
+		candidateIsShown(result, "?list-all");
+		candidateIsShown(result, "exit");
+		candidateIsShown(result, MainHandler.SHUTDOWN);
+	}
+
+	@Test
+	public void commandNameArgumentCompleterAfterConcat() throws IOException{
+		simulateUserInput("set && ?help \t");
 		CommandResult result = waitForShellCommandExec();
 
 		assertFalse(result.isError());
@@ -325,6 +465,18 @@ public class AutoComplete extends IntegrationsTest {
 	@Test
 	public void parameterNameCompleter() throws IOException{
 		simulateUserInput("set --\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+
+		candidateIsShown(result, "--p1");
+		candidateIsShown(result, "--p2");
+		candidateIsShown(result, "--p-3");
+	}
+
+	@Test
+	public void parameterNameCompleterAfterConcat() throws IOException{
+		simulateUserInput("?help && set --\t");
 		CommandResult result = waitForShellCommandExec();
 
 		assertFalse(result.isError());
