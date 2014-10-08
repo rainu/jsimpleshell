@@ -10,11 +10,11 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.CompleterCommands;
 import de.raysha.lib.jsimpleshell.CompleterCommands.TestEnum;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
 import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
 
 public class AutoComplete extends IntegrationsTest {
 

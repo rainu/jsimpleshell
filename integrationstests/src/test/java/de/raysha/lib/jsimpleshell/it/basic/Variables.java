@@ -9,10 +9,10 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.SubShellCommands;
 import de.raysha.lib.jsimpleshell.VariablePlaygroundCommands;
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 
 public class Variables extends IntegrationsTest {

@@ -10,7 +10,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.L18nCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.handler.impl.AbstractMessageResolver;
 

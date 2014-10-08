@@ -187,8 +187,8 @@ public class HelpCommandHandler {
 	}
 
 	private int getTerminalWidth() {
-		if(owner.getSettings().input instanceof TerminalIO){
-			return ((TerminalIO)owner.getSettings().input).getConsole().getTerminal().getWidth();
+		if(owner.getSettings().getInput() instanceof TerminalIO){
+			return ((TerminalIO)owner.getSettings().getInput()).getConsole().getTerminal().getWidth();
 		}
 
 		return -1;

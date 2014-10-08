@@ -7,6 +7,8 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
 
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
+
 public class SilentShell {
 	private final Shell shell;
 

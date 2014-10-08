@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import de.raysha.lib.jsimpleshell.Shell;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 
 public class Starter {

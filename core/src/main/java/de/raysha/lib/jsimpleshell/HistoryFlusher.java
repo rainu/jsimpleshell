@@ -20,8 +20,8 @@ public class HistoryFlusher implements ShellManageable {
 
 	@Override
 	public void cliLeaveLoop(Shell shell) {
-		if(shell.getSettings().input instanceof TerminalIO){
-			final ConsoleReader console = ((TerminalIO)shell.getSettings().input).getConsole();
+		if(shell.getSettings().getInput() instanceof TerminalIO){
+			final ConsoleReader console = ((TerminalIO)shell.getSettings().getInput()).getConsole();
 			if(console.getHistory() instanceof FileHistory){
 				try {
 					((FileHistory)console.getHistory()).flush();

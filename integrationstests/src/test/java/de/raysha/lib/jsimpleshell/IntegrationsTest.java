@@ -7,6 +7,8 @@ import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
 
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
+
 public abstract class IntegrationsTest {
 
 	protected SilentShell shellInterface;

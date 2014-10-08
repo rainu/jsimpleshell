@@ -11,7 +11,7 @@ import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
 public class List extends IntegrationsTest {
 

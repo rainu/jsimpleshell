@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.builder;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +11,13 @@ import java.util.List;
 
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
+import de.raysha.lib.jsimpleshell.CommandTable;
+import de.raysha.lib.jsimpleshell.DashJoinedNamer;
+import de.raysha.lib.jsimpleshell.HelpCommandHandler;
+import de.raysha.lib.jsimpleshell.HistoryFlusher;
+import de.raysha.lib.jsimpleshell.PromptElement;
+import de.raysha.lib.jsimpleshell.ShellSettings;
+import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
@@ -191,7 +198,7 @@ public class ShellBuilder {
 	 * This method is very similar to addHandler, except ShellBuilder
 	 * will pass all handlers registered with this method to all this shell's subshells.
 	 *
-	 * @see de.raysha.lib.jsimpleshell.ShellBuilder#addHandler(java.lang.Object)
+	 * @see de.raysha.lib.jsimpleshell.builder.ShellBuilder#addHandler(java.lang.Object)
 	 *
 	 * @param handler Object which should be registered as handler.
 	 * @return This {@link ShellBuilder}
@@ -346,8 +353,8 @@ public class ShellBuilder {
 		if(console == null){
 			if(parent == null){
 				console = new ConsoleReader();
-			}else if(parent.getSettings().input instanceof TerminalIO){
-				console = ((TerminalIO)parent.getSettings().input).getConsole();
+			}else if(parent.getSettings().getInput() instanceof TerminalIO){
+				console = ((TerminalIO)parent.getSettings().getInput()).getConsole();
 			}else{
 				throw new IllegalStateException("The parent shell seams to be not built with ShellBuilder!");
 			}
@@ -386,7 +393,7 @@ public class ShellBuilder {
 		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
 		modifAuxHandlers.put("!", io);
 
-		Shell theShell = new Shell(new Shell.Settings(io, io, modifAuxHandlers, false), handlers,
+		Shell theShell = new Shell(new ShellSettings(io, io, modifAuxHandlers, false), handlers,
 				new CommandTable(new DashJoinedNamer(true)), path, buildInitialEnvironment());
 
 		configureShell(theShell);

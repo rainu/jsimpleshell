@@ -9,7 +9,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.PromptElement;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
 public class Prompt extends IntegrationsTest {
 

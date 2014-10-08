@@ -10,9 +10,9 @@ import de.raysha.lib.jsimpleshell.AmbiguousCommands;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.ExitAlternativeCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.SubShellCommands;
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
 public class MultiCommand extends IntegrationsTest {
 

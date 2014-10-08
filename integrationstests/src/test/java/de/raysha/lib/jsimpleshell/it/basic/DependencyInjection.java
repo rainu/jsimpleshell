@@ -9,7 +9,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.DependencyInjectionCommand;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
 public class DependencyInjection extends IntegrationsTest {
 

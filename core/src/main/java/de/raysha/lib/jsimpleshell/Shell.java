@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.exception.AccessDeniedException;
@@ -71,64 +72,16 @@ public class Shell {
 	private String appName;
 
 	private final CompositeMessageResolver messageResolver;
-	final AggregateCandidatesChooser candidatesChooser;
+	private final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
-	final CompositeCommandAccessManager accessManager;
+	private final CompositeCommandAccessManager accessManager;
 	private final Environment environment;
 
-	public static class Settings {
-		final Input input;
-		final Output output;
-		private final MultiMap<String, Object> auxHandlers;
-		private final boolean displayTime;
-
-		public Settings(Input input, Output output, MultiMap auxHandlers, boolean displayTime) {
-			this.input = input;
-			this.output = output;
-			this.auxHandlers = auxHandlers;
-			this.displayTime = displayTime;
-		}
-
-		public Settings createWithAddedAuxHandlers(MultiMap<String, Object> addAuxHandlers) {
-			MultiMap<String, Object> allAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
-			allAuxHandlers.putAll(addAuxHandlers);
-			return new Settings(input, output, allAuxHandlers, displayTime);
-		}
-	}
-
-	public Settings getSettings() {
-		return new Settings(input, output, auxHandlers, displayTime);
-	}
-
-	private void setSettings(Settings s, Collection<Object> initialHandlers) {
-		input = s.input;
-		output = s.output;
-		outputBuilder = new OutputBuilder(output);
-
-		if(input instanceof TerminalIO){
-			inputBuilder = new InputBuilder(((TerminalIO)input).getConsole());
-		}
-
-		dependencyResolver = configureDependencyResolver();
-
-		displayTime = s.displayTime;
-		for (String prefix : s.auxHandlers.keySet()) {
-			for (Object handler : s.auxHandlers.get(prefix)) {
-				addAuxHandler(handler, prefix);
-			}
-		}
-		for(Object handler : initialHandlers){
-			addMainHandler(handler, "");
-		}
-		addMainHandler(environment, "");
-
-		output.setMessageResolver(messageResolver);
-	}
-
 	/**
-	 * Shell's constructor
-	 * You probably don't need this one, see methods of the ShellFactory.
-	 * @see de.raysha.lib.jsimpleshell.ShellFactory
+	 * Shell's constructor.
+	 * <br />
+	 * Use this constructor <b>for you own risk</b>! For building a shell see the
+	 * {@link ShellBuilder}.
 	 *
 	 * @param settings Settings object for the shell instance
 	 * @param initialHandlers The initial main handlers for this shell
@@ -136,7 +89,7 @@ public class Shell {
 	 * @param path Shell's location: list of path elements.
 	 * @param environment The shell's environment.
 	 */
-	Shell(Settings settings, Collection<Object> initialHandlers,
+	public Shell(ShellSettings settings, Collection<Object> initialHandlers,
 			CommandTable commandTable, List<PromptElement> path,
 			Environment environment) {
 
@@ -161,14 +114,43 @@ public class Shell {
 		enableExitCommand();
 	}
 
+	public ShellSettings getSettings() {
+		return new ShellSettings(input, output, auxHandlers, displayTime);
+	}
+
+	private void setSettings(ShellSettings s, Collection<Object> initialHandlers) {
+		input = s.getInput();
+		output = s.getOutput();
+		outputBuilder = new OutputBuilder(output);
+
+		if(input instanceof TerminalIO){
+			inputBuilder = new InputBuilder(((TerminalIO)input).getConsole());
+		}
+
+		dependencyResolver = configureDependencyResolver();
+
+		displayTime = s.isDisplayTime();
+		for (String prefix : s.getAuxHandlers().keySet()) {
+			for (Object handler : s.getAuxHandlers().get(prefix)) {
+				addAuxHandler(handler, prefix);
+			}
+		}
+		for(Object handler : initialHandlers){
+			addMainHandler(handler, "");
+		}
+		addMainHandler(environment, "");
+
+		output.setMessageResolver(messageResolver);
+	}
+
 	private CompositeMessageResolver configureMessageResolver(
-			Settings settings, Collection<Object> initialHandlers) {
+			ShellSettings settings, Collection<Object> initialHandlers) {
 
 		CompositeMessageResolver messageResolver = new CompositeMessageResolver();
 		messageResolver.setLocale(DefaultMessageResolver.getInstance().getLocale());
 
-		for (String prefix : settings.auxHandlers.keySet()) {
-			for (Object handler : settings.auxHandlers.get(prefix)) {
+		for (String prefix : settings.getAuxHandlers().keySet()) {
+			for (Object handler : settings.getAuxHandlers().get(prefix)) {
 				addMessageResolver(messageResolver, handler);
 			}
 		}
@@ -228,6 +210,51 @@ public class Shell {
 		return environment;
 	}
 
+	/**
+	 * Get the {@link CommandAccessManager} of this shell.
+	 *
+	 * @return The access manager.
+	 */
+	public CommandAccessManager getAccessManager() {
+		return accessManager;
+	}
+
+	/**
+	 * Get the {@link InputBuilder} of this shell.
+	 *
+	 * @return The input builder.
+	 */
+	public InputBuilder getInputBuilder() {
+		return inputBuilder;
+	}
+
+	/**
+	 * Get the {@link OutputBuilder} of this shell.
+	 *
+	 * @return The output builder.
+	 */
+	public OutputBuilder getOutputBuilder() {
+		return outputBuilder;
+	}
+
+	/**
+	 * Get the {@link MessageResolver} of this shell.
+	 *
+	 * @return The message resolver.
+	 */
+	public MessageResolver getMessageResolver() {
+		return messageResolver;
+	}
+
+	/**
+	 * Get the {@link CandidatesChooser} of this shell.
+	 *
+	 * @return The candidates chooser.
+	 */
+	public CandidatesChooser getCandidatesChooser() {
+		return candidatesChooser;
+	}
+
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private List<Object> allHandlers = new ArrayList<Object>();
 
@@ -237,11 +264,11 @@ public class Shell {
 		dependencyResolver.put(this);
 		dependencyResolver.put(getInputConverter());
 		dependencyResolver.put(getOutputConverter());
-		dependencyResolver.put(inputBuilder);
-		dependencyResolver.put(outputBuilder);
-		dependencyResolver.put(messageResolver);
-		dependencyResolver.put(accessManager);
-		dependencyResolver.put(environment);
+		dependencyResolver.put(getInputBuilder());
+		dependencyResolver.put(getOutputBuilder());
+		dependencyResolver.put(getMessageResolver());
+		dependencyResolver.put(getAccessManager());
+		dependencyResolver.put(getEnvironment());
 
 		return dependencyResolver;
 	}
@@ -589,7 +616,7 @@ public class Shell {
 
 		ShellCommand commandToInvoke = commandTable.lookupCommand(discriminator, tokens, inputConverter);
 
-		Class[] paramClasses = commandToInvoke.getMethod().getParameterTypes();
+		Class<?>[] paramClasses = commandToInvoke.getMethod().getParameterTypes();
 		Object[] parameters = inputConverter.convertToParameters(tokens,
 				commandToInvoke.getParamSpecs(), paramClasses,
 				commandToInvoke.getMethod().isVarArgs());
