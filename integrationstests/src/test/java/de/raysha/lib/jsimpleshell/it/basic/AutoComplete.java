@@ -21,9 +21,11 @@ public class AutoComplete extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new CompleterCommands())
-					.addHandler(new ParamOrderCommands())
-					.addHandler(new SecurityCommands());
+					.behavior()
+						.addHandler(new CompleterCommands())
+						.addHandler(new ParamOrderCommands())
+						.addHandler(new SecurityCommands())
+					.back();
 	}
 
 	@Test

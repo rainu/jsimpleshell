@@ -17,9 +17,10 @@ public class SubShellCommands {
 	@Command
 	public void subShellWithoutExit() throws IOException{
 		ShellBuilder.subshell("sub", shell)
-			.disableExitCommand()
-			.addHandler(new ExitAlternativeCommands())
-			.build()
+			.behavior()
+				.disableExitCommand()
+				.addHandler(new ExitAlternativeCommands())
+			.back().build()
 		.commandLoop();
 	}
 }

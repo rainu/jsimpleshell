@@ -16,7 +16,9 @@ public class Converter extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new ConverterCommands());
+					.behavior()
+						.addHandler(new ConverterCommands())
+					.back();
 	}
 
 	@Test

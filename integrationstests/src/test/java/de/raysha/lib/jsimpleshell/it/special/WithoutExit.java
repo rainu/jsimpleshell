@@ -16,7 +16,9 @@ public class WithoutExit extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.addHandler(new SubShellCommands());
+				.behavior()
+					.addHandler(new SubShellCommands())
+				.back();
 	}
 
 	@Test

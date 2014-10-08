@@ -38,8 +38,8 @@ public class SilentShell {
 		PipedInputStream worldIn = new PipedInputStream();
 		worldIn.connect(in);
 
-		builder.setConsole(worldIn, psOut);
-		builder.setError(psErr);
+		builder.io().setConsole(worldIn, psOut);
+		builder.io().setError(psErr);
 
 		return builder.build();
 	}

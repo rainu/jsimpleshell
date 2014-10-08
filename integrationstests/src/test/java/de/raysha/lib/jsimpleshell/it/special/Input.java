@@ -16,7 +16,9 @@ public class Input extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new InputCommands());
+					.behavior()
+						.addHandler(new InputCommands())
+					.back();
 	}
 
 	@Test

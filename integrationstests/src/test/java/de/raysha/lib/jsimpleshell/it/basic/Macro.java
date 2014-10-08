@@ -27,8 +27,10 @@ public class Macro extends IntegrationsTest {
 		macroHome.mkdirs();
 
 		return super.buildShell()
-					.addHandler(new SubShellCommands())
-					.setMacroHome(macroHome);
+					.behavior()
+						.addHandler(new SubShellCommands())
+						.setMacroHome(macroHome)
+					.back();
 	}
 
 	@After

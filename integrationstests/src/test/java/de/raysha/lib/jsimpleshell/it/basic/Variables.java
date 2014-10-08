@@ -20,10 +20,12 @@ public class Variables extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.addHandler(new SubShellCommands())
-				.addHandler(new SecurityCommands())
-				.addHandler(new ExceptionTestCommand())
-				.addHandler(new VariablePlaygroundCommands());
+				.behavior()
+					.addHandler(new SubShellCommands())
+					.addHandler(new SecurityCommands())
+					.addHandler(new ExceptionTestCommand())
+					.addHandler(new VariablePlaygroundCommands())
+				.back();
 	}
 
 	public static class ExceptionTestCommand{

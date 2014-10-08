@@ -35,9 +35,11 @@ public class Hooks extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new SubShellCommands())
-					.addHandler(new ConverterCommands())
-					.addAuxHandler(this.hookMock);
+					.behavior()
+						.addHandler(new SubShellCommands())
+						.addHandler(new ConverterCommands())
+						.addAuxHandler(this.hookMock)
+					.back();
 	}
 
 	@Test

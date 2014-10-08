@@ -16,7 +16,9 @@ public class Output extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new OutputCommands());
+					.behavior()
+						.addHandler(new OutputCommands())
+					.back();
 	}
 
 	@Test

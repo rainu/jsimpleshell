@@ -16,12 +16,14 @@ public class Prompt extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.setPrompt(new PromptElement() {
-					@Override
-					public String render() {
-						return System.getProperty("user.name");
-					}
-				});
+				.look()
+					.setPrompt(new PromptElement() {
+						@Override
+						public String render() {
+							return System.getProperty("user.name");
+						}
+					})
+				.back();
 	}
 
 	@Test

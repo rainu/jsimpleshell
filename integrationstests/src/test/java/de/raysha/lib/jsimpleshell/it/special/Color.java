@@ -16,8 +16,11 @@ public class Color extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.addHandler(new OutputCommands())
-				.enableColor();
+				.behavior()
+					.addHandler(new OutputCommands())
+				.back().look()
+					.enableColor()
+				.back();
 	}
 
 	@Test

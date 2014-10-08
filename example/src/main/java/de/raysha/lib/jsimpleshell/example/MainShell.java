@@ -84,7 +84,9 @@ public class MainShell implements ShellDependent {
 		final PromptElement prompt = PromptBuilder.fromString(coloredPrompt);
 
 		Shell subShell = ShellBuilder.subshell(prompt, shell)
-							.addHandler(echoBuilder)
+							.behavior()
+								.addHandler(echoBuilder)
+							.back()
 						.build();
 
 		//the method will be blocked until the shell was abandoned

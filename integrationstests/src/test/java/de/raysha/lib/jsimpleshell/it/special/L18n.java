@@ -30,8 +30,10 @@ public class L18n extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new L18nCommands())
-					.addAuxHandler(new MyMessageResolver());
+					.behavior()
+						.addHandler(new L18nCommands())
+						.addAuxHandler(new MyMessageResolver())
+					.back();
 	}
 
 	@Test

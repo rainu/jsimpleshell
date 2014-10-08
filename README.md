@@ -44,8 +44,10 @@ public class Example {
 
 	public static void main(String[] args) throws IOException {
 		Shell shell = ShellBuilder.shell("MyShell")
-				.addHandler(new Example())
-			.build();
+				.behavior()
+					.addHandler(new Example())
+				.back()
+				.build();
 
 		shell.commandLoop();
 	}

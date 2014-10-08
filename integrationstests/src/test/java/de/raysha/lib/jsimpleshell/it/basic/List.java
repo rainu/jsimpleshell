@@ -18,7 +18,9 @@ public class List extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new SecurityCommands());
+					.behavior()
+						.addHandler(new SecurityCommands())
+					.back();
 	}
 
 	@Test

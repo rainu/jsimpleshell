@@ -19,10 +19,12 @@ public class MultiCommand extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new ExitAlternativeCommands())
-					.addHandler(new AmbiguousCommands())
-					.addHandler(new SubShellCommands())
-					.addHandler(new ExceptionTestCommand());
+					.behavior()
+						.addHandler(new ExitAlternativeCommands())
+						.addHandler(new AmbiguousCommands())
+						.addHandler(new SubShellCommands())
+						.addHandler(new ExceptionTestCommand())
+					.back();
 	}
 
 	public static class ExceptionTestCommand{

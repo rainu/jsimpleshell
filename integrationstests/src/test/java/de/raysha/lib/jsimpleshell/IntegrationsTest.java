@@ -62,8 +62,10 @@ public abstract class IntegrationsTest {
 		historyFile.deleteOnExit();
 
 		return ShellBuilder.shell("IT")
-					.addAuxHandler(new MainHandler())
-					.setMacroHome(macroHome)
-					.setHistoryFile(historyFile);
+					.behavior()
+						.addAuxHandler(new MainHandler())
+						.setMacroHome(macroHome)
+						.setHistoryFile(historyFile)
+					.back();
 	}
 }

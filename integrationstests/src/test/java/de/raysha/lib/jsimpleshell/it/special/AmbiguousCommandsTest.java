@@ -17,7 +17,9 @@ public class AmbiguousCommandsTest extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new AmbiguousCommands());
+					.behavior()
+						.addHandler(new AmbiguousCommands())
+					.back();
 	}
 
 	@Test

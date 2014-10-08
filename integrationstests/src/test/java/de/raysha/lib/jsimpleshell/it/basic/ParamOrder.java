@@ -18,7 +18,9 @@ public class ParamOrder extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.addHandler(new ParamOrderCommands());
+				.behavior()
+					.addHandler(new ParamOrderCommands())
+				.back();
 	}
 
 	@Test
