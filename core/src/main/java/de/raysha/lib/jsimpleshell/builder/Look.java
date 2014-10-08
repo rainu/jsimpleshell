@@ -77,6 +77,22 @@ public class Look {
 	}
 
 	/**
+	 * Enable or disable color output.
+	 *
+	 * @param enable True if the color should be enabled. Otherwise false.
+	 * @return This {@link Look}
+	 */
+	public Look setColor(boolean enable){
+		if(enable){
+			enableColor();
+		}else{
+			disableColor();
+		}
+
+		return this;
+	}
+
+	/**
 	 * Go back to the {@link ShellBuilder}.
 	 *
 	 * @return The {@link ShellBuilder}

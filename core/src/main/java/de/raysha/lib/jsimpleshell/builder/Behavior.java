@@ -113,6 +113,22 @@ public class Behavior {
 	}
 
 	/**
+	 * Enable or disable the file name completion mechanism.
+	 *
+	 * @param enable True if the mechanism should be enabled. Otherwise false.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior setFileNameCompleter(boolean enable){
+		if(enable){
+			enableFileNameCompleter();
+		}else{
+			disableFileNameCompleter();
+		}
+
+		return this;
+	}
+
+	/**
 	 * Enable the exit command. By default it is enabled!
 	 *
 	 * @return This {@link Behavior}
@@ -132,6 +148,22 @@ public class Behavior {
 	 */
 	public Behavior disableExitCommand(){
 		model.setDisableExit(true);
+
+		return this;
+	}
+
+	/**
+	 * Enable or disable the exit command.
+	 *
+	 * @param enable True if the exit command should be enabled. Otherwise false.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior setExitCommand(boolean enable){
+		if(enable){
+			enableExitCommand();
+		}else{
+			disableExitCommand();
+		}
 
 		return this;
 	}
