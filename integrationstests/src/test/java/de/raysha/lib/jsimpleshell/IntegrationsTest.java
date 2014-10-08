@@ -7,6 +7,8 @@ import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
 
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
+
 public abstract class IntegrationsTest {
 
 	protected SilentShell shellInterface;
@@ -60,8 +62,10 @@ public abstract class IntegrationsTest {
 		historyFile.deleteOnExit();
 
 		return ShellBuilder.shell("IT")
-					.addAuxHandler(new MainHandler())
-					.setMacroHome(macroHome)
-					.setHistoryFile(historyFile);
+					.behavior()
+						.addAuxHandler(new MainHandler())
+						.setMacroHome(macroHome)
+						.setHistoryFile(historyFile)
+					.back();
 	}
 }

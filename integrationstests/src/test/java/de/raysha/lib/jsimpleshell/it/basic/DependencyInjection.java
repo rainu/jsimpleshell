@@ -9,14 +9,16 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.DependencyInjectionCommand;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
 public class DependencyInjection extends IntegrationsTest {
 
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-				.addHandler(new DependencyInjectionCommand());
+				.behavior()
+					.addHandler(new DependencyInjectionCommand())
+				.back();
 	}
 
 	@Test

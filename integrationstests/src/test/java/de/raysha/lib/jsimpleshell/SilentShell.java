@@ -7,6 +7,8 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
 
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
+
 public class SilentShell {
 	private final Shell shell;
 
@@ -36,8 +38,8 @@ public class SilentShell {
 		PipedInputStream worldIn = new PipedInputStream();
 		worldIn.connect(in);
 
-		builder.setConsole(worldIn, psOut);
-		builder.setError(psErr);
+		builder.io().setConsole(worldIn, psOut);
+		builder.io().setError(psErr);
 
 		return builder.build();
 	}

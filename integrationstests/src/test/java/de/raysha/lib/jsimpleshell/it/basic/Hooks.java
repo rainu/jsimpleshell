@@ -14,9 +14,9 @@ import de.raysha.lib.jsimpleshell.ConverterCommands;
 import de.raysha.lib.jsimpleshell.ConverterCommands.Entry;
 import de.raysha.lib.jsimpleshell.ExitAlternativeCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
 import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.SubShellCommands;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent.ExecutionResult;
@@ -35,9 +35,11 @@ public class Hooks extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new SubShellCommands())
-					.addHandler(new ConverterCommands())
-					.addAuxHandler(this.hookMock);
+					.behavior()
+						.addHandler(new SubShellCommands())
+						.addHandler(new ConverterCommands())
+						.addAuxHandler(this.hookMock)
+					.back();
 	}
 
 	@Test

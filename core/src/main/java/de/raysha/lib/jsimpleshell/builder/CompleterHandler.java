@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell;
+package de.raysha.lib.jsimpleshell.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import java.util.WeakHashMap;
 import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
 import jline.console.completer.Completer;
+import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCompleter;
 import de.raysha.lib.jsimpleshell.completer.ParameterCompleter;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
@@ -29,8 +30,8 @@ class CompleterHandler implements ShellManageable {
 
 	@Override
 	public void cliEnterLoop(Shell shell) {
-		if(shell.getSettings().input instanceof TerminalIO){
-			ConsoleReader console = ((TerminalIO)shell.getSettings().input).getConsole();
+		if(shell.getSettings().getInput() instanceof TerminalIO){
+			ConsoleReader console = ((TerminalIO)shell.getSettings().getInput()).getConsole();
 
 			removePreviousCompleter(shell, console);
 			addCompleter(shell, console);
@@ -39,8 +40,8 @@ class CompleterHandler implements ShellManageable {
 
 	@Override
 	public void cliLeaveLoop(Shell shell) {
-		if(shell.getSettings().input instanceof TerminalIO){
-			ConsoleReader console = ((TerminalIO)shell.getSettings().input).getConsole();
+		if(shell.getSettings().getInput() instanceof TerminalIO){
+			ConsoleReader console = ((TerminalIO)shell.getSettings().getInput()).getConsole();
 
 			removeCompleter(shell, console);
 			restorePreviousCompleter(shell, console);
@@ -89,8 +90,8 @@ class CompleterHandler implements ShellManageable {
 		AggregateCompleter completerContainer = aggregateCompleter.get(console);
 
 		List<Completer> completer = new ArrayList<Completer>();
-		completer.add(new CommandNameCompleter(shell.accessManager, shell.getCommandTable().getCommandTable()));
-		completer.add(new ParameterCompleter(shell.getCommandTable(), shell.candidatesChooser));
+		completer.add(new CommandNameCompleter(shell.getAccessManager(), shell.getCommandTable().getCommandTable()));
+		completer.add(new ParameterCompleter(shell.getCommandTable(), shell.getCandidatesChooser()));
 
 		for(Completer c : completer){
 			completerContainer.getCompleters().add(c);

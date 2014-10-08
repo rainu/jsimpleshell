@@ -10,7 +10,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.L18nCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.handler.impl.AbstractMessageResolver;
 
@@ -30,8 +30,10 @@ public class L18n extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new L18nCommands())
-					.addAuxHandler(new MyMessageResolver());
+					.behavior()
+						.addHandler(new L18nCommands())
+						.addAuxHandler(new MyMessageResolver())
+					.back();
 	}
 
 	@Test

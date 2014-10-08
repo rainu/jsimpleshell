@@ -10,20 +10,22 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.CompleterCommands;
 import de.raysha.lib.jsimpleshell.CompleterCommands.TestEnum;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
 import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
 
 public class AutoComplete extends IntegrationsTest {
 
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new CompleterCommands())
-					.addHandler(new ParamOrderCommands())
-					.addHandler(new SecurityCommands());
+					.behavior()
+						.addHandler(new CompleterCommands())
+						.addHandler(new ParamOrderCommands())
+						.addHandler(new SecurityCommands())
+					.back();
 	}
 
 	@Test

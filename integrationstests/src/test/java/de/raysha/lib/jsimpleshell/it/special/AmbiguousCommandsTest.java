@@ -9,7 +9,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.AmbiguousCommands;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
-import de.raysha.lib.jsimpleshell.ShellBuilder;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 
 public class AmbiguousCommandsTest extends IntegrationsTest {
@@ -17,7 +17,9 @@ public class AmbiguousCommandsTest extends IntegrationsTest {
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
 		return super.buildShell()
-					.addHandler(new AmbiguousCommands());
+					.behavior()
+						.addHandler(new AmbiguousCommands())
+					.back();
 	}
 
 	@Test
