@@ -14,8 +14,8 @@ import de.raysha.lib.jsimpleshell.util.MultiMap;
 class BuilderModel {
 	private PromptElement prompt;
 	private String appName = null;
-	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
-	private Collection<Object> handlers = new LinkedList<Object>();
+	private final MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
+	private final Collection<Object> handlers = new LinkedList<Object>();
 	private File history;
 	private File macroHome;
 	private Shell parent;
@@ -43,14 +43,8 @@ class BuilderModel {
 	MultiMap<String, Object> getAuxHandlers() {
 		return auxHandlers;
 	}
-	void setAuxHandlers(MultiMap<String, Object> auxHandlers) {
-		this.auxHandlers = auxHandlers;
-	}
 	Collection<Object> getHandlers() {
 		return handlers;
-	}
-	void setHandlers(Collection<Object> handlers) {
-		this.handlers = handlers;
 	}
 	File getHistory() {
 		return history;

@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import jline.console.ConsoleReader;
@@ -16,8 +14,8 @@ import de.raysha.lib.jsimpleshell.DashJoinedNamer;
 import de.raysha.lib.jsimpleshell.HelpCommandHandler;
 import de.raysha.lib.jsimpleshell.HistoryFlusher;
 import de.raysha.lib.jsimpleshell.PromptElement;
-import de.raysha.lib.jsimpleshell.ShellSettings;
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.ShellSettings;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
@@ -29,6 +27,7 @@ import de.raysha.lib.jsimpleshell.completer.LocaleCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.VariableCandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.EnvironmentDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
@@ -53,20 +52,7 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
  * @author rainu
  */
 public class ShellBuilder {
-	private PromptElement prompt;
-	private String appName = null;
-	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
-	private Collection<Object> handlers = new LinkedList<Object>();
-	private File history;
-	private File macroHome;
-	private Shell parent;
-	private ConsoleReader console;
-	private OutputStream error = System.err;
-	private boolean useForeignConsole = false;
-	private boolean fileNameCompleterEnabled = true;
-	private boolean handleUserInterrupt = false;
-	private boolean disableExit = false;
-	private boolean colorOutput = true;
+	private final BuilderModel model = new BuilderModel();
 
 	private ShellBuilder(){ }
 
@@ -95,7 +81,7 @@ public class ShellBuilder {
 
 		ShellBuilder builder = new ShellBuilder();
 
-		builder.prompt = prompt;
+		builder.model.setPrompt(prompt);
 
 		return builder;
 	}
@@ -127,8 +113,8 @@ public class ShellBuilder {
 
 		ShellBuilder builder = new ShellBuilder();
 
-		builder.prompt = subPrompt;
-		builder.parent = parent;
+		builder.model.setPrompt(subPrompt);
+		builder.model.setParent(parent);
 
 		return builder;
 	}
@@ -140,7 +126,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setAppName(String appName) {
-		this.appName = appName;
+		model.setAppName(appName);
 		return this;
 	}
 
@@ -151,7 +137,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setPrompt(PromptElement prompt) {
-		this.prompt = prompt;
+		model.setPrompt(prompt);
 
 		return this;
 	}
@@ -163,7 +149,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setPrompt(String prompt) {
-		this.prompt = PromptBuilder.fromString(prompt);
+		model.setPrompt(PromptBuilder.fromString(prompt));
 
 		return this;
 	}
@@ -190,7 +176,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder addHandler(Object handler) {
-		handlers.add(handler);
+		model.getHandlers().add(handler);
 		return this;
 	}
 
@@ -204,7 +190,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder addAuxHandler(Object handler){
-		auxHandlers.put("", handler);
+		model.getAuxHandlers().put("", handler);
 		return this;
 	}
 
@@ -215,8 +201,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setConsole(ConsoleReader console) {
-		this.console = console;
-		this.useForeignConsole = true;
+		model.setConsole(console);
+		model.setUseForeignConsole(true);
 
 		return this;
 	}
@@ -228,7 +214,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setError(OutputStream error) {
-		this.error = error;
+		model.setError(error);
 		return this;
 	}
 
@@ -241,8 +227,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setConsole(InputStream in, OutputStream out) throws IOException {
-		this.console = new ConsoleReader(in, out);
-		this.useForeignConsole = false;
+		model.setConsole(new ConsoleReader(in, out));
+		model.setUseForeignConsole(false);
 
 		return this;
 	}
@@ -256,7 +242,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setHandleUserInterrupt(boolean handleUserInterrupt) {
-		this.handleUserInterrupt = handleUserInterrupt;
+		model.setHandleUserInterrupt(handleUserInterrupt);
 
 		return this;
 	}
@@ -268,7 +254,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder disableColor() {
-		this.colorOutput = false;
+		model.setColorOutput(false);
 
 		return this;
 	}
@@ -279,7 +265,7 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder enableColor() {
-		this.colorOutput = true;
+		model.setColorOutput(true);
 
 		return this;
 	}
@@ -290,7 +276,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder disableFileNameCompleter(){
-		this.fileNameCompleterEnabled = false;
+		model.setFileNameCompleterEnabled(false);
+
 		return this;
 	}
 
@@ -300,7 +287,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder enableFileNameCompleter(){
-		this.fileNameCompleterEnabled = true;
+		model.setFileNameCompleterEnabled(true);
+
 		return this;
 	}
 
@@ -310,7 +298,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder enableExitCommand(){
-		this.disableExit = false;
+		model.setDisableExit(false);
+
 		return this;
 	}
 
@@ -322,7 +311,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder disableExitCommand(){
-		this.disableExit = true;
+		model.setDisableExit(true);
+
 		return this;
 	}
 
@@ -333,7 +323,8 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setHistoryFile(File historyFile){
-		this.history = historyFile;
+		model.setHistory(historyFile);
+
 		return this;
 	}
 
@@ -344,56 +335,57 @@ public class ShellBuilder {
 	 * @return This {@link ShellBuilder}
 	 */
 	public ShellBuilder setMacroHome(File macroHome){
-		this.macroHome = macroHome;
+		model.setMacroHome(macroHome);
 
 		return this;
 	}
 
 	private void checkPrecondition() throws IOException {
-		if(console == null){
-			if(parent == null){
-				console = new ConsoleReader();
-			}else if(parent.getSettings().getInput() instanceof TerminalIO){
-				console = ((TerminalIO)parent.getSettings().getInput()).getConsole();
+		if(model.getConsole() == null){
+			if(model.getParent() == null){
+				model.setConsole(new ConsoleReader());
+			}else if(model.getParent().getSettings().getInput() instanceof TerminalIO){
+				model.setConsole(((TerminalIO)model.getParent().getSettings().getInput()).getConsole());
 			}else{
 				throw new IllegalStateException("The parent shell seams to be not built with ShellBuilder!");
 			}
 		}
 
+		File macroHome = model.getMacroHome();
 		if(macroHome != null && (!macroHome.exists() || !macroHome.isDirectory())){
 			throw new IllegalArgumentException("The macro home must be an existing directory!");
 		}
 	}
 
 	private void configure() {
-		if(!useForeignConsole){
-			if(history != null && !(console.getHistory() instanceof FileHistory)){
+		if(!model.isUseForeignConsole()){
+			if(model.getHistory() != null && !(model.getConsole().getHistory() instanceof FileHistory)){
 				try {
-					console.setHistory(new FileHistory(history));
+					model.getConsole().setHistory(new FileHistory(model.getHistory()));
 				} catch (IOException e) {
 					throw new RuntimeException("Could not configure file history.", e);
 				}
 
-				if(auxHandlers.get("historyFlusher").isEmpty()){
-					auxHandlers.put("historyFlusher", new HistoryFlusher());
+				if(model.getAuxHandlers().get("historyFlusher").isEmpty()){
+					model.getAuxHandlers().put("historyFlusher", new HistoryFlusher());
 				}
 			}
 
-			console.setHandleUserInterrupt(handleUserInterrupt);
+			model.getConsole().setHandleUserInterrupt(model.isHandleUserInterrupt());
 		}
-		console.setExpandEvents(false);
+		model.getConsole().setExpandEvents(false);
 	}
 
 	private Shell buildShell() {
-		TerminalIO io = new TerminalIO(console, error);
+		TerminalIO io = new TerminalIO(model.getConsole(), model.getError());
 
 		List<PromptElement> path = new ArrayList<PromptElement>(1);
-		path.add(prompt);
+		path.add(model.getPrompt());
 
-		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
+		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(model.getAuxHandlers());
 		modifAuxHandlers.put("!", io);
 
-		Shell theShell = new Shell(new ShellSettings(io, io, modifAuxHandlers, false), handlers,
+		Shell theShell = new Shell(new ShellSettings(io, io, modifAuxHandlers, false), model.getHandlers(),
 				new CommandTable(new DashJoinedNamer(true)), path, buildInitialEnvironment());
 
 		configureShell(theShell);
@@ -405,10 +397,12 @@ public class ShellBuilder {
 	}
 
 	private Shell buildSubShell() {
-		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
-		newPath.add(prompt);
+		final Shell parent = model.getParent();
 
-		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(auxHandlers), handlers,
+		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
+		newPath.add(model.getPrompt());
+
+		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers()), model.getHandlers(),
 				new CommandTable(parent.getCommandTable().getNamer()), newPath, copyEnvironment(parent));
 
 		configureShell(subshell);
@@ -429,25 +423,25 @@ public class ShellBuilder {
 	}
 
 	private void configureShell(Shell shell) {
-		shell.setAppName(appName);
+		shell.setAppName(model.getAppName());
 		addDefaultHandler(shell);
 
-		if(fileNameCompleterEnabled) {
+		if(model.isFileNameCompleterEnabled()) {
 			shell.addMainHandler(new FileCandidatesChooser(), "");
 		}
 
-		if(disableExit){
+		if(model.isDisableExit()){
 			shell.disableExitCommand();
 		}
 
-		if(colorOutput){
+		if(model.isColorOutput()){
 			shell.enableColor();
 		}else{
 			shell.disableColor();
 		}
 
-		if(macroHome != null){
-			shell.setMacroHome(macroHome);
+		if(model.getMacroHome() != null){
+			shell.setMacroHome(model.getMacroHome());
 		}
 	}
 
@@ -475,7 +469,7 @@ public class ShellBuilder {
 			checkPrecondition();
 			configure();
 
-			Shell shell = parent == null ? buildShell() : buildSubShell();
+			Shell shell = model.getParent() == null ? buildShell() : buildSubShell();
 
 			return shell;
 		}catch(IOException e){
