@@ -1,6 +1,7 @@
 package de.raysha.lib.jsimpleshell.builder;
 
 import java.io.File;
+import java.util.Iterator;
 
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -18,6 +19,8 @@ import de.raysha.lib.jsimpleshell.handler.OutputConverter;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.script.Environment;
+import de.raysha.lib.jsimpleshell.script.cmd.process.ProcessCommandHandler;
+import de.raysha.lib.jsimpleshell.script.cmd.process.ProcessResultOutputConverter;
 
 /**
  * This is a part of the {@link ShellBuilder}. It is responsible for configuring
@@ -188,6 +191,65 @@ public class Behavior {
 	 */
 	public Behavior setMacroHome(File macroHome){
 		model.setMacroHome(macroHome);
+
+		return this;
+	}
+
+	/**
+	 * Enable the special commands that can start an external process. For security reasons,
+	 * this commands are disabled by default.
+	 *
+	 * @see ProcessCommandHandler
+	 * @return This {@link Behavior}
+	 */
+	public Behavior enableProcessStarterCommands(){
+		disableProcessStarterCommands(); //remove duplicates
+
+		model.getAuxHandlers().put(".", new ProcessCommandHandler());
+		model.getAuxHandlers().put("", new ProcessResultOutputConverter());
+
+		return this;
+	}
+
+	/**
+	 * Disable the special commands that can start an external process. For security reasons,
+	 * this commands are disabled by default.
+	 *
+	 * @see ProcessCommandHandler
+	 * @return This {@link Behavior}
+	 */
+	public Behavior disableProcessStarterCommands(){
+		Iterator<Object> iter = model.getAuxHandlers().get(".").iterator();
+		while(iter.hasNext()){
+			if(iter.next() instanceof ProcessCommandHandler){
+				iter.remove();
+			}
+		}
+
+		iter = model.getAuxHandlers().get("").iterator();
+		while(iter.hasNext()){
+			if(iter.next() instanceof ProcessResultOutputConverter){
+				iter.remove();
+			}
+		}
+
+		return this;
+	}
+
+	/**
+	 * Disable or enable the special commands that can start an external process.
+	 * For security reasons, this commands are disabled by default.
+	 *
+	 * @param enable True if the special commands should be enabled. Otherwise false.
+	 * @see ProcessCommandHandler
+	 * @return This {@link Behavior}
+	 */
+	public Behavior setProcessStarterCommands(boolean enable){
+		if(enable){
+			enableProcessStarterCommands();
+		}else{
+			disableProcessStarterCommands();
+		}
 
 		return this;
 	}
