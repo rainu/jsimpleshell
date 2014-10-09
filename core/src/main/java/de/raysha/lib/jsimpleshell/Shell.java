@@ -646,7 +646,7 @@ public class Shell {
 			}
 		}
 
-		if (invocationResult != null) {
+		if (invocationResult != null && commandToInvoke.isDisplayResult()) {
 			output.output(invocationResult, outputConverter);
 		}
 		if(thrown != null){

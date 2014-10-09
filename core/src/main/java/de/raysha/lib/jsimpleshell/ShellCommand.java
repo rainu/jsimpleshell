@@ -23,6 +23,7 @@ public class ShellCommand {
 	private String description;
 	private String abbreviation;
 	private String header;
+	private boolean displayResult = true;
 	private Method method;
 	private Object handler;
 	private ShellCommandParamSpec[] paramSpecs;
@@ -122,6 +123,14 @@ public class ShellCommand {
 		return handler;
 	}
 
+	public void setDisplayResult(boolean displayResult) {
+		this.displayResult = displayResult;
+	}
+
+	public boolean isDisplayResult() {
+		return displayResult;
+	}
+
 	public boolean startsWith(String prefix) {
 		return (this.prefix + abbreviation).startsWith(prefix) ||
 				(this.prefix + name).startsWith(prefix);
@@ -140,5 +149,4 @@ public class ShellCommand {
 	public ShellCommandParamSpec[] getParamSpecs() {
 		return paramSpecs;
 	}
-
 }
