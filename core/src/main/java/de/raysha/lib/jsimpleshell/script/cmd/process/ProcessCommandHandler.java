@@ -40,7 +40,7 @@ public class ProcessCommandHandler {
 		builder.setArguments(arguments);
 		final Process process = builder.build();
 
-		return waitForProcess(process);
+		return waitForProcess(process, true, true);
 	}
 
 	@Command(abbrev = "command.abbrev.execution.build", description = "command.description.execution.build",
@@ -59,11 +59,13 @@ public class ProcessCommandHandler {
 		final Process process = builder.build();
 		if(process == null) return null;	//user not run the process
 
-		return waitForProcess(process);
+		return waitForProcess(process, builder.isPrintOut(), builder.isPrintErr());
 	}
 
-	private ProcessResult waitForProcess(Process process) throws IOException {
+	private ProcessResult waitForProcess(Process process, boolean printOut, boolean printErr) throws IOException {
 		ProcessController controller = new ProcessController(process, shell);
+		controller.setPrintOut(printOut);
+		controller.setPrintErr(printErr);
 
 		return controller.waitForProcess();
 	}
@@ -74,6 +76,8 @@ public class ProcessCommandHandler {
 		private Map<String, String> env = new HashMap<String, String>();
 		private File home;
 		private boolean isCanceled = false;
+		private boolean printOut = true;
+		private boolean printErr = true;
 
 		@Command(abbrev = "command.abbrev.execution.build.command", description = "command.description.execution.build.command",
 				header = "command.header.execution.build.command", name = "command.name.execution.build.command")
@@ -129,6 +133,8 @@ public class ProcessCommandHandler {
 			StringBuilder env = new StringBuilder();
 			String cmd = command == null ? "-" : command;
 			String dir = home == null ? "-" : home.getAbsolutePath();
+			String out = printOut ? messageResolver.resolveGeneralMessage("message.execution.show.enable") : messageResolver.resolveGeneralMessage("message.execution.show.disable");
+			String err = printErr ? messageResolver.resolveGeneralMessage("message.execution.show.enable") : messageResolver.resolveGeneralMessage("message.execution.show.disable");
 
 			if(this.arguments != null && arguments.length >= 1){
 				for(String arg : this.arguments){
@@ -142,23 +148,49 @@ public class ProcessCommandHandler {
 
 			if(this.env != null && this.env.size() >= 1){
 				for(Entry<String, String> prop : this.env.entrySet()){
-					args.append("* ");
-					args.append(prop.getKey());
-					args.append("\t");
-					args.append(prop.getValue());
-					args.append("\n");
+					env.append("\t");
+					env.append(prop.getKey());
+					env.append("=");
+					env.append(prop.getValue());
+					env.append("\n");
 				}
 				//remove last "\n"
-				args.replace(args.length() - 1, args.length(), "");
+				env.replace(env.length() - 1, env.length(), "");
 			}
 
 			String output = messageResolver.resolveGeneralMessage("message.execution.show")
 						.replace("{cmd}", cmd)	//{cmd} -> command name
 						.replace("{args}", args.toString())	//{args} -> arguments
 						.replace("{env}", env.toString())	//{env} -> environment properties
-						.replace("{dir}", dir);	//{dir} -> working directory
+						.replace("{dir}", dir)	//{dir} -> working directory
+						.replace("{output}", out)
+						.replace("{error}", err);
 
 			return output;
+		}
+
+		@Command(abbrev = "command.abbrev.execution.build.disable.out", description = "command.description.execution.build.disable.out",
+				header = "command.header.execution.build.disable.out", name = "command.name.execution.build.disable.out")
+		public void disableOutput(){
+			printOut = false;
+		}
+
+		@Command(abbrev = "command.abbrev.execution.build.enable.out", description = "command.description.execution.build.enable.out",
+				header = "command.header.execution.build.enable.out", name = "command.name.execution.build.enable.out")
+		public void enableOutput(){
+			printOut = true;
+		}
+
+		@Command(abbrev = "command.abbrev.execution.build.disable.err", description = "command.description.execution.build.disable.err",
+				header = "command.header.execution.build.disable.err", name = "command.name.execution.build.disable.err")
+		public void disableError(){
+			printErr = false;
+		}
+
+		@Command(abbrev = "command.abbrev.execution.build.enable.err", description = "command.description.execution.build.enable.err",
+				header = "command.header.execution.build.enable.err", name = "command.name.execution.build.enable.err")
+		public void enableError(){
+			printErr = true;
 		}
 
 		@Command(abbrev = "command.abbrev.execution.build.cancel", description = "command.description.execution.build.cancel",
@@ -209,6 +241,14 @@ public class ProcessCommandHandler {
 			if(arguments == null) return 0;
 
 			return arguments.length;
+		}
+
+		public boolean isPrintOut() {
+			return printOut;
+		}
+
+		public boolean isPrintErr() {
+			return printErr;
 		}
 	}
 }

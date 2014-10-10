@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.raysha.lib.jsimpleshell.Shell;
 
@@ -17,11 +20,22 @@ import de.raysha.lib.jsimpleshell.Shell;
 public class ProcessController {
 	private final Process process;
 	private final Shell shell;
+	private boolean printErr;
+	private boolean printOut;
 
 	public ProcessController(Process process, Shell shell) {
 		this.process = process;
 		this.shell = shell;
 	}
+
+	public void setPrintErr(boolean printErr) {
+		this.printErr = printErr;
+	}
+
+	public void setPrintOut(boolean printOut) {
+		this.printOut = printOut;
+	}
+
 
 	/**
 	 * Wait for my {@link Process}. This method is blocking, which means that
@@ -44,10 +58,12 @@ public class ProcessController {
 		final FileOutputStream outStream = new FileOutputStream(result.getOutput());
 		final FileOutputStream errStream = new FileOutputStream(result.getError());
 
-		InputStreamPipe outPipe = new InputStreamPipe(process.getInputStream(),
-				outStream, new ShellOutStream());
-		InputStreamPipe errPipe = new InputStreamPipe(process.getErrorStream(),
-				errStream, new ShellErrStream());
+		InputStreamPipe outPipe = new InputStreamPipe(process.getInputStream(), outStream);
+		if(printOut) outPipe.addOutputStream(new ShellOutStream());
+
+		InputStreamPipe errPipe = new InputStreamPipe(process.getErrorStream(), errStream);
+		if(printErr) errPipe.addOutputStream(new ShellErrStream());
+
 		OutputStreamPipe inPipe = new OutputStreamPipe(process.getOutputStream(),
 				new ShellInStream());
 
@@ -93,11 +109,15 @@ public class ProcessController {
 
 	private class InputStreamPipe extends Thread {
 		private final InputStream input;
-		private final OutputStream[] outputs;
+		private final List<OutputStream> outputs;
 
 		public InputStreamPipe(InputStream in, OutputStream...out) {
 			this.input = in;
-			this.outputs = out;
+			this.outputs = new ArrayList<OutputStream>(Arrays.asList(out));
+		}
+
+		public void addOutputStream(OutputStream out) {
+			outputs.add(out);
 		}
 
 		public void run(){

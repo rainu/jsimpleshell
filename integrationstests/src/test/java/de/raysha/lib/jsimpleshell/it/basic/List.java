@@ -57,6 +57,7 @@ public class List extends IntegrationsTest {
 		isCommandListed(result, "?", "ghh", "generate-HTML-help", "filename", "include-prefixed");
 		isCommandListed(result, ".", "var", "lvar", "name", "value");
 		isCommandListed(result, ".", "gvar", "gvar", "name", "value");
+		isCommandNotListed(result, ".", "exec", "execute"); //it is disabled by default!
 		isCommandNotListed(result, "", "ds", "do-something");
 	}
 
