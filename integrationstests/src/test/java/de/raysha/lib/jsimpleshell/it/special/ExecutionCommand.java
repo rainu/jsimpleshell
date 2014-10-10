@@ -39,7 +39,7 @@ public class ExecutionCommand extends IntegrationsTest {
 	public void output() throws IOException{
 		CommandResult result = executeAndWaitForCommand(".exec", "echo" , "Execution-Output");
 
-		assertTrue(result.containsOutLine("^Execution-Output$"));
+		assertTrue(result.toString(), result.containsOutLine("^Execution-Output$"));
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class ExecutionCommand extends IntegrationsTest {
 		Thread.sleep(1500);
 
 		CommandResult result = waitForShell();
-		assertTrue(result.containsErrLine("^expr: non-integer argument$"));
+		assertTrue(result.toString(), result.containsErrLine("^expr: non-integer argument$"));
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = executeAndWaitForCommand("run");
 
-		assertTrue(result.containsOutLine("^Execution-Output$"));
+		assertTrue(result.toString(), result.containsOutLine("^Execution-Output$"));
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = executeAndWaitForCommand("cancel");
 
-		assertFalse(result.containsLine("^Execution-Output$"));
+		assertFalse(result.toString(), result.containsLine("^Execution-Output$"));
 	}
 
 	@Test
@@ -84,8 +84,8 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = executeAndWaitForCommand("run");
 
-		assertTrue(result.containsOutLine("^env1=value1$"));
-		assertTrue(result.containsOutLine("^env3=value3$"));
+		assertTrue(result.toString(), result.containsOutLine("^env1=value1$"));
+		assertTrue(result.toString(), result.containsOutLine("^env3=value3$"));
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = executeAndWaitForCommand("run");
 
-		assertTrue(result.containsOutLine(SystemUtils.JAVA_IO_TMPDIR));
+		assertTrue(result.toString(), result.containsOutLine(SystemUtils.JAVA_IO_TMPDIR));
 	}
 
 	@Test
@@ -117,13 +117,13 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = executeAndWaitForCommand("show");
 
-		assertTrue(result.containsOutLine("\\s*env1=value1$"));
-		assertFalse(result.containsOutLine("\\s*env2=value2$"));
-		assertTrue(result.containsOutLine("\\s*env3=value3$"));
-		assertTrue(result.containsOutLine("^Command line: env \"arg1\" \"arg2\".*$"));
-		assertTrue(result.containsOutLine("^Working directory: /tmp$"));
-		assertTrue(result.containsOutLine("Default-Output: enable$"));
-		assertTrue(result.containsOutLine("Error-Output: disable$"));
+		assertTrue(result.toString(), result.containsOutLine("\\s*env1=value1$"));
+		assertFalse(result.toString(), result.containsOutLine("\\s*env2=value2$"));
+		assertTrue(result.toString(), result.containsOutLine("\\s*env3=value3$"));
+		assertTrue(result.toString(), result.containsOutLine("^Command line: env \"arg1\" \"arg2\".*$"));
+		assertTrue(result.toString(), result.containsOutLine("^Working directory: /tmp$"));
+		assertTrue(result.toString(), result.containsOutLine("Default-Output: enable$"));
+		assertTrue(result.toString(), result.containsOutLine("Error-Output: disable$"));
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = executeAndWaitForCommand("run");
 
-		assertFalse(result.containsOutLine("^Execution-Output$"));
+		assertFalse(result.toString(), result.containsOutLine("^Execution-Output$"));
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class ExecutionCommand extends IntegrationsTest {
 
 		CommandResult result = waitForShell();
 
-		assertFalse(result.containsErrLine("^expr: non-integer argument$"));
+		assertFalse(result.toString(), result.containsErrLine("^expr: non-integer argument$"));
 	}
 
 	@Test
@@ -157,7 +157,7 @@ public class ExecutionCommand extends IntegrationsTest {
 		executeAndWaitForCommand(".exec", "echo", "Execution-Output");
 		CommandResult result = executeAndWaitForCommand("set", "$?");
 
-		assertTrue(result.containsOutLine("^String: Execution-Output$"));
+		assertTrue(result.toString(), result.containsOutLine("^String: Execution-Output$"));
 	}
 
 	@Test
@@ -165,6 +165,6 @@ public class ExecutionCommand extends IntegrationsTest {
 		executeAndWaitForCommand(".exec", "echo", "Execution-Output");
 		CommandResult result = executeAndWaitForCommand("set-anything", "$?");
 
-		assertTrue(result.containsOutLine("^Object: .*ProcessResult.*$"));
+		assertTrue(result.toString(), result.containsOutLine("^Object: .*ProcessResult.*$"));
 	}
 }
