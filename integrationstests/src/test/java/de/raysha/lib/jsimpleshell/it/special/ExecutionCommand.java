@@ -37,7 +37,8 @@ public class ExecutionCommand extends IntegrationsTest {
 
 	@Test
 	public void output() throws IOException{
-		CommandResult result = executeAndWaitForCommand(".exec", "echo" , "Execution-Output");
+		executeCommand(".exec", "echo" , "Execution-Output");
+		CommandResult result = waitForShellCommandExec();
 
 		assertTrue(result.toString(), result.containsOutLine("^Execution-Output$"));
 	}
@@ -75,12 +76,12 @@ public class ExecutionCommand extends IntegrationsTest {
 
 	@Test
 	public void buildAdvanced() throws IOException{
-		executeAndWaitForCommand(".exec");
-		executeAndWaitForCommand("set-command", "env");
-		executeAndWaitForCommand("set-environment", "env1", "value1");
-		executeAndWaitForCommand("set-environment", "env2", "value2");
-		executeAndWaitForCommand("set-environment", "env3", "value3");
-		executeAndWaitForCommand("remove-environment", "env2");
+		executeCommand(".exec");
+		executeCommand("set-command", "env");
+		executeCommand("set-environment", "env1", "value1");
+		executeCommand("set-environment", "env2", "value2");
+		executeCommand("set-environment", "env3", "value3");
+		executeCommand("remove-environment", "env2");
 
 		CommandResult result = executeAndWaitForCommand("run");
 
