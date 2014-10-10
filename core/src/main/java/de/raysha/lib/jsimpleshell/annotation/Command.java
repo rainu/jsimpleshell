@@ -50,4 +50,10 @@ public @interface Command {
 	 * @return command's header or "" if not set.
 	 */
 	String header() default "";
+
+	/**
+	 * Specify if the result of the command should be displayed.
+	 * @return True if the result should be displayed. Otherwise false.
+	 */
+	boolean displayResult() default true;
 }

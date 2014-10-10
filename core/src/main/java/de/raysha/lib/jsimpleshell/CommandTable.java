@@ -69,6 +69,7 @@ public class CommandTable {
 		command.setAbbreviation(abbrev);
 		command.setDescription(desciption);
 		command.setHeader(header);
+		command.setDisplayResult(annotation.displayResult());
 
 		commandTable.add(command);
 

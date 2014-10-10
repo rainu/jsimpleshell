@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell.script;
+package de.raysha.lib.jsimpleshell.script.cmd;
 
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellCommand;
@@ -9,6 +9,8 @@ import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
+import de.raysha.lib.jsimpleshell.script.Environment;
+import de.raysha.lib.jsimpleshell.script.Variable;
 
 /**
  * This command handler contains all commands that are responsible for scripting.

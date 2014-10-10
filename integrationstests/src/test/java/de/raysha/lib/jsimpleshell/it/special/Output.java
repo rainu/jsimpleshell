@@ -108,4 +108,12 @@ public class Output extends IntegrationsTest {
 		assertFalse(result.containsErrLine("\u001B\\[46mtext\u001B\\[0m"));
 		assertFalse(result.containsErrLine("\u001B\\[47mtext\u001B\\[0m"));
 	}
+
+	@Test
+	public void doNotDisplay() throws IOException{
+		CommandResult result = executeAndWaitForCommand("do-not-display");
+
+		assertFalse(result.isError());
+		assertFalse(result.containsLine("This should be not displayed!"));
+	}
 }

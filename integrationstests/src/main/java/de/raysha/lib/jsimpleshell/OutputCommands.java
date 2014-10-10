@@ -93,4 +93,9 @@ public class OutputCommands {
     	output.err().whiteBG("text").println();
     	output.err().yellowBG("text").println();
 	}
+
+	@Command(displayResult = false)
+	public String doNotDisplay(){
+		return "This should be not displayed!";
+	}
 }
