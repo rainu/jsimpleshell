@@ -2,8 +2,9 @@ package de.raysha.lib.jsimpleshell.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.WeakHashMap;
+import java.util.Map;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.AggregateCompleter;
@@ -24,9 +25,9 @@ class CompleterHandler implements ShellManageable {
 	/*
 	 * It is VERY important to use a WeakMap. Otherwise the ConsoleReader and/or the Shell instances can never be garbage collected!
 	 */
-	private final static WeakHashMap<ConsoleReader, AggregateCompleter> aggregateCompleter = new WeakHashMap<ConsoleReader, AggregateCompleter>();
-	private final static WeakHashMap<Shell, Collection<Completer>> shellCompleterRelation = new WeakHashMap<Shell, Collection<Completer>>();
-	private final static WeakHashMap<Shell, Collection<Completer>> shellPrevCompleterRelation = new WeakHashMap<Shell, Collection<Completer>>();
+	private final static Map<ConsoleReader, AggregateCompleter> aggregateCompleter = new HashMap<ConsoleReader, AggregateCompleter>();
+	private final static Map<Shell, Collection<Completer>> shellCompleterRelation = new HashMap<Shell, Collection<Completer>>();
+	private final static Map<Shell, Collection<Completer>> shellPrevCompleterRelation = new HashMap<Shell, Collection<Completer>>();
 
 	@Override
 	public void cliEnterLoop(Shell shell) {
@@ -45,7 +46,14 @@ class CompleterHandler implements ShellManageable {
 
 			removeCompleter(shell, console);
 			restorePreviousCompleter(shell, console);
+
+			//it is very important to remove this relations from my map, otherwise the garbage collector
+			//could not delete this instances from space!
+			aggregateCompleter.remove(console);
 		}
+
+		shellCompleterRelation.remove(shell);
+		shellPrevCompleterRelation.remove(shell);
 	}
 
 	private void restorePreviousCompleter(Shell shell, ConsoleReader console) {
