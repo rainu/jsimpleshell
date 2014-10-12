@@ -6,9 +6,11 @@ import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
+@RunWith(UnstableTestRunner.class)
 public abstract class IntegrationsTest {
 
 	protected SilentShell shellInterface;
