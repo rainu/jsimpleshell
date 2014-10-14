@@ -70,6 +70,7 @@ public class CommandTable {
 		command.setDescription(desciption);
 		command.setHeader(header);
 		command.setDisplayResult(annotation.displayResult());
+		command.setStartsSubshell(annotation.startsSubshell());
 
 		commandTable.add(command);
 

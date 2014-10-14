@@ -41,7 +41,7 @@ public class CommandNameCandidatesChooser implements CandidatesChooser {
 
 			if(cmdLine.startsWith(part)){
 				AccessDecision decision = accessManager.checkCommandPermission(new Context(cmd));
-				if(decision.getDecision() == Decision.ALLOWED){
+				if(decision.getDecision() != Decision.DENIED){
 					result.add(cmdLine);
 				}
 			}

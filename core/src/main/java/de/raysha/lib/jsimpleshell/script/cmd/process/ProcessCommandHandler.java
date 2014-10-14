@@ -44,7 +44,8 @@ public class ProcessCommandHandler {
 	}
 
 	@Command(abbrev = "command.abbrev.execution.build", description = "command.description.execution.build",
-			header = "command.header.execution.build", name = "command.name.execution.build", displayResult = false)
+			header = "command.header.execution.build", name = "command.name.execution.build",
+			displayResult = false, startsSubshell = true)
 	public ProcessResult execute() throws IOException {
 		String subPrompt = messageResolver.resolveGeneralMessage("message.execution.prompt");
 		ExecutionBuilder builder = new ExecutionBuilder();

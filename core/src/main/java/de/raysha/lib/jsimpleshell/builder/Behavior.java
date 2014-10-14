@@ -1,6 +1,8 @@
 package de.raysha.lib.jsimpleshell.builder;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 import de.raysha.lib.jsimpleshell.Shell;
@@ -57,11 +59,22 @@ public class Behavior {
 	 * <li>Implements the {@link CommandLoopObserver} interface to observe the proceeded command lines</li>
 	 * </ul>
 	 *
-	 * @param handler A command handler.
+	 * @param handler The command handler.
 	 * @return This {@link Behavior}
 	 */
-	public Behavior addHandler(Object handler) {
-		model.getHandlers().add(handler);
+	public Behavior addHandler(Object...handler) {
+		return addHandler(Arrays.asList(handler));
+	}
+
+	/**
+	 * @see Behavior#addHandler(Object...)
+	 * @param handler The command handler.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior addHandler(Collection<Object> handler) {
+		if(handler != null) for(Object h : handler){
+			model.getHandlers().add(h);
+		}
 
 		return this;
 	}
@@ -75,8 +88,19 @@ public class Behavior {
 	 * @param handler Object which should be registered as handler.
 	 * @return This {@link Behavior}
 	 */
-	public Behavior addAuxHandler(Object handler){
-		model.getAuxHandlers().put("", handler);
+	public Behavior addAuxHandler(Object...handler){
+		return addAuxHandler(Arrays.asList(handler));
+	}
+
+	/**
+	 * @see Behavior#addAuxHandler(Object...)
+	 * @param handler Object which should be registered as handler.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior addAuxHandler(Collection<Object> handler){
+		if(handler != null) for(Object h : handler){
+			model.getAuxHandlers().put("", h);
+		}
 
 		return this;
 	}

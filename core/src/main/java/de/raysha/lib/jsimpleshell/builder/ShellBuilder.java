@@ -7,6 +7,7 @@ import java.util.List;
 
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
+import de.raysha.lib.jsimpleshell.CommandPipeline;
 import de.raysha.lib.jsimpleshell.CommandTable;
 import de.raysha.lib.jsimpleshell.DashJoinedNamer;
 import de.raysha.lib.jsimpleshell.HelpCommandHandler;
@@ -25,7 +26,8 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.Variable;
 import de.raysha.lib.jsimpleshell.script.VariableInputConverter;
-import de.raysha.lib.jsimpleshell.script.cmd.ScriptCommandHandler;
+import de.raysha.lib.jsimpleshell.script.cmd.EnvironmentCommandHandler;
+import de.raysha.lib.jsimpleshell.script.cmd.LoopCommandHandler;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 import de.raysha.lib.jsimpleshell.util.PromptBuilder;
@@ -176,7 +178,7 @@ public class ShellBuilder {
 		modifAuxHandlers.put("!", io);
 
 		Shell theShell = new Shell(new ShellSettings(io, io, modifAuxHandlers, false), model.getHandlers(),
-				new CommandTable(new DashJoinedNamer(true)), path, buildInitialEnvironment());
+				new CommandTable(new DashJoinedNamer(true)), path, new CommandPipeline(), buildInitialEnvironment());
 
 		configureShell(theShell);
 		return theShell;
@@ -193,7 +195,7 @@ public class ShellBuilder {
 		newPath.add(model.getPrompt());
 
 		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers()), model.getHandlers(),
-				new CommandTable(parent.getCommandTable().getNamer()), newPath, copyEnvironment(parent));
+				new CommandTable(parent.getCommandTable().getNamer()), newPath, parent.getPipeline(), copyEnvironment(parent));
 
 		configureShell(subshell);
 		return subshell;
@@ -238,7 +240,8 @@ public class ShellBuilder {
 	private void addDefaultHandler(Shell shell) {
 		shell.addMainHandler(shell, "!");
 		shell.addMainHandler(new HelpCommandHandler(), "?");
-		shell.addMainHandler(new ScriptCommandHandler(), ".");
+		shell.addMainHandler(new EnvironmentCommandHandler(), ".");
+		shell.addMainHandler(new LoopCommandHandler(), ".");
 		shell.addMainHandler(new VariableInputConverter(), "");
 		shell.addMainHandler(new CompleterHandler(), "");
 		shell.addMainHandler(new CommandNameCandidatesChooser(), "");

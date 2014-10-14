@@ -10,6 +10,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import de.raysha.lib.jsimpleshell.CommandRecorder;
+
 /**
  * Annotation for commands. Allows to specify the name of a command, otherwise method's name is used.
  * @author ASG
@@ -56,4 +58,16 @@ public @interface Command {
 	 * @return True if the result should be displayed. Otherwise false.
 	 */
 	boolean displayResult() default true;
+
+	/**
+	 * Specify if the command starts a subshell. This information is needed
+	 * by the {@link CommandRecorder}. If a command starts a subshell and does not
+	 * define it, the {@link CommandRecorder} will <b>not enter</b> in the subshell. The
+	 * result is, that the user can not enter the subshell if he wants to create
+	 * a loop or something like that. Than the user have no chance for auto-complete
+	 * the commands in the subshell.
+	 *
+	 * @return True if the command (can) starts a subshell. Otherwise false.
+	 */
+	boolean startsSubshell() default false;
 }

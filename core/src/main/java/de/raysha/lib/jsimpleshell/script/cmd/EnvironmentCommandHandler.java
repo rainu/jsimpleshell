@@ -13,7 +13,7 @@ import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.Variable;
 
 /**
- * This command handler contains all commands that are responsible for scripting.
+ * This command handler contains all commands that are responsible for the {@link Environment}.
  *
  * @author rainu
  */

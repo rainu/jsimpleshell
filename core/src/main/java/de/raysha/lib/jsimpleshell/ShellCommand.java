@@ -24,6 +24,7 @@ public class ShellCommand {
 	private String abbreviation;
 	private String header;
 	private boolean displayResult = true;
+	private boolean startsSubshell = false;
 	private Method method;
 	private Object handler;
 	private ShellCommandParamSpec[] paramSpecs;
@@ -129,6 +130,14 @@ public class ShellCommand {
 
 	public boolean isDisplayResult() {
 		return displayResult;
+	}
+
+	public void setStartsSubshell(boolean startsSubshell) {
+		this.startsSubshell = startsSubshell;
+	}
+
+	public boolean startsSubshell() {
+		return startsSubshell;
 	}
 
 	public boolean startsWith(String prefix) {

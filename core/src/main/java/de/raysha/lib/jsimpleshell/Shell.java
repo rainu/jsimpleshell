@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +73,7 @@ public class Shell {
 	private Input input;
 	private String appName;
 
+	private final CommandPipeline pipeline;
 	private final CompositeMessageResolver messageResolver;
 	private final AggregateCandidatesChooser candidatesChooser;
 	private DependencyResolver dependencyResolver;
@@ -88,11 +90,12 @@ public class Shell {
 	 * @param initialHandlers The initial main handlers for this shell
 	 * @param commandTable CommandTable to store commands
 	 * @param path Shell's location: list of path elements.
+	 * @param pipeline The command pipeline for this shell
 	 * @param environment The shell's environment.
 	 */
 	public Shell(ShellSettings settings, Collection<Object> initialHandlers,
 			CommandTable commandTable, List<PromptElement> path,
-			Environment environment) {
+			CommandPipeline pipeline, Environment environment) {
 
 		if(environment == null){
 			throw new NullPointerException("The environment must not be null!");
@@ -101,6 +104,7 @@ public class Shell {
 		this.commandTable = commandTable;
 		this.path = path;
 
+		this.pipeline = pipeline;
 		this.environment = environment;
 		this.messageResolver = configureMessageResolver(settings, initialHandlers);
 		this.commandTable.setMessageResolver(messageResolver);
@@ -182,6 +186,15 @@ public class Shell {
 		return commandTable;
 	}
 
+	/**
+	 * Return the {@link CommandPipeline} of this shell.
+	 *
+	 * @return The pipeline.
+	 */
+	public CommandPipeline getPipeline() {
+		return pipeline;
+	}
+
 	private OutputConversionEngine outputConverter = new OutputConversionEngine();
 
 	/**
@@ -258,6 +271,15 @@ public class Shell {
 
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private List<Object> allHandlers = new ArrayList<Object>();
+
+	/**
+	 * Returns a unmodifiable {@link List} with all registered handlers (inclusive aux-handler).
+	 *
+	 * @return My handler.
+	 */
+	public List<Object> getAllHandler(){
+		return Collections.unmodifiableList(allHandlers);
+	}
 
 	private DependencyResolver configureDependencyResolver() {
 		DependencyResolver dependencyResolver = new DependencyResolver();
@@ -533,7 +555,7 @@ public class Shell {
 		String command = "";
 		while (true) {
 			try {
-				command = input.readCommand(path);
+				command = getNextCommandLine();
 				processLine(command);
 			} catch(ExitException ee){
 				if(ee.getMessage() != null){
@@ -549,6 +571,14 @@ public class Shell {
 				((ShellManageable)handler).cliLeaveLoop(this);
 			}
 		}
+	}
+
+	private String getNextCommandLine() {
+		if(pipeline.hasNext()){
+			return pipeline.pop();
+		}
+
+		return input.readCommand(path);
 	}
 
 	private void outputHeader(String header, Object[] parameters) {
@@ -644,7 +674,10 @@ public class Shell {
 				commandToInvoke.getParamSpecs(), paramClasses,
 				commandToInvoke.getMethod().isVarArgs());
 
-		checkAccess(commandToInvoke, parameters);
+		if(!hasAccess(commandToInvoke, parameters)){
+			return;
+		}
+
 		outputHeader(commandToInvoke.getHeader(), parameters);
 		informHooks(commandToInvoke, parameters);
 
@@ -681,12 +714,16 @@ public class Shell {
 		}
 	}
 
-	private void checkAccess(ShellCommand commandToInvoke, Object[] parameters) throws AccessDeniedException {
+	private boolean hasAccess(ShellCommand commandToInvoke, Object[] parameters) throws AccessDeniedException {
 		final Context context = new Context(commandToInvoke, parameters);
 		final AccessDecision decision = accessManager.checkCommandPermission(context);
 
-		if(decision.getDecision() == Decision.DENIED){
+		if(decision.getDecision() != Decision.ALLOWED){
 			informHooks(commandToInvoke, parameters, decision);
+
+			if(decision.getDecision() == Decision.MUTE){
+				return false;
+			}
 
 			if(decision.getReason() != null){
 				throw new AccessDeniedException(decision.getReason());
@@ -694,6 +731,8 @@ public class Shell {
 				throw new AccessDeniedException();
 			}
 		}
+
+		return true;
 	}
 
 	private void informHooks(ShellCommand commandToInvoke, Object[] parameters, AccessDecision decision) {

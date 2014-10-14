@@ -76,7 +76,8 @@ public class MainShell implements ShellDependent {
 			name = "cecho", //the user must enter "cecho" to start this command
 			description = "Start a new subshell. Here you can build a colored string that will printed out when you exit that shell.",
 			//the header will always shown if the user run this command
-			header = "Each subshell have his own commands. Use \"?list\" to show you which commands are available! Use \"exit\" to get out of this shell.")
+			header = "Each subshell have his own commands. Use \"?list\" to show you which commands are available! Use \"exit\" to get out of this shell.",
+			startsSubshell = true)
 	public void colorizedEcho() throws IOException {
 		final ColorizedEcho echoBuilder = new ColorizedEcho();
 
