@@ -2,6 +2,7 @@ package de.raysha.lib.jsimpleshell.script.cmd;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class LoopCommandHandler {
 			@Param(value = "param.name.loop.count.1", description = "param.description.loop.count.1")
 			Long until) throws IOException, CLIException{
 
-		loopCount(0L, until, 1L);
+		loopCount(1L, until, 1L);
 	}
 
 	@Command(abbrev = "command.abbrev.loop.count", description = "command.description.loop.count",
@@ -73,12 +74,24 @@ public class LoopCommandHandler {
 		if(mainLoop()){
 			CommandRecorder recorder = new CommandRecorder(subshell);
 
-			List<String> commands = recorder.recordCommands();
-			purge(commands);
+			final List<String> userCommands = recorder.recordCommands();
+			purge(userCommands);
 
-			for(long i=from; i < until; i += step){
-				setEnvironmentVariables(i, from, until, step);
+
+			//because in normal direction the variables will be created in inverse direction
+			LinkedList<Long> indexes = new LinkedList<Long>();
+			for(long i=from; i <= until; i += step){
+				indexes.add(i);
+			}
+
+			for(long i=from; i <= until; i += step){
+				final long index = indexes.removeFirst();
+
+				List<String> commands = enrichCommands(userCommands, index, from, until, step);
+
 				shell.getPipeline().prepend(commands);
+				shell.getPipeline().prepend(
+						generateSetEnvironmentVariables(index, from, until, step));
 			}
 			setRemoveVariables();
 		}else{
@@ -100,41 +113,62 @@ public class LoopCommandHandler {
 		return "";
 	}
 
-	private void setEnvironmentVariables(Long offset, Long from, Long until, Long step) {
-		shell.getPipeline().prepend(
+	private List<String> enrichCommands(List<String> userCommands, Long offset, Long from, Long until, Long step) {
+		//if an inner-loop is created.. the loop variables will be overridden by the inner loop
+		//we must restore the variables after the inner loop is leaving
+		LinkedList<String> enriched = new LinkedList<String>();
+
+		for(int i=0; i < userCommands.size(); i++){
+			final String command = userCommands.get(i);
+			enriched.add(command);
+
+			if(	command.contains(getCommandNameForLoopEnd()) ||
+				command.contains(getCommandAbbrevForLoopEnd())){
+
+				enriched.addAll(Arrays.asList(generateSetEnvironmentVariables(offset, from, until, step)));
+			}
+		}
+
+		return enriched;
+	}
+
+	private String[] generateSetEnvironmentVariables(Long offset, Long from, Long until, Long step) {
+		return new String[]{
 				setGlobalVariable(VARIABLE_NAME_COUNT, offset),
 				setGlobalVariable(VARIABLE_NAME_FROM, from),
 				setGlobalVariable(VARIABLE_NAME_UNTIL, until),
-				setGlobalVariable(VARIABLE_NAME_STEP, step));
+				setGlobalVariable(VARIABLE_NAME_STEP, step)
+		};
 	}
 
-	private String setGlobalVariable(String name, Object value) {
+	private String setGlobalVariable(String varName, Object value) {
 		final String command = "." + messageResolver.resolveGeneralMessage(EnvironmentCommandHandler.COMMAND_NAME_SET_GLOBAL_VARIABLE);
-		final String varName = name + getLoopCount();
 
 		return command + " \"" + varName + "\" \"" + String.valueOf(value) + "\"";
 	}
 
-	private Integer getLoopCount() {
-		int count = 0;
-		for(PromptElement part : shell.getPath()){
-			if(part instanceof LoopPrompt){
-				count++;
-			}
-		}
-
-		return count;
-	}
-
 	private void purge(List<String> commands) {
+		final String name = getCommandNameForLoopEnd();
+		final String abbrev = getCommandAbbrevForLoopEnd();
+
 		if(commands != null && !commands.isEmpty()){
 			String lastLine = commands.get(commands.size() - 1);
 			lastLine = lastLine.trim();
 
-			if(lastLine.endsWith(".loop-end")){
+			if(	lastLine.trim().endsWith(name) ||
+				lastLine.trim().endsWith(abbrev)){
+
 				commands.remove(commands.size() - 1);
 			}
 		}
+	}
+
+	private String getCommandAbbrevForLoopEnd() {
+		return "." + messageResolver.resolveGeneralMessage(LoopSpecialCommand.COMMAND_ABBREV_LOOP_END);
+	}
+
+	private String getCommandNameForLoopEnd() {
+		return "." + messageResolver.resolveGeneralMessage(LoopSpecialCommand.COMMAND_NAME_LOOP_END);
 	}
 
 	private boolean mainLoop() {
@@ -204,9 +238,11 @@ public class LoopCommandHandler {
 	}
 
 	public class LoopSpecialCommand {
+		public static final String COMMAND_ABBREV_LOOP_END = "command.abbrev.loop.end";
+		public static final String COMMAND_NAME_LOOP_END = "command.name.loop.end";
 
-		@Command(abbrev = "command.abbrev.loop.end", description = "command.description.loop.end",
-				header = "command.header.loop.end", name = "command.name.loop.end")
+		@Command(abbrev = COMMAND_ABBREV_LOOP_END, description = "command.description.loop.end",
+				header = "command.header.loop.end", name = COMMAND_NAME_LOOP_END)
 		public void loopEnd() throws ExitException {
 			throw new ExitException();
 		}
