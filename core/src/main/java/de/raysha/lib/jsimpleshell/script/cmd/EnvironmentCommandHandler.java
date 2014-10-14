@@ -17,7 +17,7 @@ import de.raysha.lib.jsimpleshell.script.Variable;
  *
  * @author rainu
  */
-public class ScriptCommandHandler implements CommandHookDependent {
+public class EnvironmentCommandHandler implements CommandHookDependent {
 
 	public static final String RETURN_VALUE_VARIABLE_NAME = "?";
 	public static final String RETURN_STATUS_VARIABLE_NAME = "??";
