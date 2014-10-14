@@ -38,6 +38,7 @@ import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.De
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.Context;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent.ExecutionResult;
+import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
@@ -571,34 +572,56 @@ public class Shell {
 	 * @throws de.raysha.lib.jsimpleshell.exception.CLIException This may be TokenException
 	 */
 	public void processLine(String line) throws CLIException {
-		if (line.trim().equals("?")) {
-			output.output(String.format(HINT_FORMAT, appName), outputConverter);
-		} else {
-			List<CommandLine> chain = CommandChainInterpreter.interpretTokens(Token.tokenize(line));
+		cliBeforeCommandLine(line);
 
-			if (chain.size() > 0) {
-				for(CommandLine commandLine : chain){
-					try{
-						if(commandLine.isOr() || lastException == null){
-							lastException = null;
-							processLine(commandLine.getTokens());
-						}else if(commandLine.isAnd() && lastException != null){
-							break;
+		try{
+			if (line.trim().equals("?")) {
+				output.output(String.format(HINT_FORMAT, appName), outputConverter);
+			} else {
+				List<CommandLine> chain = CommandChainInterpreter.interpretTokens(Token.tokenize(line));
+
+				if (chain.size() > 0) {
+					for(CommandLine commandLine : chain){
+						try{
+							if(commandLine.isOr() || lastException == null){
+								lastException = null;
+								processLine(commandLine.getTokens());
+							}else if(commandLine.isAnd() && lastException != null){
+								break;
+							}
+						} catch (TokenException te) {
+							lastException = te;
+							output.outputException(line, te);
+						} catch(ExitException ee){
+							throw ee;
+						} catch (CLIException clie) {
+							lastException = clie;
+							output.outputException(clie);
 						}
-					} catch (TokenException te) {
-						lastException = te;
-						output.outputException(line, te);
-					} catch(ExitException ee){
-						throw ee;
-					} catch (CLIException clie) {
-						lastException = clie;
-						output.outputException(clie);
+					}
+
+					if(lastException != null) {
+						throw (CLIException)lastException;
 					}
 				}
+			}
+		}finally{
+			cliAfterCommandLine(line);
+		}
+	}
 
-				if(lastException != null) {
-					throw (CLIException)lastException;
-				}
+	private void cliBeforeCommandLine(String line) {
+		for(Object handler : allHandlers){
+			if(handler instanceof CommandLoopObserver){
+				((CommandLoopObserver)handler).cliBeforeCommandLine(line);
+			}
+		}
+	}
+
+	private void cliAfterCommandLine(String line) {
+		for(Object handler : allHandlers){
+			if(handler instanceof CommandLoopObserver){
+				((CommandLoopObserver)handler).cliAfterCommandLine(line);
 			}
 		}
 	}

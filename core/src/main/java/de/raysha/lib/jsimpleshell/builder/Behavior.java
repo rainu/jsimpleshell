@@ -10,6 +10,7 @@ import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
+import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
 import de.raysha.lib.jsimpleshell.handler.EnvironmentDependent;
 import de.raysha.lib.jsimpleshell.handler.InputConverter;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
@@ -53,6 +54,7 @@ public class Behavior {
 	 * <li>Implements the {@link MessageResolverDependent} interface to get access to the used {@link MessageResolver}</li>
 	 * <li>Implements the {@link CandidatesChooser} interface to choose your own parameter candidates</li>
 	 * <li>Implements the {@link EnvironmentDependent} interface to get access to the used {@link Environment}</li>
+	 * <li>Implements the {@link CommandLoopObserver} interface to observe the proceeded command lines</li>
 	 * </ul>
 	 *
 	 * @param handler A command handler.

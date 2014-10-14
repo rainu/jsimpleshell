@@ -28,6 +28,7 @@ import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
+import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.util.FileUtils;
@@ -39,7 +40,7 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
  * @author rainu
  *
  */
-public class TerminalIO implements Input, Output, ShellManageable {
+public class TerminalIO implements Input, Output, ShellManageable, CommandLoopObserver {
 	public static final String MACRO_SUFFIX = ".jssm";
 	private static final String PROMPT_SUFFIX = "> ";
 
@@ -145,8 +146,6 @@ public class TerminalIO implements Input, Output, ShellManageable {
 			}
 
 			final String line = console.readLine(prompt);
-			recordLine(line);
-
 			return line;
 		} catch (IOException ex) {
 			throw new Error(ex);
@@ -195,6 +194,20 @@ public class TerminalIO implements Input, Output, ShellManageable {
 				FileUtils.write(macroFile, macroRecorder.toString(), false);
 			} catch (IOException e) { }
 		}
+	}
+
+	@Override
+	public void cliBeforeCommandLine(String line) {
+		try{
+			recordLine(line);
+		} catch (IOException ex) {
+			throw new Error(ex);
+		}
+	}
+
+	@Override
+	public void cliAfterCommandLine(String line) {
+		//do nothing
 	}
 
 	@Command(abbrev = "command.abbrev.runscript", description = "command.description.runscript",
