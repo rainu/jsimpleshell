@@ -39,7 +39,7 @@ public class HelpCommandHandler {
 		List<String> result = new ArrayList<String>(commands.size());
 		for (ShellCommand command : commands) {
 			AccessDecision decision = accessManager.checkCommandPermission(new Context(command));
-			if(decision.getDecision() == Decision.ALLOWED){
+			if(decision.getDecision() != Decision.DENIED){
 				result.add(formatCommandShort(command));
 			}
 		}
@@ -54,7 +54,7 @@ public class HelpCommandHandler {
 		for (ShellCommand command : commands) {
 			if (command.getPrefix() == null || command.getPrefix().isEmpty()) {
 				AccessDecision decision = accessManager.checkCommandPermission(new Context(command));
-				if(decision.getDecision() == Decision.ALLOWED){
+				if(decision.getDecision() != Decision.DENIED){
 					result.add(formatCommandShort(command));
 				}
 			}
@@ -148,7 +148,7 @@ public class HelpCommandHandler {
 		for (ShellCommand command : commands) {
 			if (command.startsWith(startsWith)) {
 				AccessDecision decision = accessManager.checkCommandPermission(new Context(command));
-				if(decision.getDecision() == Decision.ALLOWED){
+				if(decision.getDecision() != Decision.DENIED){
 					result.add(formatCommandShort(command));
 				}
 			}

@@ -71,7 +71,10 @@ public class CompositeCommandAccessManager implements CommandAccessManager {
 		Decision decision = null;
 		String reason = null;
 
-		if(isAllowed(decisions)){
+		 if(isMute(decisions)){
+			decision = Decision.MUTE;
+			reason = createAggregatedMuteReasonMessage(decisions);
+		}else if(isAllowed(decisions)){
 			decision = Decision.ALLOWED;
 		}else{
 			decision = Decision.DENIED;
@@ -91,11 +94,36 @@ public class CompositeCommandAccessManager implements CommandAccessManager {
 		return true;
 	}
 
+	private boolean isMute(List<AccessDecision> decisions) {
+		for(AccessDecision decision : decisions){
+			if(decision.getDecision() == Decision.MUTE){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private String createAggregatedDeniedReasonMessage(List<AccessDecision> decisions) {
 		StringBuilder finalMessage = new StringBuilder();
 
 		for(AccessDecision decision : decisions){
 			if(decision.getDecision() == Decision.DENIED && decision.getReason() != null){
+				String curMessage = messageResolver.resolveGeneralMessage(decision.getReason());
+
+				finalMessage.append(curMessage);
+				finalMessage.append("\n");
+			}
+		}
+
+		return finalMessage.toString();
+	}
+
+	private String createAggregatedMuteReasonMessage(List<AccessDecision> decisions) {
+		StringBuilder finalMessage = new StringBuilder();
+
+		for(AccessDecision decision : decisions){
+			if(decision.getDecision() == Decision.MUTE && decision.getReason() != null){
 				String curMessage = messageResolver.resolveGeneralMessage(decision.getReason());
 
 				finalMessage.append(curMessage);

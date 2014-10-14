@@ -9,12 +9,12 @@ import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 public class SubShellCommands {
 	@Inject private Shell shell;
 
-	@Command
+	@Command(startsSubshell = true)
 	public void newSubShell() throws IOException{
 		ShellBuilder.subshell("sub", shell).build().commandLoop();
 	}
 
-	@Command
+	@Command(startsSubshell = true)
 	public void subShellWithoutExit() throws IOException{
 		ShellBuilder.subshell("sub", shell)
 			.behavior()

@@ -66,7 +66,7 @@ public interface CommandAccessManager {
 	 */
 	public static class AccessDecision {
 		public static enum Decision {
-			ALLOWED, DENIED;
+			ALLOWED, DENIED, MUTE;
 		}
 
 		private final Decision decision;

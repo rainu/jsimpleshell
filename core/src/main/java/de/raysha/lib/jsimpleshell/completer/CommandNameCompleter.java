@@ -43,7 +43,7 @@ public class CommandNameCompleter implements Completer {
 		Collection<String> commandNames = new HashSet<String>();
 		for(ShellCommand cmd : commands){
 			AccessDecision decision = accessManager.checkCommandPermission(new Context(cmd));
-			if(decision.getDecision() == Decision.ALLOWED){
+			if(decision.getDecision() != Decision.DENIED){
 				commandNames.add(cmd.getPrefix() + cmd.getName());
 			}
 		}

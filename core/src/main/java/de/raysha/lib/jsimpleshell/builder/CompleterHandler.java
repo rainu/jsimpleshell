@@ -22,9 +22,6 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
  * @author rainu
  */
 class CompleterHandler implements ShellManageable {
-	/*
-	 * It is VERY important to use a WeakMap. Otherwise the ConsoleReader and/or the Shell instances can never be garbage collected!
-	 */
 	private final static Map<ConsoleReader, AggregateCompleter> aggregateCompleter = new HashMap<ConsoleReader, AggregateCompleter>();
 	private final static Map<Shell, Collection<Completer>> shellCompleterRelation = new HashMap<Shell, Collection<Completer>>();
 	private final static Map<Shell, Collection<Completer>> shellPrevCompleterRelation = new HashMap<Shell, Collection<Completer>>();
@@ -64,8 +61,10 @@ class CompleterHandler implements ShellManageable {
 		AggregateCompleter completerContainer = aggregateCompleter.get(console);
 		Collection<Completer> prevCompleters = shellPrevCompleterRelation.get(shell);
 
-		for(Completer c : prevCompleters){
-			completerContainer.getCompleters().add(c);
+		if(completerContainer != null){
+			for(Completer c : prevCompleters){
+				completerContainer.getCompleters().add(c);
+			}
 		}
 	}
 
