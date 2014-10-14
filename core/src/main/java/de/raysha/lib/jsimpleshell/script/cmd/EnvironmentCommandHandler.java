@@ -19,6 +19,7 @@ import de.raysha.lib.jsimpleshell.script.Variable;
  */
 public class EnvironmentCommandHandler implements CommandHookDependent {
 
+	public static final String COMMAND_NAME_SET_GLOBAL_VARIABLE = "command.name.variable.global";
 	public static final String RETURN_VALUE_VARIABLE_NAME = "?";
 	public static final String RETURN_STATUS_VARIABLE_NAME = "??";
 
@@ -59,7 +60,7 @@ public class EnvironmentCommandHandler implements CommandHookDependent {
 	}
 
 	@Command(abbrev = "command.abbrev.variable.global", description = "command.description.variable.global",
-			header = "command.header.variable.global", name = "command.name.variable.global")
+			header = "command.header.variable.global", name = COMMAND_NAME_SET_GLOBAL_VARIABLE)
 	public void setGlobalVariable(
 			@Param(value="param.name.variable.global", description="param.description.variable.global")
 			String name,
@@ -70,7 +71,7 @@ public class EnvironmentCommandHandler implements CommandHookDependent {
 	}
 
 	@Command(abbrev = "command.abbrev.variable.global", description = "command.description.variable.global",
-			header = "command.header.variable.global", name = "command.name.variable.global")
+			header = "command.header.variable.global", name = COMMAND_NAME_SET_GLOBAL_VARIABLE)
 	public void setGlobalVariable(
 			@Param(value="param.name.variable.global", description="param.description.variable.global")
 			String name){
