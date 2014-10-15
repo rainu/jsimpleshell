@@ -55,7 +55,7 @@ public class Loop extends IntegrationsTest {
 	public void innerLoop() throws IOException, InterruptedException{
 		executeCommand(".loop-count", "2");
 		executeCommand("set outer");
-		executeCommand(".loop-count", "2");
+		executeCommand(".loop-count", "3");
 		executeCommand("set inner");
 		executeCommand(".loop-end");
 		executeCommand(".loop-end");
@@ -68,7 +68,9 @@ public class Loop extends IntegrationsTest {
 				"String: outer\n" +
 				"String: inner\n" +
 				"String: inner\n" +
+				"String: inner\n" +
 				"String: outer\n" +
+				"String: inner\n" +
 				"String: inner\n" +
 				"String: inner",
 				output.trim());
