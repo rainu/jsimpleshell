@@ -2,7 +2,9 @@ package de.raysha.lib.jsimpleshell.script.cmd;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,6 @@ import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
-import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -31,7 +32,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 	public static final String VARIABLE_NAME_FROM = "_LF";	//LOOP_FROM
 	public static final String VARIABLE_NAME_UNTIL = "_LU"; //LOOP_UNTIL
 	public static final String VARIABLE_NAME_STEP = "_LS"; //LOOP_STEP
-	public static final String VARIABLE_NAME_COUNT = "_LC"; //LOOP_COUNT
+	public static final String VARIABLE_NAME_COUNTER = "_LC"; //LOOP_COUNTER
 
 	@Inject
 	private Shell shell;
@@ -48,7 +49,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 			header = "command.header.loop.count", name = "command.name.loop.count", startsSubshell = true)
 	public void loopCount(
 			@Param(value = "param.name.loop.count.1", description = "param.description.loop.count.1")
-			Long until) throws IOException, CLIException{
+			Long until) throws IOException{
 
 		loopCount(1L, until, 1L);
 	}
@@ -61,8 +62,61 @@ public class LoopCommandHandler implements CommandLoopObserver {
 			@Param(value = "param.name.loop.count.1", description = "param.description.loop.count.1")
 			Long until,
 			@Param(value = "param.name.loop.count.2", description = "param.description.loop.count.2")
-			Long step) throws IOException, CLIException{
+			Long step) throws IOException {
 
+		Map<String, Object> loopVars = new HashMap<String, Object>();
+		loopVars.put(VARIABLE_NAME_FROM, from);
+		loopVars.put(VARIABLE_NAME_UNTIL, until);
+		loopVars.put(VARIABLE_NAME_STEP, step);
+
+		LinkedList<Long> indexes = new LinkedList<Long>();
+		for(long i=from; i <= until; i += step){
+			indexes.add(i);
+		}
+
+		LoopState state = new LoopState(
+				indexes.iterator(),
+				loopVars,
+				VARIABLE_NAME_COUNTER,
+				messageResolver);
+
+		loop(state);
+	}
+
+	@Command(abbrev = "command.abbrev.loop.each", description = "command.description.loop.each",
+			header = "command.header.loop.each", name = "command.name.loop.each", startsSubshell = true)
+	public void loopEach(
+			@Param(value = "param.name.loop.each", description = "param.description.loop.each")
+			String...items) throws IOException {
+
+		loopIterable(Arrays.asList(items));
+	}
+
+	@Command(abbrev = "command.abbrev.loop.each", description = "command.description.loop.each",
+			header = "command.header.loop.each", name = "command.name.loop.each", startsSubshell = true)
+	public void loopIterable(
+			@Param(value = "param.name.loop.each", description = "param.description.loop.each")
+			Iterable<? extends Object> iterable) throws IOException {
+
+		loopIterator(iterable.iterator());
+	}
+
+	@Command(abbrev = "command.abbrev.loop.each", description = "command.description.loop.each",
+			header = "command.header.loop.each", name = "command.name.loop.each", startsSubshell = true)
+	public void loopIterator(
+			@Param(value = "param.name.loop.each", description = "param.description.loop.each")
+			Iterator<? extends Object> iterator) throws IOException {
+
+		LoopState state = new LoopState(
+				iterator,
+				null,
+				VARIABLE_NAME_COUNTER,
+				messageResolver);
+
+		loop(state);
+	}
+
+	private void loop(LoopState state) throws IOException{
 		final LoopPrompt myPrompt = new LoopPrompt();
 
 		Shell subshell = ShellBuilder.subshell(myPrompt, shell)
@@ -81,7 +135,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 			List<String> userCommands = recorder.recordCommands();
 			purge(userCommands);
 
-			LoopState state = buildLoopState(from, until, step, userCommands);
+			state.setCommands(userCommands);
 			states.add(state);
 
 			//the loop observer hook ensures that the loop commands
@@ -167,27 +221,6 @@ public class LoopCommandHandler implements CommandLoopObserver {
 				commands.remove(commands.size() - 1);
 			}
 		}
-	}
-
-	private LoopState buildLoopState(Long from, Long until, Long step, List<String> userCommands) {
-		Map<String, Object> loopVars = new HashMap<String, Object>();
-		loopVars.put(VARIABLE_NAME_FROM, from);
-		loopVars.put(VARIABLE_NAME_UNTIL, until);
-		loopVars.put(VARIABLE_NAME_STEP, step);
-
-		LinkedList<Long> indexes = new LinkedList<Long>();
-		for(long i=from; i <= until; i += step){
-			indexes.add(i);
-		}
-
-		LoopState state = new LoopState(
-				userCommands,
-				indexes,
-				loopVars,
-				VARIABLE_NAME_COUNT,
-				messageResolver);
-
-		return state;
 	}
 
 	private void addNextIterationToPipeline() {
