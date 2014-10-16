@@ -21,7 +21,7 @@ class LoopState implements Iterator<LoopExecution>{
 	private static long GLOBAL_ID_COUNTER = 0L;
 	private final long uniqId = GLOBAL_ID_COUNTER++;
 
-	private final List<String> commands;
+	private List<String> commands;
 	private final Iterator<? extends Object> iterator;
 	private final Map<String, ? extends Object> staticVariables;
 	private final String stateVariableName;
@@ -31,24 +31,46 @@ class LoopState implements Iterator<LoopExecution>{
 	/**
 	 * Creates a {@link LoopState}.
 	 *
+	 * @param iterator The loop's {@link Iterator}
+	 * @param staticVariables A map with variables that should be available in the loop environment
+	 * @param stateVariableName The name for the variable (environment) that contains the continues state of the loop
+	 * @param messageResolver The currently used {@link MessageResolver}
+	 */
+	@SuppressWarnings("unchecked")
+	public LoopState(
+			Iterator<? extends Object> iterator,
+			Map<String, ? extends Object> staticVariables,
+			String stateVariableName,
+			MessageResolver messageResolver){
+
+		this.staticVariables = (Map<String, ? extends Object>) (staticVariables == null ? Collections.emptyMap() : staticVariables);
+		this.iterator = iterator;
+		this.stateVariableName = stateVariableName;
+		this.messageResolver = messageResolver;
+	}
+
+	/**
+	 * Creates a {@link LoopState}.
+	 *
 	 * @param recordedCommands The recorded commands of the user (these are the loop-body)
-	 * @param iterable The loop's {@link Iterable}
+	 * @param iterator The loop's {@link Iterator}
 	 * @param staticVariables A map with variables that should be available in the loop environment
 	 * @param stateVariableName The name for the variable (environment) that contains the continues state of the loop
 	 * @param messageResolver The currently used {@link MessageResolver}
 	 */
 	public LoopState(
 			List<String> recordedCommands,
-			Iterable<? extends Object> iterable,
+			Iterator<? extends Object> iterator,
 			Map<String, ? extends Object> staticVariables,
 			String stateVariableName,
 			MessageResolver messageResolver){
 
-		this.commands = Collections.unmodifiableList(recordedCommands);
-		this.staticVariables = staticVariables;
-		this.iterator = iterable.iterator();
-		this.stateVariableName = stateVariableName;
-		this.messageResolver = messageResolver;
+		this(iterator, staticVariables, stateVariableName, messageResolver);
+		setCommands(recordedCommands);
+	}
+
+	public void setCommands(List<String> commands) {
+		this.commands = Collections.unmodifiableList(commands);
 	}
 
 	@Override
