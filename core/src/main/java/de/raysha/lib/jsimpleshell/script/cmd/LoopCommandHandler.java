@@ -199,6 +199,13 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		List<Object> mainHandler = getMainHandler(shell);
 		List<Object> defaultHandler = getMainHandler(ShellBuilder.shell("").build());
 
+		for(Object defHandler : defaultHandler){
+			if(defHandler instanceof ExitCommand){
+				subshell.addMainHandler(new MockedExitCommand(), "");
+				break;
+			}
+		}
+
 		mainLoop: for(Object handler : mainHandler){
 			if(	handler instanceof LoopCommandHandler ||
 				handler instanceof LoopSpecialCommand){
@@ -206,10 +213,6 @@ public class LoopCommandHandler implements CommandLoopObserver {
 				continue;
 			}
 			for(Object defHandler : defaultHandler){
-				if(defHandler instanceof ExitCommand){
-					continue;
-				}
-
 				if(handler.getClass() == defHandler.getClass()){
 					//the current handler is an default handler!
 					continue mainLoop;
@@ -323,6 +326,15 @@ public class LoopCommandHandler implements CommandLoopObserver {
 				header = "command.header.loop.end", name = COMMAND_NAME_LOOP_END)
 		public void loopEnd() throws ExitException {
 			throw new ExitException();
+		}
+	}
+
+	public static class MockedExitCommand {
+
+		@Command(abbrev = ExitCommand.COMMAND_ABBREV_EXIT, description = ExitCommand.COMMAND_DESCRIPTION_EXIT,
+				header = ExitCommand.COMMAND_HEADER_EXIT, name = ExitCommand.COMMAND_NAME_EXIT)
+		public void exit(){
+			//do nothing (it exists only for (loop-)record mode)
 		}
 	}
 }

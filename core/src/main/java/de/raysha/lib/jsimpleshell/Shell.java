@@ -792,9 +792,13 @@ public class Shell {
 	}
 
 	public static class ExitCommand {
+		public static final String COMMAND_NAME_EXIT = "command.name.exit";
+		public static final String COMMAND_HEADER_EXIT = "command.header.exit";
+		public static final String COMMAND_DESCRIPTION_EXIT = "command.description.exit";
+		public static final String COMMAND_ABBREV_EXIT = "command.abbrev.exit";
 
-		@Command(abbrev = "command.abbrev.exit", description = "command.description.exit",
-				header = "command.header.exit", name = "command.name.exit")
+		@Command(abbrev = COMMAND_ABBREV_EXIT, description = COMMAND_DESCRIPTION_EXIT,
+				header = COMMAND_HEADER_EXIT, name = COMMAND_NAME_EXIT)
 		public void exit() throws ExitException{
 			throw new ExitException();
 		}

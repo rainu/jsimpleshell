@@ -229,11 +229,26 @@ public class Loop extends IntegrationsTest {
 	}
 
 	@Test
-	public void foreachWithVariablesInSubshell() throws IOException{
+	public void foreachWithVariablesInSubshellWithoutExit() throws IOException{
 		executeCommand(".foreach 1 2 3");
 		executeCommand("sub-shell-without-exit");
 		executeCommand("set $" + LoopCommandHandler.VARIABLE_NAME_COUNTER);
 		executeCommand("quit");
+		executeCommand(".for-end");
+
+		CommandResult result = waitForShell();
+
+		assertTrue(result.containsOutLine("String: 1"));
+		assertTrue(result.containsOutLine("String: 2"));
+		assertTrue(result.containsOutLine("String: 3"));
+	}
+
+	@Test
+	public void foreachWithVariablesInSubshell() throws IOException{
+		executeCommand(".foreach 1 2 3");
+		executeCommand("new-sub-shell");
+		executeCommand("set $" + LoopCommandHandler.VARIABLE_NAME_COUNTER);
+		executeCommand("exit");
 		executeCommand(".for-end");
 
 		CommandResult result = waitForShell();
