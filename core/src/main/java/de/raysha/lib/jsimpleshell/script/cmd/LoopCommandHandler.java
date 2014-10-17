@@ -12,6 +12,7 @@ import java.util.Map;
 import de.raysha.lib.jsimpleshell.CommandRecorder;
 import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.Shell.ExitCommand;
 import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
@@ -21,6 +22,7 @@ import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.script.Environment;
+import de.raysha.lib.jsimpleshell.script.Variable;
 import de.raysha.lib.jsimpleshell.script.cmd.LoopState.LoopExecution;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 
@@ -130,6 +132,8 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		copyMainHandler(subshell);
 
 		if(mainLoop()){
+			putEmptyVariablesInEnvironment(state);
+
 			CommandRecorder recorder = new CommandRecorder(subshell);
 
 			List<String> userCommands = recorder.recordCommands();
@@ -181,6 +185,16 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		return states.getLast();
 	}
 
+	private void putEmptyVariablesInEnvironment(LoopState state) {
+		if(state.getStateVariableName() != null){
+			environment.setVariable(new Variable(state.getStateVariableName(), null, true));
+		}
+
+		for(String varName : state.getStaticVariables().keySet()){
+			environment.setVariable(new Variable(varName, null, true));
+		}
+	}
+
 	private void copyMainHandler(Shell subshell) {
 		List<Object> mainHandler = getMainHandler(shell);
 		List<Object> defaultHandler = getMainHandler(ShellBuilder.shell("").build());
@@ -192,6 +206,10 @@ public class LoopCommandHandler implements CommandLoopObserver {
 				continue;
 			}
 			for(Object defHandler : defaultHandler){
+				if(defHandler instanceof ExitCommand){
+					continue;
+				}
+
 				if(handler.getClass() == defHandler.getClass()){
 					//the current handler is an default handler!
 					continue mainLoop;

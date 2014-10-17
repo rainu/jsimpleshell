@@ -70,7 +70,15 @@ class LoopState implements Iterator<LoopExecution>{
 	}
 
 	public void setCommands(List<String> commands) {
-		this.commands = Collections.unmodifiableList(commands);
+		this.commands = Collections.unmodifiableList(new ArrayList<String>(commands));
+	}
+
+	public String getStateVariableName() {
+		return stateVariableName;
+	}
+
+	public Map<String, ? extends Object> getStaticVariables() {
+		return Collections.unmodifiableMap(staticVariables);
 	}
 
 	@Override
