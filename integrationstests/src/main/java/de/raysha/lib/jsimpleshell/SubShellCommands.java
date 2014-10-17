@@ -11,7 +11,11 @@ public class SubShellCommands {
 
 	@Command(startsSubshell = true)
 	public void newSubShell() throws IOException{
-		ShellBuilder.subshell("sub", shell).build().commandLoop();
+		ShellBuilder.subshell("sub", shell)
+			.behavior()
+				.addHandler(new VariablePlaygroundCommands())
+			.back()
+		.build().commandLoop();
 	}
 
 	@Command(startsSubshell = true)
