@@ -791,7 +791,7 @@ public class Shell {
 		return appName;
 	}
 
-	private class ExitCommand {
+	public static class ExitCommand {
 
 		@Command(abbrev = "command.abbrev.exit", description = "command.description.exit",
 				header = "command.header.exit", name = "command.name.exit")

@@ -11,6 +11,7 @@ import org.junit.Test;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.SubShellCommands;
 import de.raysha.lib.jsimpleshell.VariablePlaygroundCommands;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
@@ -26,6 +27,7 @@ public class Loop extends IntegrationsTest {
 		return super.buildShell()
 				.behavior()
 					.addHandler(new VariablePlaygroundCommands())
+					.addHandler(new SubShellCommands())
 					.addHandler(this)
 				.back();
 	}
@@ -45,6 +47,7 @@ public class Loop extends IntegrationsTest {
 	public void loopVariables() throws IOException{
 		executeCommand(".for", "0", "10", "2");
 		executeCommand(".show-environment");
+		executeCommand("set $" + LoopCommandHandler.VARIABLE_NAME_COUNTER);
 		executeCommand(".for-end");
 
 		CommandResult result = waitForShell();
@@ -55,6 +58,7 @@ public class Loop extends IntegrationsTest {
 
 		for(int i=0; i <= 10; i+=2){
 			assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=" + i));
+			assertTrue(result.containsOutLine("String: " + i));
 		}
 	}
 
@@ -122,6 +126,7 @@ public class Loop extends IntegrationsTest {
 	public void foreachVariables() throws IOException{
 		executeCommand(".foreach", "1", "2", "3");
 		executeCommand(".show-environment");
+		executeCommand("set $" + LoopCommandHandler.VARIABLE_NAME_COUNTER);
 		executeCommand(".for-end");
 
 		CommandResult result = waitForShell();
@@ -129,6 +134,10 @@ public class Loop extends IntegrationsTest {
 		assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=1"));
 		assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=2"));
 		assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=3"));
+
+		assertTrue(result.containsOutLine("String: 1"));
+		assertTrue(result.containsOutLine("String: 2"));
+		assertTrue(result.containsOutLine("String: 3"));
 	}
 
 	@Test
@@ -217,5 +226,33 @@ public class Loop extends IntegrationsTest {
 		assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=1"));
 		assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=2"));
 		assertTrue(result.containsOutLine(LoopCommandHandler.VARIABLE_NAME_COUNTER + "=3"));
+	}
+
+	@Test
+	public void foreachWithVariablesInSubshell() throws IOException{
+		executeCommand(".foreach 1 2 3");
+		executeCommand("sub-shell-without-exit");
+		executeCommand("set $" + LoopCommandHandler.VARIABLE_NAME_COUNTER);
+		executeCommand("quit");
+		executeCommand(".for-end");
+
+		CommandResult result = waitForShell();
+
+		assertTrue(result.containsOutLine("String: 1"));
+		assertTrue(result.containsOutLine("String: 2"));
+		assertTrue(result.containsOutLine("String: 3"));
+	}
+
+	@Test
+	public void autoCompleteVariables() throws IOException{
+		executeCommand(".for", "5");
+		simulateUserInput("set $\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.toString(), result.isError());
+		assertTrue(result.getOut().contains("$" + LoopCommandHandler.VARIABLE_NAME_COUNTER));
+		assertTrue(result.getOut().contains("$" + LoopCommandHandler.VARIABLE_NAME_FROM));
+		assertTrue(result.getOut().contains("$" + LoopCommandHandler.VARIABLE_NAME_UNTIL));
+		assertTrue(result.getOut().contains("$" + LoopCommandHandler.VARIABLE_NAME_STEP));
 	}
 }

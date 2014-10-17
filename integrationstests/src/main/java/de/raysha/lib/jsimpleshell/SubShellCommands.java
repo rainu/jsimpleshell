@@ -20,6 +20,7 @@ public class SubShellCommands {
 			.behavior()
 				.disableExitCommand()
 				.addHandler(new ExitAlternativeCommands())
+				.addHandler(new VariablePlaygroundCommands())
 			.back().build()
 		.commandLoop();
 	}
