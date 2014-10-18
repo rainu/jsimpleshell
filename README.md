@@ -17,6 +17,7 @@ Feature-List
 * Scriptable
 	* execute command line by line
 	* define and use variables
+	* use loops
 * Clear screen function
 * Platform independent
 * Maven integration (artifacts are stored in maven central)
