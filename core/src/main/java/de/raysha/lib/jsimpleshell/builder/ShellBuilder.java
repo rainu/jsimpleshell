@@ -26,6 +26,7 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.Variable;
 import de.raysha.lib.jsimpleshell.script.VariableInputConverter;
+import de.raysha.lib.jsimpleshell.script.cmd.EchoCommandHandler;
 import de.raysha.lib.jsimpleshell.script.cmd.EnvironmentCommandHandler;
 import de.raysha.lib.jsimpleshell.script.cmd.LoopCommandHandler;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
@@ -253,6 +254,7 @@ public class ShellBuilder {
 		shell.addMainHandler(new HelpCommandHandler(), "?");
 		shell.addMainHandler(new EnvironmentCommandHandler(), ".");
 		shell.addMainHandler(new LoopCommandHandler(), ".");
+		shell.addMainHandler(new EchoCommandHandler(), ".");
 		shell.addMainHandler(new VariableInputConverter(), "");
 		shell.addMainHandler(new CompleterHandler(), "");
 		shell.addMainHandler(new CommandNameCandidatesChooser(), "");

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
@@ -13,6 +14,7 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.util.MessagePrompt;
 
 /**
  * This class contains all commands about starting a external process.
@@ -47,7 +49,7 @@ public class ProcessCommandHandler {
 			header = "command.header.execution.build", name = "command.name.execution.build",
 			displayResult = false, startsSubshell = true)
 	public ProcessResult execute() throws IOException {
-		String subPrompt = messageResolver.resolveGeneralMessage("message.execution.prompt");
+		PromptElement subPrompt = new MessagePrompt("message.execution.prompt", messageResolver);
 		ExecutionBuilder builder = new ExecutionBuilder();
 
 		Shell subShell = ShellBuilder.subshell(subPrompt, shell)
