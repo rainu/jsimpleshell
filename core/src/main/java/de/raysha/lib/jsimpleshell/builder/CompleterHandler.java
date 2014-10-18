@@ -97,13 +97,27 @@ class CompleterHandler implements ShellManageable {
 		AggregateCompleter completerContainer = aggregateCompleter.get(console);
 
 		List<Completer> completer = new ArrayList<Completer>();
-		completer.add(new CommandNameCompleter(shell.getAccessManager(), shell.getCommandTable().getCommandTable()));
-		completer.add(new ParameterCompleter(shell.getCommandTable(), shell.getCandidatesChooser()));
+		completer.add(buildCommandNameCompleter(shell));
+		completer.add(buildParameterCompleter(shell));
 
 		for(Completer c : completer){
 			completerContainer.getCompleters().add(c);
 		}
 
 		shellCompleterRelation.put(shell, completer);
+	}
+
+	private ParameterCompleter buildParameterCompleter(Shell shell) {
+		ParameterCompleter completer = new ParameterCompleter(shell.getCommandTable(), shell.getCandidatesChooser());
+		completer.setFilter(shell.getCandidatesFilter());
+
+		return completer;
+	}
+
+	private CommandNameCompleter buildCommandNameCompleter(Shell shell) {
+		CommandNameCompleter completer = new CommandNameCompleter(shell.getAccessManager(), shell.getCommandTable().getCommandTable());
+		completer.setFilter(shell.getCandidatesFilter());
+
+		return completer;
 	}
 }

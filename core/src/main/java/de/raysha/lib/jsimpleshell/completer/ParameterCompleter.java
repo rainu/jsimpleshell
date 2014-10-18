@@ -13,6 +13,8 @@ import de.raysha.lib.jsimpleshell.ShellCommand;
 import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
 import de.raysha.lib.jsimpleshell.Token;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser.Candidates;
+import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter;
+import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter.FilterContext;
 import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter;
 import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter.CommandLine;
 
@@ -24,6 +26,7 @@ import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter.CommandLine;
 public class ParameterCompleter implements Completer {
 	private CommandTable commandTable;
 	private CandidatesChooser candidatesChooser;
+	private CandidateFilter filter;
 
 	private List<Token> token;
 	private int paramIndex;
@@ -34,6 +37,10 @@ public class ParameterCompleter implements Completer {
 	public ParameterCompleter(CommandTable cmdTable, CandidatesChooser candidatesChooser) {
 		this.commandTable = cmdTable;
 		this.candidatesChooser = candidatesChooser;
+	}
+
+	public void setFilter(CandidateFilter filter) {
+		this.filter = filter;
 	}
 
 	@Override
@@ -57,10 +64,30 @@ public class ParameterCompleter implements Completer {
 		List<Candidates> possibleCandidates = new ArrayList<Candidates>();
 		for(ShellCommandParamSpec spec : possibleParameters){
 			Candidates c = candidatesChooser.chooseCandidates(spec, paramPart);
+
+			filterCandidates(buffer, cursor, c, spec);
+
 			possibleCandidates.add(c);
 		}
 
 		return complete(candidates, possibleCandidates);
+	}
+
+	private void filterCandidates(String buffer, int cursor, Candidates candidates, ShellCommandParamSpec spec) {
+		if(filter != null){
+			Iterator<String> iter = candidates.getValues().iterator();
+			while(iter.hasNext()){
+				FilterContext context = createFilterContext(iter.next(), buffer, cursor, spec);
+
+				if(!filter.filter(context)){
+					iter.remove();
+				}
+			}
+		}
+	}
+
+	private FilterContext createFilterContext(String candidate, String part, int cursor, ShellCommandParamSpec spec) {
+		return new FilterContext(cursor, part, spec.getType(), candidate, spec);
 	}
 
 	private List<Token> getCurrentTokens(String buffer, int cursor) {
