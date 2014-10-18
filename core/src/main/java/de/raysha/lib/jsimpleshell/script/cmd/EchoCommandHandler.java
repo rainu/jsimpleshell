@@ -15,11 +15,13 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
+import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 import de.raysha.lib.jsimpleshell.util.ColoredStringBuilder;
 import de.raysha.lib.jsimpleshell.util.MessagePrompt;
 
 public class EchoCommandHandler {
 
+	@SuppressWarnings("serial")
 	private static final Map<String, String> REPLACEMENTS = new HashMap<String, String>(){{
 		put("\\a", "\u0007");
 		put("\\b", "\b");
@@ -39,6 +41,9 @@ public class EchoCommandHandler {
 
 	@Inject
 	private MessageResolver messageResolver;
+
+	@Inject
+	private OutputBuilder outputBuilder;
 
 	@Command(abbrev = "command.abbrev.echo", description = "command.description.echo",
 			header = "command.header.echo", name = "command.name.echo")
@@ -71,10 +76,36 @@ public class EchoCommandHandler {
 
 		subShell.commandLoop();
 
-		return builder.build();
+		return echo(builder.build());
 	}
 
-	private String applyReplacements(StringBuilder builder) {
+	@Command(abbrev = "command.abbrev.echo.error", description = "command.description.echo.error",
+			header = "command.header.echo.error", name = "command.name.echo.error")
+	public void errorEcho(
+			@Param(value = "param.name.echo", description = "param.description.echo")
+			Object...values){
+
+		final String value = echo(values);
+
+		outputBuilder.err()
+			.normal(value)
+		.println();
+	}
+
+	@Command(abbrev = "command.abbrev.echo.error.builder", description = "command.description.echo.error.builder",
+			header = "command.header.echo.error.builder", name = "command.name.echo.error.builder", startsSubshell = true)
+	public void buildErrorEcho() throws IOException{
+		errorEcho(buildEcho());
+	}
+
+	String applyReplacements(StringBuilder builder) {
+		boolean prepand = false;
+		if(builder.length() >= 1 && builder.charAt(0) == '\\'){
+			//our regexpr doesn't work if a special char is at the beginning!
+			builder.insert(0, '_');
+			prepand = true;
+		}
+
 		//\c
 		if(builder.indexOf("\\c") != -1){
 			builder.replace(builder.indexOf("\\c"), builder.length(), "");
@@ -107,6 +138,10 @@ public class EchoCommandHandler {
 			hex = hexPattern.matcher(builder.toString());
 		}
 
+		if(prepand){
+			builder.replace(0, 1, "");
+		}
+
 		String result = builder.toString();
 		result = result.replace("\\\\", "\\");
 
@@ -123,7 +158,9 @@ public class EchoCommandHandler {
 		@Command(abbrev = "command.abbrev.echo.builder.show", description = "command.description.echo.builder.show",
 				header = "command.header.echo.builder.show", name = "command.name.echo.builder.show")
 		public String build(){
-			return applyReplacements(new StringBuilder(builder.build()));
+			String output =  applyReplacements(new StringBuilder(builder.build()));
+
+			return output;
 		}
 
 		@Command(abbrev = "command.abbrev.echo.builder.exit", description = "command.description.echo.builder.exit",
@@ -133,7 +170,4 @@ public class EchoCommandHandler {
 		}
 	}
 
-	public static void main(String[] args) {
-		System.out.println(new EchoCommandHandler().echo("test\\vtest\\\\vtest\\x00AB|\\\\x00AB\\c.......\\x00AB|\\\\x00AB"));
-	}
 }
