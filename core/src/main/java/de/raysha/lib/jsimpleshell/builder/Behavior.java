@@ -9,6 +9,8 @@ import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter;
+import de.raysha.lib.jsimpleshell.completer.filter.DefaultPrefixCandidateFilter;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
@@ -57,6 +59,7 @@ public class Behavior {
 	 * <li>Implements the {@link CandidatesChooser} interface to choose your own parameter candidates</li>
 	 * <li>Implements the {@link EnvironmentDependent} interface to get access to the used {@link Environment}</li>
 	 * <li>Implements the {@link CommandLoopObserver} interface to observe the proceeded command lines</li>
+	 * <li>Implements the {@link CandidateFilter} interface to get the possibility to filter the chosen candidates for auto completion.</li>
 	 * </ul>
 	 *
 	 * @param handler The command handler.
@@ -275,6 +278,54 @@ public class Behavior {
 			enableProcessStarterCommands();
 		}else{
 			disableProcessStarterCommands();
+		}
+
+		return this;
+	}
+
+	/**
+	 * Disable the auto completion of special commands. Special commands are the commands
+	 * which starts with a prefix (e.g "?").
+	 *
+	 * @return This {@link Behavior}
+	 */
+	public Behavior disableAutocompleOfSpecialCommands(){
+		enableAutocompleOfSpecialCommands();
+
+		addHandler(new DefaultPrefixCandidateFilter("?", ".", "!"));
+
+		return this;
+	}
+
+	/**
+	 * Enable the auto completion of special commands. Special commands are the commands
+	 * which starts with a prefix (e.g "?").
+	 *
+	 * @return This {@link Behavior}
+	 */
+	public Behavior enableAutocompleOfSpecialCommands(){
+		Iterator<Object> iter = model.getHandlers().iterator();
+		while(iter.hasNext()){
+			if(iter.next() instanceof DefaultPrefixCandidateFilter){
+				iter.remove();
+			}
+		}
+
+		return this;
+	}
+
+	/**
+	 * Disable or enable the auto completion of special commands. Special commands are the commands
+	 * which starts with a prefix (e.g "?").
+	 *
+	 * @param enable True if the auto completion should be enabled. Otherwise false.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior setAutocompleOfSpecialCommands(boolean enable){
+		if(enable){
+			enableAutocompleOfSpecialCommands();
+		}else{
+			disableAutocompleOfSpecialCommands();
 		}
 
 		return this;

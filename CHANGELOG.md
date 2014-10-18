@@ -1,6 +1,8 @@
 ## [JSimpleShell x.x - XXXX-XX-XX][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
 
+* [feature] A new handler type is added: _CandidateFilter_. This handler can decide if an auto complete candidate should be offered.
+* [change] Commands with a prefix (e.g. "?") will not auto complete by default. Only if the user entered the prefix before, the candidates will be shown.
 * [IMPORTANT/feature] Define a version-policy.
 * [feature] The user can now use loops!
    * There is a counting loop ...

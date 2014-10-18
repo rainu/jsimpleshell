@@ -29,6 +29,8 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
+import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter;
+import de.raysha.lib.jsimpleshell.completer.filter.CompositeCandidateFilter;
 import de.raysha.lib.jsimpleshell.exception.AccessDeniedException;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
@@ -76,6 +78,7 @@ public class Shell {
 	private final CommandPipeline pipeline;
 	private final CompositeMessageResolver messageResolver;
 	private final AggregateCandidatesChooser candidatesChooser;
+	private final CompositeCandidateFilter candidatesFilter;
 	private DependencyResolver dependencyResolver;
 	private final CompositeCommandAccessManager accessManager;
 	private final Environment environment;
@@ -112,6 +115,7 @@ public class Shell {
 		this.accessManager = new CompositeCommandAccessManager(messageResolver);
 
 		this.candidatesChooser = new AggregateCandidatesChooser();
+		this.candidatesFilter = new CompositeCandidateFilter();
 
 		//pay attention! at this point all message resolver must be configured before!
 		setSettings(settings, initialHandlers);
@@ -269,6 +273,15 @@ public class Shell {
 		return candidatesChooser;
 	}
 
+	/**
+	 * Get the {@link CandidateFilter} of this shell.
+	 *
+	 * @return The candidates filter.
+	 */
+	public CandidateFilter getCandidatesFilter() {
+		return candidatesFilter;
+	}
+
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private List<Object> allHandlers = new ArrayList<Object>();
 
@@ -394,6 +407,9 @@ public class Shell {
 		addMessageResolver(messageResolver, handler);
 		if (handler instanceof CandidatesChooser) {
 			candidatesChooser.addCandidatesChooser((CandidatesChooser)handler);
+		}
+		if (handler instanceof CandidateFilter) {
+			candidatesFilter.getFilterChain().add((CandidateFilter)handler);
 		}
 		if (handler instanceof CommandAccessManager) {
 			accessManager.addCommandAccessManager((CommandAccessManager)handler);

@@ -40,7 +40,18 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 public class ShellBuilder {
 	private final BuilderModel model = new BuilderModel();
 
-	private ShellBuilder(){ }
+	private ShellBuilder(){
+		setDefaultSettings();
+	}
+
+	private void setDefaultSettings() {
+		this.behavior().enableExitCommand();
+		this.behavior().enableFileNameCompleter();
+		this.behavior().disableProcessStarterCommands();
+		this.behavior().disableAutocompleOfSpecialCommands();
+
+		this.look().enableColor();
+	}
 
 	/**
 	 * Create a new {@link ShellBuilder} instance with which one you can build a {@link Shell}.

@@ -25,6 +25,7 @@ public class AutoComplete extends IntegrationsTest {
 						.addHandler(new CompleterCommands())
 						.addHandler(new ParamOrderCommands())
 						.addHandler(new SecurityCommands())
+						.enableAutocompleOfSpecialCommands()
 					.back();
 	}
 
