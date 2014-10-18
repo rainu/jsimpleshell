@@ -24,6 +24,7 @@ import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.Variable;
 import de.raysha.lib.jsimpleshell.script.cmd.LoopState.LoopExecution;
+import de.raysha.lib.jsimpleshell.util.MessagePrompt;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 
 /**
@@ -311,10 +312,9 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		return result;
 	}
 
-	public class LoopPrompt implements PromptElement {
-		@Override
-		public String render() {
-			return messageResolver.resolveGeneralMessage("message.loop.prompt");
+	public class LoopPrompt extends MessagePrompt {
+		public LoopPrompt() {
+			super("message.loop.prompt", messageResolver);
 		}
 	}
 
