@@ -576,22 +576,27 @@ public class AutoComplete extends IntegrationsTest {
 		//but after leaving and re-enter the shell auto complete will shown the
 		//candidates for the main-shell and not for the subshell
 		executeCommand("sub-shell-without-exit");
-		simulateUserInput("\t");
+		simulateUserInput("\t"); //in subshell
 
 		CommandResult result = waitForShellCommandExec();
 
 		candidateIsShown(result, "quit");
-		candidateIsShown(result, "set");
 		candidateIsNotShown(result, "new-sub-shell");
 
-		executeCommand("quit");
+		executeAndWaitForCommand("quit");
+		simulateUserInput("\t"); //in main-shell
+
+		result = waitForShellCommandExec();
+
+		candidateIsNotShown(result, "quit");
+		candidateIsShown(result, "new-sub-shell");
+
 		executeCommand("sub-shell-without-exit");
-		simulateUserInput("\t");
+		simulateUserInput("\t"); //in subshell (again)
 
 		result = waitForShellCommandExec();
 
 		candidateIsShown(result, "quit");
-		candidateIsShown(result, "set");
 		candidateIsNotShown(result, "new-sub-shell");
 	}
 
