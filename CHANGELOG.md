@@ -1,6 +1,8 @@
 ## [JSimpleShell x.x - XXXX-XX-XX][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
 
+* [IMPORTANT/feature] If the shell is in record mode a special variable will be stored into the environment. If you wants to know whether you are currently in the record mode, you can use the _CommandRecorder.isShellInRecordMode()_ -Method.
+
 ## [JSimpleShell 3.0 - 2014-10-19][3.0]
 [3.0]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/3.0/
 
