@@ -93,13 +93,21 @@ public class DependencyResolver {
 	private Collection<Field> collectAnnotatedFields(Object object) {
 		Set<Field> fields = new HashSet<Field>();
 
-		for(Field field : object.getClass().getDeclaredFields()){
+		Class<?> clazz = object.getClass();
+		do{
+			collectAnnotatedFields(clazz, fields);
+			clazz = clazz.getSuperclass();
+		}while(clazz != null);
+
+		return fields;
+	}
+
+	private void collectAnnotatedFields(Class<?> clazz, Set<Field> fields) {
+		for(Field field : clazz.getDeclaredFields()){
 			if(isAnnotationPresent(field)){
 				fields.add(field);
 			}
 		}
-
-		return fields;
 	}
 
 	private void resolveField(Field field, Object object) {
@@ -138,13 +146,21 @@ public class DependencyResolver {
 	private Collection<Method> collectAnnotatedMethods(Object object) {
 		Set<Method> methods = new HashSet<Method>();
 
-		for(Method method : object.getClass().getDeclaredMethods()){
+		Class<?> clazz = object.getClass();
+		do{
+			collectAnnotatedMethods(clazz, methods);
+			clazz = clazz.getSuperclass();
+		}while(clazz != null);
+
+		return methods;
+	}
+
+	private void collectAnnotatedMethods(Class<?> clazz, Set<Method> methods) {
+		for(Method method : clazz.getDeclaredMethods()){
 			if(isAnnotationPresent(method)){
 				methods.add(method);
 			}
 		}
-
-		return methods;
 	}
 
 	private void resolveMethod(Method method, Object object) {

@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.DependencyInjectionCommand;
+import de.raysha.lib.jsimpleshell.DependencyInjectionCommand.InheritedDependencyInjectionCommand;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
@@ -18,12 +19,20 @@ public class DependencyInjection extends IntegrationsTest {
 		return super.buildShell()
 				.behavior()
 					.addHandler(new DependencyInjectionCommand())
+					.addHandler(new InheritedDependencyInjectionCommand())
 				.back();
 	}
 
 	@Test
 	public void checkDependencyInjection() throws IOException{
 		CommandResult result = executeAndWaitForCommand("check-dependencies");
+
+		assertFalse(result.containsLine(".*is null!"));
+	}
+
+	@Test
+	public void checkInheritedDependencyInjection() throws IOException{
+		CommandResult result = executeAndWaitForCommand("check-inherited-dependencies");
 
 		assertFalse(result.containsLine(".*is null!"));
 	}
