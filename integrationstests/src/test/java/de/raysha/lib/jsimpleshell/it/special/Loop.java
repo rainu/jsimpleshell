@@ -270,4 +270,32 @@ public class Loop extends IntegrationsTest {
 		assertTrue(result.getOut().contains("$" + LoopCommandHandler.VARIABLE_NAME_UNTIL));
 		assertTrue(result.getOut().contains("$" + LoopCommandHandler.VARIABLE_NAME_STEP));
 	}
+
+	@Test
+	public void removeLoopVariablesAfterFor() throws IOException{
+		executeCommand(".for", "2");
+		executeCommand(".for-end");
+		executeCommand(".show-environment");
+
+		CommandResult result = waitForShell();
+
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_COUNTER + "="));
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_FROM + "="));
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_UNTIL + "="));
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_STEP + "="));
+	}
+
+	@Test
+	public void removeLoopVariablesAfterForEach() throws IOException{
+		executeCommand(".foreach", "1", "2");
+		executeCommand(".for-end");
+		executeCommand(".show-environment");
+
+		CommandResult result = waitForShell();
+
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_COUNTER + "="));
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_FROM + "="));
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_UNTIL + "="));
+		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_STEP + "="));
+	}
 }

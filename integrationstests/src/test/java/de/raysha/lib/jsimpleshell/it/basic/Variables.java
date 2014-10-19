@@ -253,4 +253,35 @@ public class Variables extends IntegrationsTest {
 
 		assertTrue(result.toString(), result.containsLine("Object: ####.*"));
 	}
+
+	@Test
+	public void removeVariable() throws IOException {
+		executeCommand(".lvar", "TEST", "test");
+		executeCommand(".rm-var", "TEST");
+
+		CommandResult result = executeAndWaitForCommand(".show-environment");
+
+		assertFalse(result.containsOutLine("TEST=.*"));
+		assertTrue("The removed variable is not set into the return-variable '?'!",
+				result.containsOutLine("\\?=.*TEST.*"));
+	}
+
+	@Test
+	public void removeGlobalVariableInSubShell() throws IOException {
+		executeCommand(".gvar", "TEST", "test");
+		executeCommand("new-sub-shell");
+		executeCommand(".rm-var", "TEST");
+
+		CommandResult result = executeAndWaitForCommand(".show-environment");
+
+		assertFalse(result.containsOutLine("TEST=.*"));
+		assertTrue("The removed variable is not set into the return-variable '?'!",
+				result.containsOutLine("\\?=.*TEST.*"));
+
+		executeCommand("exit");
+		result = executeAndWaitForCommand(".show-environment");
+
+		//the variable should only be removed in subshell (but not in parent shell(s))
+		assertTrue(result.toString(), result.containsOutLine("TEST=.*"));
+	}
 }

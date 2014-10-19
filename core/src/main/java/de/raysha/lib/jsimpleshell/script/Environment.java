@@ -95,6 +95,17 @@ public class Environment implements ShellManageable {
 	}
 
 	/**
+	 * Remove a variable from this environment. If the variable is an global one,
+	 * the variable will be removed only in this environment!
+	 *
+	 * @param name The name of the variable.
+	 * @return the previous variable, or null if there was no variable.
+	 */
+	public Variable removeVariable(String name) {
+		return variables.remove(name);
+	}
+
+	/**
 	 * Get all {@link Variable}s in this {@link Environment}.
 	 *
 	 * @return The collections with {@link Variable}s.
