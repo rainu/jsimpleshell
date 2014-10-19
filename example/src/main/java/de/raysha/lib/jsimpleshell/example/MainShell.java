@@ -2,6 +2,7 @@ package de.raysha.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
+import de.raysha.lib.jsimpleshell.CommandRecorder;
 import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
@@ -77,6 +78,7 @@ public class MainShell implements ShellDependent {
 			description = "Start a new subshell. Here you can build a colored string that will printed out when you exit that shell.",
 			//the header will always shown if the user run this command
 			header = "Each subshell have his own commands. Use \"?list\" to show you which commands are available! Use \"exit\" to get out of this shell.",
+			//this information is very important (for the command recorder - it is used for loop and so on)
 			startsSubshell = true)
 	public void colorizedEcho() throws IOException {
 		final ColorizedEcho echoBuilder = new ColorizedEcho();
@@ -93,8 +95,12 @@ public class MainShell implements ShellDependent {
 		//the method will be blocked until the shell was abandoned
 		subShell.commandLoop();
 
-		//this command doesnt return the output but use the output directly
-		output.out().normal(echoBuilder.build()).println();
+		//do only something if we NOT IN the record mode!
+		//we are in the record mode if the user creates an loop etc.
+		if(!CommandRecorder.isShellInRecordMode(shell)){
+			//this command doesnt return the output but use the output directly
+			output.out().normal(echoBuilder.build()).println();
+		}
 	}
 
 	@Command(abbrev = "ct", description = "Print colored text.")

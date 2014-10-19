@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
+import de.raysha.lib.jsimpleshell.CommandRecorder;
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.Shell;
@@ -34,11 +35,13 @@ public class Loop extends IntegrationsTest {
 
 	@Test
 	public void normalLoop() throws IOException{
-		executeCommand(".for", "5");
+		executeAndWaitForCommand(".for", "5");
 		executeCommand("set 13");
+		assertTrue(CommandRecorder.isShellInRecordMode(shell));
 		executeCommand(".for-end");
 
 		CommandResult result = waitForShell();
+		assertFalse(CommandRecorder.isShellInRecordMode(shell));
 		assertEquals(result.toString(),
 				5, StringUtils.countMatches(result.getOut(), "Integer: 13"));
 	}
@@ -66,13 +69,16 @@ public class Loop extends IntegrationsTest {
 	public void innerLoop() throws IOException, InterruptedException{
 		executeCommand(".for", "2");
 		executeCommand("set outer");
-		executeCommand(".for", "3");
+		executeAndWaitForCommand(".for", "3");
+		assertTrue(CommandRecorder.isShellInRecordMode(shell));
 		executeCommand("set inner");
 		executeCommand(".for-end");
 		executeCommand(".for-end");
 		Thread.sleep(500);
 
 		CommandResult result = waitForShell();
+
+		assertFalse(CommandRecorder.isShellInRecordMode(shell));
 
 		String output = StringUtils.substringBetween(result.getOut(), "IT/loop> .for-end", "IT>");
 		assertEquals(
