@@ -1,6 +1,9 @@
 ## [JSimpleShell x.x - XXXX-XX-XX][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
 
+## [JSimpleShell 3.0 - 2014-10-19][3.0]
+[3.0]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/3.0/
+
 * [feature] New command for removeing a variable from the current environment.
 * [feature] There are new script commands (_echo*_) for building a string that will be displayed. For example this can be helpful for print the current state of a long durateing loop.
 * [feature] A new handler type is added: _CandidateFilter_. This handler can decide if an auto complete candidate should be offered.
