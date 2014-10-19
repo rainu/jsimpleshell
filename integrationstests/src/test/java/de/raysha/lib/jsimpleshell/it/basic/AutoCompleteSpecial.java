@@ -3,13 +3,11 @@ package de.raysha.lib.jsimpleshell.it.basic;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.CompleterCommands;
-import de.raysha.lib.jsimpleshell.CompleterCommands.TestEnum;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;

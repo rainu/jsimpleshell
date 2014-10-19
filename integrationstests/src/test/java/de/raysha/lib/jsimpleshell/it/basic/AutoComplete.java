@@ -15,6 +15,7 @@ import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.MainHandler;
 import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
+import de.raysha.lib.jsimpleshell.SubShellCommands;
 
 public class AutoComplete extends IntegrationsTest {
 
@@ -25,6 +26,7 @@ public class AutoComplete extends IntegrationsTest {
 						.addHandler(new CompleterCommands())
 						.addHandler(new ParamOrderCommands())
 						.addHandler(new SecurityCommands())
+						.addHandler(new SubShellCommands())
 						.enableAutocompleOfSpecialCommands()
 					.back();
 	}
@@ -568,6 +570,30 @@ public class AutoComplete extends IntegrationsTest {
 		candidateIsNotShown(result, "$??");	//this is always an integer and it is not assignable to string
 	}
 
+	@Test
+	public void regressionTest1() throws IOException{
+		//if you enter the first one in the subshell auto complete will work fine
+		//but after leaving and re-enter the shell auto complete will shown the
+		//candidates for the main-shell and not for the subshell
+		executeCommand("sub-shell-without-exit");
+		simulateUserInput("\t");
+
+		CommandResult result = waitForShellCommandExec();
+
+		candidateIsShown(result, "quit");
+		candidateIsShown(result, "set");
+		candidateIsNotShown(result, "new-sub-shell");
+
+		executeCommand("quit");
+		executeCommand("sub-shell-without-exit");
+		simulateUserInput("\t");
+
+		result = waitForShellCommandExec();
+
+		candidateIsShown(result, "quit");
+		candidateIsShown(result, "set");
+		candidateIsNotShown(result, "new-sub-shell");
+	}
 
 	private void candidateIsShown(CommandResult result, String candidate) {
 		assertTrue("Candidate '" + candidate + "' is not shown!",
