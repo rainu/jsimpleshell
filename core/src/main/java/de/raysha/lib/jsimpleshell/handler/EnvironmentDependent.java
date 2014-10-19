@@ -12,7 +12,7 @@ public interface EnvironmentDependent {
 	/**
 	 * This method pass a {@link Environment}.
 	 *
-	 * @param resolver The {@link Environment} instance.
+	 * @param environment The {@link Environment} instance.
 	 */
 	public void cliSetEnvironment(Environment environment);
 }
