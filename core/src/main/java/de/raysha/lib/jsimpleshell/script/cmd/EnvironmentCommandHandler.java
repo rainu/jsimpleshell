@@ -19,7 +19,9 @@ import de.raysha.lib.jsimpleshell.script.Variable;
  */
 public class EnvironmentCommandHandler implements CommandHookDependent {
 
+	public static final String COMMAND_NAME_VARIABLE_REMOVE = "command.name.variable.remove";
 	public static final String COMMAND_NAME_SET_GLOBAL_VARIABLE = "command.name.variable.global";
+
 	public static final String RETURN_VALUE_VARIABLE_NAME = "?";
 	public static final String RETURN_STATUS_VARIABLE_NAME = "??";
 
@@ -128,6 +130,16 @@ public class EnvironmentCommandHandler implements CommandHookDependent {
 			.replace("{type}", type);
 
 		output.out().normal(out).println();
+	}
+
+	@Command(abbrev = "command.abbrev.variable.remove", description = "command.description.variable.remove",
+			header = "command.header.variable.remove", name = COMMAND_NAME_VARIABLE_REMOVE, displayResult = false)
+	public Variable removeVariable(
+			@Param(value="param.name.variable.remove", description="param.description.variable.remove",
+			type = Param.DefaultTypes.VARIABLE)
+			String name){
+
+		return environment.removeVariable(name);
 	}
 
 	@Override

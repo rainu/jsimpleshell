@@ -172,9 +172,10 @@ class LoopState implements Iterator<LoopExecution>{
 			return command + " \"" + varName + "\" \"" + String.valueOf(value) + "\"";
 		}
 
-		private String removeGlobalVariable(String name) {
-			//TODO: implement remove variables!
-			return "";
+		private String removeGlobalVariable(String varName) {
+			final String command = "." + messageResolver.resolveGeneralMessage(EnvironmentCommandHandler.COMMAND_NAME_VARIABLE_REMOVE);
+
+			return command + " \"" + varName + "\"";
 		}
 
 		private String getCommandAbbrevForLoopEnd() {
