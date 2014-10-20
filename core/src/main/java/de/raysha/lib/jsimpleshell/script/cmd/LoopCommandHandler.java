@@ -155,7 +155,6 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		}
 
 		shell.refreshHandlerDependencies();
-		System.out.println();
 	}
 
 	@Override
