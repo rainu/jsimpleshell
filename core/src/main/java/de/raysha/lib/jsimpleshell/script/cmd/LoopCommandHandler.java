@@ -120,7 +120,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 	}
 
 	private void loop(LoopState state) throws IOException{
-		final LoopPrompt myPrompt = new LoopPrompt();
+		final LoopPrompt myPrompt = new LoopPrompt(messageResolver);
 
 		Shell subshell = ShellBuilder.subshell(myPrompt, shell)
 							.behavior()
@@ -133,6 +133,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		copyMainHandler(subshell);
 
 		if(mainLoop()){
+			//to auto complete in record mode
 			putEmptyVariablesInEnvironment(state);
 
 			CommandRecorder recorder = new CommandRecorder(subshell);
@@ -145,11 +146,16 @@ public class LoopCommandHandler implements CommandLoopObserver {
 
 			//the loop observer hook ensures that the loop commands
 			//will be prepend to the shell's pipeline
-			addNextIterationToPipeline();
+			if(state.hasNext()){
+				addNextIterationToPipeline();
+			}
 		}else{
 			//i am a sub-loop
 			subshell.commandLoop();
 		}
+
+		shell.refreshHandlerDependencies();
+		System.out.println();
 	}
 
 	@Override
@@ -208,9 +214,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		}
 
 		mainLoop: for(Object handler : mainHandler){
-			if(	handler instanceof LoopCommandHandler ||
-				handler instanceof LoopSpecialCommand){
-
+			if(handler instanceof LoopSpecialCommand){
 				continue;
 			}
 			for(Object defHandler : defaultHandler){
@@ -312,8 +316,8 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		return result;
 	}
 
-	public class LoopPrompt extends MessagePrompt {
-		public LoopPrompt() {
+	public static class LoopPrompt extends MessagePrompt {
+		public LoopPrompt(MessageResolver messageResolver) {
 			super("message.loop.prompt", messageResolver);
 		}
 	}

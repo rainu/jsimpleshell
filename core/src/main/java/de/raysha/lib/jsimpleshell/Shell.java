@@ -373,7 +373,9 @@ public class Shell {
 		if (handler == null) {
 			throw new NullPointerException();
 		}
-		allHandlers.add(handler);
+		if(!allHandlers.contains(handler)){
+			allHandlers.add(handler);
+		}
 
 		configureHandler(handler, prefix);
 	}
@@ -422,6 +424,16 @@ public class Shell {
 			if (annotation != null) {
 				commandTable.addMethod(m, handler, prefix);
 			}
+		}
+	}
+
+	/**
+	 * Refresh all dependencies of my currently used handlers. That means all dependencies will be
+	 * again set in all handlers. That can be useful if one handler is reused and override a dependency.
+	 */
+	public void refreshHandlerDependencies(){
+		for(Object handler : getAllHandler()){
+			dependencyResolver.resolveDependencies(handler);
 		}
 	}
 

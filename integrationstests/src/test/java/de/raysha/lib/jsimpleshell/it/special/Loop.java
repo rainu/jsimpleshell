@@ -311,7 +311,7 @@ public class Loop extends IntegrationsTest {
 		//but when you enter a other subshell, the prompt have also
 		//a loop-pompt-element
 
-		executeCommand(".foreach", "1", "2");
+		executeCommand(".foreach", "1");
 		executeCommand("new-sub-shell");
 
 		CommandResult result = waitForShell();
@@ -327,5 +327,7 @@ public class Loop extends IntegrationsTest {
 
 		assertFalse(result.toString(),
 				result.getOut().contains("IT/loop/sub"));
+		assertTrue(result.toString(),
+				result.getOut().contains("IT/sub"));
 	}
 }
