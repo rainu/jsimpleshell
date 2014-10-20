@@ -22,7 +22,6 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
  * @author rainu
  */
 class CompleterHandler implements ShellManageable {
-	private final static Map<ConsoleReader, AggregateCompleter> aggregateCompleter = new HashMap<ConsoleReader, AggregateCompleter>();
 	private final static Map<Shell, Collection<Completer>> shellCompleterRelation = new HashMap<Shell, Collection<Completer>>();
 	private final static Map<Shell, Collection<Completer>> shellPrevCompleterRelation = new HashMap<Shell, Collection<Completer>>();
 
@@ -43,10 +42,6 @@ class CompleterHandler implements ShellManageable {
 
 			removeCompleter(shell, console);
 			restorePreviousCompleter(shell, console);
-
-			//it is very important to remove this relations from my map, otherwise the garbage collector
-			//could not delete this instances from space!
-			aggregateCompleter.remove(console);
 		}
 
 		shellCompleterRelation.remove(shell);
@@ -58,7 +53,7 @@ class CompleterHandler implements ShellManageable {
 			return; //this is the root shell
 		}
 
-		AggregateCompleter completerContainer = aggregateCompleter.get(console);
+		AggregateCompleter completerContainer = getCompleter(console);
 		Collection<Completer> prevCompleters = shellPrevCompleterRelation.get(shell);
 
 		if(completerContainer != null){
@@ -69,32 +64,22 @@ class CompleterHandler implements ShellManageable {
 	}
 
 	private void removePreviousCompleter(Shell shell, ConsoleReader console) {
-		AggregateCompleter completerContainer = aggregateCompleter.get(console);
-		if(completerContainer == null){
-			return; //this is the root shell
-		}
+		AggregateCompleter completerContainer = getCompleter(console);
 
 		shellPrevCompleterRelation.put(shell, new ArrayList<Completer>(completerContainer.getCompleters()));
 		completerContainer.getCompleters().clear();
 	}
 
 	private void removeCompleter(Shell shell, ConsoleReader console) {
-		if(aggregateCompleter.containsKey(console)){
-			for(Completer c : shellCompleterRelation.get(shell)){
-				aggregateCompleter.get(console).getCompleters().remove(c);
-			}
+		AggregateCompleter completerContainer = getCompleter(console);
+
+		for(Completer c : shellCompleterRelation.get(shell)){
+			completerContainer.getCompleters().remove(c);
 		}
 	}
 
 	private void addCompleter(Shell shell, ConsoleReader console) {
-		if(!aggregateCompleter.containsKey(console)){
-			AggregateCompleter completer = new AggregateCompleter();
-			aggregateCompleter.put(console, completer);
-
-			console.addCompleter(completer);
-		}
-
-		AggregateCompleter completerContainer = aggregateCompleter.get(console);
+		AggregateCompleter completerContainer = getCompleter(console);
 
 		List<Completer> completer = new ArrayList<Completer>();
 		completer.add(buildCommandNameCompleter(shell));
@@ -119,5 +104,23 @@ class CompleterHandler implements ShellManageable {
 		completer.setFilter(shell.getCandidatesFilter());
 
 		return completer;
+	}
+
+	private AggregateCompleter getCompleter(ConsoleReader console){
+		if(console.getCompleters() != null) for(Completer completer : console.getCompleters()){
+			if(completer instanceof MyAggregateCompleter){
+				//there should be only one of them
+				return (MyAggregateCompleter)completer;
+			}
+		}
+
+		MyAggregateCompleter completer = new MyAggregateCompleter();
+		console.addCompleter(completer);
+
+		return completer;
+	}
+
+	private class MyAggregateCompleter extends AggregateCompleter {
+
 	}
 }

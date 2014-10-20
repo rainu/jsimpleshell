@@ -304,4 +304,30 @@ public class Loop extends IntegrationsTest {
 		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_UNTIL + "="));
 		assertFalse(result.getOut().contains(LoopCommandHandler.VARIABLE_NAME_STEP + "="));
 	}
+
+	@Test
+	public void regressionTest1() throws IOException{
+		//if you enter a loop and leave them the prompt looks ok
+		//but when you enter a other subshell, the prompt have also
+		//a loop-pompt-element
+
+		executeCommand(".foreach", "1");
+		executeCommand("new-sub-shell");
+
+		CommandResult result = waitForShell();
+
+		assertTrue(result.toString(),
+				result.getOut().contains("IT/loop/sub"));
+
+		executeCommand("exit");
+		executeAndWaitForCommand(".for-end");
+		executeCommand("new-sub-shell");
+
+		result = waitForShell();
+
+		assertFalse(result.toString(),
+				result.getOut().contains("IT/loop/sub"));
+		assertTrue(result.toString(),
+				result.getOut().contains("IT/sub"));
+	}
 }
