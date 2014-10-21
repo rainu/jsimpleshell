@@ -29,16 +29,16 @@
     <div class="container">
       <section id="main_content">
         <h2>
-<a name="1-what-is-jsimpleshell" class="anchor" href="#1-what-is-jsimpleshell"><span class="octicon octicon-link"></span></a>1) What is JSimpleShell?</h2>
+<a name="1-was-ist-jsimpleshell" class="anchor" href="#1-was-ist-jsimpleshell"><span class="octicon octicon-link"></span></a>1) Was ist JSimpleShell?</h2>
 
-<p>JSimpleShell is a java library that allows you to implement easily a shell environment. This shell can be used such like the bash shell in linux systems: You can execute commands; jump through the history; navigate with the arrow-keys; and many more... And the best: it is system independent! That means you can use this functions also on windows systems as well as linux systems.</p>
+<p>JSimpleShell (JSS) ist ein kleines Framework, mit dem man eine Shell-Umgebung implementieren kann. Diese Shell kann man ähnlich wie die Bash aus Unix verwendet: Man kann Kommandos aufrufen; durch den Verlauf iterieren; Variablen definieren; Schleifen ausführen; und vieles mehr... Und das Beste daran: Es ist Plattformunabhängig! Das heißt, dass man diese Shell unter Unix genauso gut steuern kann, wie unter Windows oder Mac OS.</p>
 
-<p>This is the perfect solution if you dont't have much time or no desire to develop a beautiful grafical user interface. You can very simple define a command - just one annotation is enough!</p>
+<p>Das ist die perfekte Lösung, wenn man keine große Lust und/oder Zeit hat, eine eigene GUI zu implementieren. Man kann ziemlich einfach ein Kommando definieren - eine Annotation genügt!</p>
 
 <h3>
-<a name="11-license" class="anchor" href="#11-license"><span class="octicon octicon-link"></span></a>1.1) License</h3>
+<a name="11-lizens" class="anchor" href="#11-lizens"><span class="octicon octicon-link"></span></a>1.1) Lizens</h3>
 
-<p>Of curse JSimpleShell is open-source! This library is distributed under the <a href="http://opensource.org/licenses/BSD-3-Clause">BSD License (3-Clause)</a>.</p>
+<p>Natürlich ist dieses Framework Open-Source! Es steht unter der <a href="http://opensource.org/licenses/BSD-3-Clause">BSD License (3-Clause)</a> zur Verfügung.</p>
 
 <h2>
 <a name="2-integration" class="anchor" href="#2-integration"><span class="octicon octicon-link"></span></a>2) Integration</h2>
@@ -46,24 +46,26 @@
 <h3>
 <a name="21-maven" class="anchor" href="#21-maven"><span class="octicon octicon-link"></span></a>2.1) Maven</h3>
 
-<p>JSimpleShell is deployed on <a href="http://search.maven.org/#search%7Cga%7C1%7Cjsimpleshell">maven-central</a>. That means that you can integrate it easily into your maven project. Just one dependency is enough:</p>
+<p>JSS ist auf maven-central deployed. Das heißt, dass man sie ganz einfach in maven-projekten als dependency einbinden kann.</p>
 
 <div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.raysha.lib<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>jsimpleshell<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>2.2<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.0.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </pre></div>
+
+<p>Die zum derzeitigen Zeitpunkt aktuelle Version kann man <a href="http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22de.raysha.lib%22%20AND%20a%3A%22jsimpleshell%22">hier</a> finden.</p>
 
 <h3>
 <a name="22-shell-builder" class="anchor" href="#22-shell-builder"><span class="octicon octicon-link"></span></a>2.2) Shell-Builder</h3>
 
-<p>Let us starts with a plain shell. To create a shell instance you have to use the <em>ShellBuilder</em>. With this builder you can build a <em>main shell</em> or a <em>sub shell</em>. The following code starts an plain shell. This plain shell contains all default commands such like the command for listing all available commands.</p>
+<p>Starten wir einmal mit einer leeren Shell. Das heißt, dass diese Shell nur die Standardkommandos benutzt. Um eine (Sub-)Shell zu erzeugen, wird der <strong>ShellBuilder</strong> verwendet. Mit diesem lassen sich alle Einstellungen einer Shell vornehmen. </p>
 
 <div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">de.raysha.lib.jsimpleshell.Shell</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">de.raysha.lib.jsimpleshell.ShellBuilder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">de.raysha.lib.jsimpleshell.builder.ShellBuilder</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
 
@@ -74,54 +76,313 @@
 <span class="o">}</span>
 </pre></div>
 
-<p>With the <em>ShellBuilder</em> you can configure your shell. You can add handlers (see Handler section); define the style of prompt and many more. Look at the <em>ShellBuilder</em> functions for more useful functions.</p>
+<p>Nachdem eine Shell gebaut wurde, kann man diese "starten" indem man <strong>commandLoop()</strong> aufruft. Diese Methode erfragt (solange wie möglich) Kommandos vom Benutzer und führt diese aus. Sobald der Benutzer diese Shell verlässt - z.b. durch eingabe von <em>exit</em>, wird diese Methode verlassen und die Anwendung hat wieder die Kontrolle.</p>
 
-<p>The <em>commandLoop</em> method starts the input loop. This loop will be leave if the user leave the current shell. By default it happens if the user enter <em>exit</em>. </p>
+<p>Der ShellBuilder ist in logische "Abschnitte" unterteilt, um die Konfiguration einer Shell zu kategoriesieren. In den folgenden Kapitteln wird auf die jeweiligen "Abschnitte" eingegangen.</p>
+
+<h4>
+<a name="221-verhalten-behavior" class="anchor" href="#221-verhalten-behavior"><span class="octicon octicon-link"></span></a>2.2.1) Verhalten (behavior)</h4>
+
+<p>Im Verhaltens-Abschnitt des ShellBuilders kann man das Verhalten der Shell konfigurieren. Um genau zu sein, kann man in diesem Abschnitt folgendes tun:</p>
+
+<table>
+<thead>
+<tr>
+<th>Beschreibung</th>
+<th>Methode</th>
+<th>Standardeinstellung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(AUX-)Handler hinzufügen (siehe <a href="#23-handler">Kapittel Command(-Handler)</a>)</td>
+<td><ul>
+<li>addHandler()</li>
+<li>addAuxHandler()</li>
+</ul></td>
+<td>keine (AUX-)Handler</td>
+</tr>
+<tr>
+<td>Soll auf &lt;STRG&gt;-C des Benutzers reagieret werden? Wenn nicht, führt das zum Beenden der Anwendung!</td>
+<td><ul><li>setHandleUserInterrupt()</li></ul></td>
+<td>
+<strong>false</strong> - &lt;STRG&gt;-C beendet die Anwendung</td>
+</tr>
+<tr>
+<td>Sollen die Datei- oder Verzeichnis-Pfade automatisch vervollständigt werden? (siehe <a href="#33-auto-vervollst%C3%A4ndigung">Kapittel Auto-Vervollständigung</a>)</td>
+<td><ul>
+<li>disableFileNameCompleter()</li>
+<li>enableFileNameCompleter()</li>
+<li>setFileNameCompleter()</li>
+</ul></td>
+<td>
+<strong>true</strong> - die Auto-Vervollständigung ist aktiviert</td>
+</tr>
+<tr>
+<td>Soll das <strong>exit</strong>-Kommando verwendet werden?</td>
+<td><ul>
+<li>enableExitCommand()</li>
+<li>disableExitCommand()</li>
+<li>setExitCommand()</li>
+</ul></td>
+<td>
+<strong>true</strong> - das exit Kommando wird verwendet. Sollte kein exit verwendet werden, hat der Benutzer keine Chance die Shell zu verlassen, es sei denn es existiert ein anderes Kommando, welches eine ExitException werfen kann.</td>
+</tr>
+<tr>
+<td>Definieren, wo sich die Verlaufs-Datei der Shell befindet.</td>
+<td><ul><li>setHistoryFile()</li></ul></td>
+<td>
+<strong>null</strong> - es wird kein Verlauf nach dem Beenden der Anwendung gespeichert.</td>
+</tr>
+<tr>
+<td>Definieren, wo sich das Makro-Verzeichnis der Shell befindet. (siehe <a href="#38-makros">Kapittel Makros</a>)</td>
+<td><ul><li>setMacroHome()</li></ul></td>
+<td>
+<strong>null</strong> - es wird das aktuelle Arbeitsverzeichnis verwendet.</td>
+</tr>
+<tr>
+<td>De-/Aktivieren der Prozess-Kommandos. Diese Kommandos können aus der Shell heraus externe Prozesse starten. (siehe <a href="#37-prozess-starter">Kapittel Prozess-Starter</a>)</td>
+<td><ul>
+<li>enableProcessStarterCommands()</li>
+<li>disableProcessStarterCommands()</li>
+<li>setProcessStarterCommands()</li>
+</ul></td>
+<td>
+<strong>false</strong> - die Prozess-Kommandos sind aus Sicherheitsgründen nicht aktiviert.</td>
+</tr>
+<tr>
+<td>De-/Aktivieren ob die Kommandos mit einem Prefix automatisch vervollständigt werden sollen, wenn noch kein Anfangszeichen eines Kommandos eingegeben wurde.</td>
+<td><ul>
+<li>disableAutocompleOfSpecialCommands()</li>
+<li>enableAutocompleOfSpecialCommands()</li>
+<li>setAutocompleOfSpecialCommands()</li>
+</ul></td>
+<td>
+<strong>false</strong> - die Auto-Vervollständigung wird erst dann aktiv, nachdem der Benutzer den Prefix des Kommandos eingegeben hat.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a name="222-aussehen-look" class="anchor" href="#222-aussehen-look"><span class="octicon octicon-link"></span></a>2.2.2) Aussehen (look)</h4>
+
+<p>Im Aussehens-Abschnitt wird das Aussehen der Shell definiert. Dazu zählen konkret die folgenden Dinge:</p>
+
+<table>
+<thead>
+<tr>
+<th>Beschreibung</th>
+<th>Methode</th>
+<th>Standardeinstellung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Der Anwendungsname. Dieser wird beim eintritt der Shell angezeigt.</td>
+<td><ul><li>setAppName()</li></ul></td>
+<td>
+<strong>null</strong> - der Anwendungsname ist nicht vergeben und wird somit auch nicht angezeigt.</td>
+</tr>
+<tr>
+<td>Der Prompt-Teil der Shell. Der gesamt Prompt setzt sich aus allen Eltern- und der aktuellen Shell zusammen.</td>
+<td><ul>
+<li>setPrompt(PromptElement)</li>
+<li>setPrompt(String)</li>
+</ul></td>
+<td>Dies ist ein Pflichtparameter und muss schon beim Initialisieren eines ShellBuilders mit angegeben werden. Das besondere an einem <strong>PromptElement</strong> ist, dass dies bei jedem Rendern aufgerufen wird. Somit kann man eine klasse definieren, die den Prompt dynamisiert.</td>
+</tr>
+<tr>
+<td>Die Farbausgabe kann konfiguriert werden.</td>
+<td><ul>
+<li>enableColor()</li>
+<li>disableColor()</li>
+<li>setColor()</li>
+</ul></td>
+<td>
+<strong>true</strong> - es ist möglich, Farbausgaben zu erzeugen. Sollte die Farbeausgabe deaktiviert sein, kann auch troz Verwendung der entsprechenden Farbausgabe-Methoden keine Ausgabe in Farbe erzeugt werden! Somit kann die Anwendung mit Farbausgaben arbeiten, aber sie evtl. je nach System ein- bzw. ausschalten.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a name="223-ein-ausgabe-io" class="anchor" href="#223-ein-ausgabe-io"><span class="octicon octicon-link"></span></a>2.2.3) Ein-/Ausgabe (io)</h4>
+
+<p>Eine Shell muss nicht zwangsläufig die Standard Ein-/Aus-/Fehl- Ausgabe verwenden! Die E/A-Streams können benutzerspezifisch definiert werden. Dies stellt man in dem Ein-/Ausgabe-Abschnitt ein:</p>
+
+<table>
+<thead>
+<tr>
+<th>Beschreibung</th>
+<th>Methode</th>
+<th>Standardeinstellung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Definieren, dass die Shell eine eigene <a href="https://github.com/jline/jline2">Console</a> verwenden soll.</td>
+<td><ul><li>setConsole(Console)</li></ul></td>
+<td>Es wird eine eigene Console verwendet. Es wird <strong>nicht</strong> empfohlen eine eigene Console zu verwenden!</td>
+</tr>
+<tr>
+<td>Die Input- Output-Streams können definiert werden.</td>
+<td><ul><li>setConsole(InputStream, OuputStream)</li></ul></td>
+<td>
+<strong>System.in</strong>, <strong>System.out.</strong> - es wird die standard Ein-/Ausgabe verwenden.</td>
+</tr>
+<tr>
+<td>Die Fehlerausgabe kann definiert werden.</td>
+<td><ul><li>setError</li></ul></td>
+<td>
+<strong>System.err</strong> - es wird die standard Fehlerausgabe verwendet.</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong><em>Achtung</em></strong>: Die Kommandos der Anwendung sollten nicht <em>System.out</em>, <em>System.err</em>, <em>System.in</em> direkt verwenden! Da die Kommandos die Ein-/Ausgabe der <strong>Shell</strong> verwenden sollten, muss der <a href="#25-input-and-output">Input- bzw. Output-Builder</a> verwendet werden. Sollte die Shell die standard Ein-/Ausgabe verwenden wird dies auf den ersten Blick den gleichen Effekt haben. Werden von der Shell jedoch einmal andere Streams verwendet, muss die Anwendung evtl. mühsam umgeschrieben werden.</p>
 
 <h3>
 <a name="23-handler" class="anchor" href="#23-handler"><span class="octicon octicon-link"></span></a>2.3) Handler</h3>
 
-<p>There are two general types of handler:</p>
+<p>Ein Handler kann im Grunde <em>alles</em> sein! Es ist dem Entwickler überlassen, wie fein er die Trennung der Zuständigkeiten definiert. Beinhaltet ein Handler <strong><a href="https://github.com/Command" class="user-mention">@Command</a></strong>-Annotations werden diese Kommandos entsprechend in der "Kommando-Tabelle" der Shell aufgenommen. Diese kann aber gleichzeitig (je nach implementierten Interface) ein <a href="#232-access-manager">Access-Manager</a>, <a href="#236-converter">Converter</a> und/oder noch mehr sein. In einer Shell kann man zwei Arten von Handlern registrieren:</p>
 
 <ul>
-<li>main handler</li>
-<li>aux handler</li>
-</ul><p>The <em>main handler</em> are <strong>only</strong> in the current shell available! If this shell starts a sub shell, this main handler is not available in there! However an <em>aux handler</em> will be <strong>shared</strong> with all following sub shells. If a shell starts a sub shell, this aux handler will be available!</p>
+<li><strong>MainHandler</strong></li>
+<li><strong>AUX-Handler</strong></li>
+</ul>
 
-<p>For example:
-If you want to implement a command that is everywhere available you should use a <em>aux handler</em> which contains this command. </p>
+<p>Sie unterscheiden sich nur in der Gültigkeit in einer Shell. Der <strong>MainHandler</strong> ist nur innerhalb <strong>einer</strong> Shell gültig. Ein AUX-Handler hingegen ist in der definierten Shell <strong>und allen SubShell</strong>, die diese Shell als Elternteil besitzt, gültig. In allen anderen Aspekten sind diese beiden Handlerarten gleichwertig.</p>
 
-<p>For all the following handler-types you must know which kind of handlers they are (aux or main?). After you know it you have to add it to your shell - via <em>ShellBuilder</em> or directely to the shell:</p>
-
-<div class="highlight highlight-java"><pre>
-<span class="n">Shell</span> <span class="n">shell</span> <span class="o">=</span> <span class="n">ShellBuilder</span><span class="o">.</span><span class="na">shell</span><span class="o">(</span><span class="s">"MyShell"</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">addHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">MyMainHandler</span><span class="o">())</span> <span class="c1">//adds a main handler</span>
-                <span class="o">.</span><span class="na">addAuxHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">MyAuxHandler</span><span class="o">())</span> <span class="c1">//adds an aux handler</span>
-            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-
-<span class="c1">//adds an aux handler where all contains commands have the prefix "!"</span>
-<span class="c1">//that means the user must enter the ! followed by the command-name</span>
-<span class="n">shell</span><span class="o">.</span><span class="na">addAuxHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">OtherAuxHandler</span><span class="o">(),</span> <span class="s">"!"</span><span class="o">);</span>
-</pre></div>
-
-<p>One handler can be quite more than one type. For example: One handler can contains commands (command handler) but can also be an Input-/Ouput- Converter. Thus it is possible to have one huge class that manage all things - but you should do it only if you have realy little time :)</p>
+<p>In den folgenden Abschnitten wird jeder Typ eines Handlers erläutert. </p>
 
 <h4>
-<a name="231-command-handler" class="anchor" href="#231-command-handler"><span class="octicon octicon-link"></span></a>2.3.1) Command(-Handler)</h4>
+<a name="231-command-handler" class="anchor" href="#231-command-handler"><span class="octicon octicon-link"></span></a>2.3.1) Command-Handler</h4>
 
-<p>A command-handler is a class that contains methods wich are annotated with the <strong>Command</strong>-Annotation. All methods which have these annotation are commands. Methods without these annotation will be ignored by the shell! </p>
+<p>Ein Command-Handler ist ein Handler, der mindestens ein Kommando beinhaltet. Das heißt eine Methode, die mit der <strong><a href="https://github.com/Command" class="user-mention">@Command</a></strong>-Annotation annotiert wurde. Jede Methode mit einer solchen Annotation wird als Kommando in der "Kommando-Tabelle" der Shell eingetragen. Es ist nach Möglichkeit darauf zu achten, dass kein Kommando doppelt in der Kommando-Tabelle vorhanden ist. Denn sonst kann der Benutzer <strong>keines</strong> dieser Kommandos ausführen. Ein Kommando gilt dann als Duplikat wenn:</p>
+
+<ul>
+<li>es den gleichen <strong>Namen</strong> hat</li>
+<li>und die gleiche <strong>Parameteranzahl</strong>
+</li>
+<li>mit der gleichen <strong>Parametertypen</strong>
+</li>
+</ul>
+
+<p>Das folgende Code-Beispiel dient zur Demonstration und beinhaltet solche Duplikate:</p>
+
+<div class="highlight highlight-java"><pre><span class="o">...</span>
+
+<span class="nd">@Command</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"command"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">commandOne</span><span class="o">(</span><span class="n">String</span> <span class="n">param</span><span class="o">){</span>
+    <span class="c1">//do something </span>
+<span class="o">}</span>
+
+<span class="nd">@Command</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">command</span><span class="o">(</span><span class="n">String</span> <span class="n">param</span><span class="o">){</span>
+    <span class="c1">//do something</span>
+<span class="o">}</span>
+
+<span class="o">...</span>
+</pre></div>
+
+<p>Sollte in der @Command-Annotation nicht explizit der Name des Kommandos definiert sein, so wird der <strong>Methodenname</strong> als Kommandoname verwendet. Da die Methode <strong>commandOne</strong> in ihrer Annotation den Namen <strong>command</strong> verwendet und die <strong>Methode command</strong> in ihrer Annotation <strong>keinen</strong> Namen definiert, stellen diese beiden Methoden Kommando-Duplikate dar!</p>
 
 <h5>
 <a name="2311-command-annotation" class="anchor" href="#2311-command-annotation"><span class="octicon octicon-link"></span></a>2.3.1.1) Command-Annotation</h5>
 
+<p>Die @Command-Annotation <em>kann</em> Parameter übergeben bekommen. Diese Parameter und deren Bedeutung sind in der folgenden Tabelle aufgelistet:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Beschreibung</th>
+<th>Standardwert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>Der Name des Kommandos.</td>
+<td>
+<strong>null</strong> - es wird der Methodenname verwendet. Sollte der Methodenname in "Höckerschreibweise" geschrieben wurden sein, wird zwichen jedem Großbuchstaben ein Bindestrich eingefügt und der Großbuchstabe in einen Kleinbuchstaben verwandelt. Zum Beispiel wird aus dem Methodennamen <strong>setSecretPassword</strong> der Kommandoname <strong>set-secret-password</strong>.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>Die (ausführliche) Beschreibung des Kommandos. Diese Beschreibung wird bei der Hilfe des Kommandos ausgegeben.</td>
+<td>
+<strong>null</strong> - es gibt keine Beschreibung.</td>
+</tr>
+<tr>
+<td>abbrev</td>
+<td>Die Abkürzung des Kommandos. Diese kann der Benutzer alternativ zu dem kompletten Kommandonamen eingeben. Auch die Abkürzungen sollten unter den Kommandos einer Shell eindeutig sein.</td>
+<td>
+<strong>null</strong> - der Anfangsbuchstabe des Methodennamens. Sollte der Methodenname in "Höckerschreibweise" geschrieben wurden sein, wird der Anfangsbuchste und jeder folgende Großbuchstabe für die Abkürzung verwendet. Zum Beispiel wird aus dem Methodennamen <strong>setSecretPassword</strong> die Abkürzung <strong>ssp</strong>.</td>
+</tr>
+<tr>
+<td>header</td>
+<td>Die Kopf(-zeile) eines Kommandos. Diese wird bei <em>jedem</em> Aufruf des Kommandos ausgegeben.</td>
+<td>
+<strong>null</strong> - es gibt keine Kopfzeile.</td>
+</tr>
+<tr>
+<td>displayResult</td>
+<td>Soll der Rückgabewert des Kommandos (und damit der Java-Methode) ausgegeben werden? Sollte der Rückgabewert kein String sein, so wird versucht das Ergebnis in ein String zu <a href="#236-converter">konvertieren</a>.</td>
+<td>
+<strong>true</strong> - der Rückgabewert des Kommandos wird ausgegeben.</td>
+</tr>
+<tr>
+<td>startsSubshell</td>
+<td>Gibt an, ob dieses Kommando eine SubShell öffnen (kann). Diese Information wird von JSS <strong><em>benötigt</em></strong>, um dieses Komamndo bei einer evtl. <a href="#36-schleifen">Schleife</a> des Benutzers auszuführen. Die Shell befindet sich dann im <a href="#24-Aufnahmemodus">"RecordMode"</a>.</td>
+<td>
+<strong>false</strong> - das Kommando wird keine SubShell starten. Dies muss <strong>unbedingt</strong> angegeben werden, sollte dies doch der Fall sein!</td>
+</tr>
+</tbody>
+</table>
+
+<p>Man kann <strong>name</strong>, <strong>description</strong>, <strong>abbrev</strong>, und <strong>header</strong> einen festen Wert geben, der bei jeder verwendeten Sprache (Deutsch, Englisch, ...) verwendet wird. Man kann in diesen Parametern aber auch (eindeutige) Schlüssel vergeben, die dann anschließend von den verwendeten <a href="#234-message-resolver">Message-Resolver</a> aufgelöst werden. <strong>Alle</strong> Standardkommandos von JSS haben eindeutige Schlüssel, sodass man sie auch ggf. umbennenen kann. Wie dies im Detail funktioniert siehe <a href="#234-message-resolver">Kapittel Message-Resolver</a>.</p>
+
 <h5>
-<a name="2311-param-annotation" class="anchor" href="#2311-param-annotation"><span class="octicon octicon-link"></span></a>2.3.1.1) Param-Annotation</h5>
+<a name="2312-param-annotation" class="anchor" href="#2312-param-annotation"><span class="octicon octicon-link"></span></a>2.3.1.2) Param-Annotation</h5>
+
+<p>Jeder Parameter eines Kommandos <em>kann</em> mit einer <strong><a href="https://github.com/Param" class="user-mention">@Param</a></strong>-Annotation annotiert werden. Das ist immer sinnvoll, da JSS die Parameternamen zur Laufzeit <strong>nicht</strong> ermitteln kann! Ist keine Annotation vorhanden, wäre das Verhalten so, als ob eine Annotation mit den Standardwerten verwendet wurden wäre. Es gibt noch weitere Einstellmöglichkeiten, die in der folgenden Tabelle aufgelistet werden:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Beschreibung</th>
+<th>Standardwert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>Der (Anzeige-)Name des Parameters.</td>
+<td>
+<strong>null</strong> - der Parametername setzt sich zusammen aus <strong>p</strong> gefolgt von dem <strong>Parameterindex</strong>. Demzufolge würde der erste Parameter <strong>p0</strong>, der zweite <strong>p1</strong> usw. lauten.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>Die Beschreibung des Parameters. Diese wird in der Hilfe angezeigt.</td>
+<td>
+<strong>null</strong> - es gibt keine Beschreibung.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Sollte der Java-Typ <em>Object</em> oder <em>String</em> sein, kann mit dieser Einstellung präzesiert werden, welchen Typ der Parameter besitzen soll. Dieser Typ wird u.a. von den <a href="#235-candidates-chooser">Candidates-Chooser</a> verwendet, um den Benutzer bei der Eingabe zu unterstützen.</td>
+<td>
+<strong>null</strong> - es wird der Java-Typ verwendet um die <a href="#235-candidates-chooser">Candidates-Chooser</a> zu bedienen.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Auch bei den Parametern sollten möglichst keine (logischen) Duplikate vorkommen. In erster Line wird zwar auf die Eingabereihenfolge geachtet. Aber der Benutzer kann diese bei Bedarf auch ändern, indem er den Namen des Parameters verwendet. Dieser muss in diesem Falle dann eindeutig sein! Auch kann man (wie bei der Command-Annotation) feste Werte für <strong>value</strong> und <strong>description</strong> verwenden. Alternativ können auch hier (eindeutige) Schlüssel verwendet werden, die anschließend der verwendete <a href="#234-message-resolver">Message-Resolver</a> auflöst. <strong>Alle</strong> Parameter der Standard-Kommandos verwenden Schlüssel, sodass man sie ggf. umbennenen kann.</p>
 
 <h4>
 <a name="232-access-manager" class="anchor" href="#232-access-manager"><span class="octicon octicon-link"></span></a>2.3.2) Access-Manager</h4>
 
 <h4>
-<a name="233-command-execution-hooks" class="anchor" href="#233-command-execution-hooks"><span class="octicon octicon-link"></span></a>2.3.3) Command execution hooks</h4>
+<a name="233-shell-hooks" class="anchor" href="#233-shell-hooks"><span class="octicon octicon-link"></span></a>2.3.3) Shell-Hooks</h4>
 
 <h4>
 <a name="234-message-resolver" class="anchor" href="#234-message-resolver"><span class="octicon octicon-link"></span></a>2.3.4) Message-Resolver</h4>
@@ -138,8 +399,11 @@ If you want to implement a command that is everywhere available you should use a
 <h3>
 <a name="25-input-and-output" class="anchor" href="#25-input-and-output"><span class="octicon octicon-link"></span></a>2.5) Input and Output</h3>
 
+<h3>
+<a name="24-aufnahmemodus" class="anchor" href="#24-aufnahmemodus"><span class="octicon octicon-link"></span></a>2.4) Aufnahmemodus</h3>
+
 <h2>
-<a name="3-usage" class="anchor" href="#3-usage"><span class="octicon octicon-link"></span></a>3) Usage</h2>
+<a name="3-benutzung" class="anchor" href="#3-benutzung"><span class="octicon octicon-link"></span></a>3) Benutzung</h2>
 
 <h3>
 <a name="31-help" class="anchor" href="#31-help"><span class="octicon octicon-link"></span></a>3.1) Help</h3>
@@ -148,19 +412,25 @@ If you want to implement a command that is everywhere available you should use a
 <a name="32-parameter" class="anchor" href="#32-parameter"><span class="octicon octicon-link"></span></a>3.2) Parameter</h3>
 
 <h3>
-<a name="33-auto-completion" class="anchor" href="#33-auto-completion"><span class="octicon octicon-link"></span></a>3.3) Auto completion</h3>
+<a name="33-auto-vervollst%C3%A4ndigung" class="anchor" href="#33-auto-vervollst%C3%A4ndigung"><span class="octicon octicon-link"></span></a>3.3) Auto-Vervollständigung</h3>
 
 <h3>
 <a name="34-sub-shells" class="anchor" href="#34-sub-shells"><span class="octicon octicon-link"></span></a>3.4) Sub-Shells</h3>
 
 <h3>
-<a name="35-variables" class="anchor" href="#35-variables"><span class="octicon octicon-link"></span></a>3.5) Variables</h3>
+<a name="35-variablen" class="anchor" href="#35-variablen"><span class="octicon octicon-link"></span></a>3.5) Variablen</h3>
 
 <h3>
-<a name="36-macros" class="anchor" href="#36-macros"><span class="octicon octicon-link"></span></a>3.6) Macros</h3>
+<a name="36-schleifen" class="anchor" href="#36-schleifen"><span class="octicon octicon-link"></span></a>3.6) Schleifen</h3>
 
 <h3>
-<a name="37-language" class="anchor" href="#37-language"><span class="octicon octicon-link"></span></a>3.7) Language</h3>
+<a name="37-prozess-starter" class="anchor" href="#37-prozess-starter"><span class="octicon octicon-link"></span></a>3.7) Prozess-Starter</h3>
+
+<h3>
+<a name="38-makros" class="anchor" href="#38-makros"><span class="octicon octicon-link"></span></a>3.8) Makros</h3>
+
+<h3>
+<a name="39-sprache" class="anchor" href="#39-sprache"><span class="octicon octicon-link"></span></a>3.9) Sprache</h3>
       </section>
     </div>
 
