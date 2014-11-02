@@ -1,5 +1,7 @@
-## [JSimpleShell x.x - XXXX-XX-XX][x.x]
-[x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
+## [JSimpleShell 3.0.2 - 2014-11-03][3.0.2]
+[3.0.2]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/3.0.2/
+
+* [fix] The error-output will now be flused.
 
 ## [JSimpleShell 3.0.1 - 2014-10-20][3.0.1]
 [3.0.1]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/3.0.1/

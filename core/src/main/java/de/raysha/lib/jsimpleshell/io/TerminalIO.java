@@ -402,6 +402,7 @@ public class TerminalIO implements Input, Output, ShellManageable, CommandLoopOb
 			println("[ERROR] " + o);
 		} else {
 			error.println(o);
+			error.flush();
 		}
 	}
 
@@ -412,6 +413,7 @@ public class TerminalIO implements Input, Output, ShellManageable, CommandLoopOb
 			print("[ERROR] " + o);
 		} else {
 			error.print(o);
+			error.flush();
 		}
 	}
 
