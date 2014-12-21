@@ -10,9 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -27,7 +31,7 @@ import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
 public class CommandTable {
 
 	private MessageResolver messageResolver;
-	private List<ShellCommand> commandTable = new ArrayList<ShellCommand>();
+	private Map<ShellCommand, CommandDefinition> commandTable = new LinkedHashMap<ShellCommand, CommandDefinition>();
 	private CommandNamer namer;
 
 	public CommandTable(CommandNamer namer) {
@@ -43,11 +47,11 @@ public class CommandTable {
 	}
 
 	public List<ShellCommand> getCommandTable() {
-		return Collections.unmodifiableList(commandTable);
+		return Collections.unmodifiableList(new ArrayList<ShellCommand>(commandTable.keySet()));
 	}
 
 	public void removeCommands(Object handler){
-		Iterator<ShellCommand> iter = commandTable.iterator();
+		Iterator<ShellCommand> iter = commandTable.keySet().iterator();
 		while(iter.hasNext()){
 			if(iter.next().getHandler() == handler){
 				iter.remove();
@@ -59,42 +63,52 @@ public class CommandTable {
 		Command annotation = method.getAnnotation(Command.class);
 		assert method != null;
 
-		String name = resolveName(annotation, method);
-		String abbrev = resolveAbbrev(annotation, method);
-		String desciption = resolveDescription(annotation, method);
-		String header = resolveHeader(annotation, method);
+		String name = "".equals(annotation.value()) ? annotation.name() : annotation.value();
+		String abbrev = annotation.abbrev();
+		String desciption = annotation.description();
+		String header = annotation.header();
 
-		ShellCommand command = new ShellCommand(handler, method, prefix, name, messageResolver);
+		CommandDefinition definition = new CommandDefinition(
+				handler, method,
+				prefix, name, abbrev,
+				desciption, header,
+				annotation.displayResult(), annotation.startsSubshell());
 
-		command.setAbbreviation(abbrev);
-		command.setDescription(desciption);
-		command.setHeader(header);
-		command.setDisplayResult(annotation.displayResult());
-		command.setStartsSubshell(annotation.startsSubshell());
-
-		commandTable.add(command);
-
+		addCommand(definition);
 	}
 
-	private String resolveName(Command annotation, Method method) {
-		String name = "";
-
-		if(annotation != null){
-			name = messageResolver.resolveCommandName(annotation, method);
+	public void addCommand(CommandDefinition definition){
+		if(definition == null) {
+			throw new NullPointerException("The definition must not be null!");
 		}
+
+		ShellCommand command = new ShellCommand(
+				definition.getHandler(),
+				definition.getMethod(),
+				definition.getPrefix(),
+				resolveName(definition.getName(), definition.getMethod()),
+				messageResolver);
+
+		command.setAbbreviation(resolveAbbrev(definition.getAbbrev(), definition.getMethod()));
+		command.setDescription(resolveDescription(definition.getDescription(), definition.getMethod()));
+		command.setHeader(resolveHeader(definition.getHeader(), definition.getMethod()));
+		command.setDisplayResult(definition.getDisplayResult());
+		command.setStartsSubshell(definition.getStartsSubshell());
+
+		commandTable.put(command, definition);
+	}
+
+	private String resolveName(String name, Method method) {
 		if(name == null || "".equals(name)){
 			name = namer.nameCommand(method).commandName;
+		}else{
+			name = messageResolver.resolveCommandName(name, method);
 		}
 
 		return name;
 	}
 
-	private String resolveAbbrev(Command annotation, Method method) {
-		String abbrev = "";
-
-		if(annotation != null){
-			abbrev = messageResolver.resolveCommandAbbrev(annotation, method);
-		}
+	private String resolveAbbrev(String abbrev, Method method) {
 		if(abbrev == null || "".equals(abbrev)){
 			CommandNamer.NamingInfo autoNames = namer.nameCommand(method);
 			for (String curAbbrev : autoNames.possibleAbbreviations) {
@@ -103,21 +117,23 @@ public class CommandTable {
 					break;
 				}
 			}
+		}else{
+			abbrev = messageResolver.resolveCommandAbbrev(abbrev, method);
 		}
 
 		return abbrev;
 	}
 
-	private String resolveDescription(Command annotation, Method method) {
-		return messageResolver.resolveCommandDescription(annotation, method);
+	private String resolveDescription(String description, Method method) {
+		return messageResolver.resolveCommandDescription(description, method);
 	}
 
-	private String resolveHeader(Command annotation, Method method) {
-		return messageResolver.resolveCommandHeader(annotation, method);
+	private String resolveHeader(String header, Method method) {
+		return messageResolver.resolveCommandHeader(header, method);
 	}
 
 	private boolean doesCommandExist(String commandName, int arity) {
-		for (ShellCommand cmd : commandTable) {
+		for (ShellCommand cmd : commandTable.keySet()) {
 			if (cmd.canBeDenotedBy(commandName) && cmd.getArity() == arity) {
 				return true;
 			}
@@ -129,7 +145,7 @@ public class CommandTable {
 	public List<ShellCommand> commandsByName(String discriminator) {
 		List<ShellCommand> collectedTable = new ArrayList<ShellCommand>();
 		// collection
-		for (ShellCommand cs : commandTable) {
+		for (ShellCommand cs : commandTable.keySet()) {
 			if (cs.canBeDenotedBy(discriminator)) {
 				collectedTable.add(cs);
 			}
@@ -272,11 +288,11 @@ public class CommandTable {
 	 * This ensures that the name, description, etc. be read again.
 	 */
 	public void refreshCommands() {
-		List<ShellCommand> oldTable = new ArrayList<ShellCommand>(commandTable);
+		LinkedHashMap<ShellCommand, CommandDefinition> oldTable = new LinkedHashMap<ShellCommand, CommandDefinition>(commandTable);
 		commandTable.clear();
 
-		for(ShellCommand cmd : oldTable){
-			addMethod(cmd.getMethod(), cmd.getHandler(), cmd.getPrefix());
+		for(Entry<ShellCommand, CommandDefinition> cmd : oldTable.entrySet()){
+			addCommand(cmd.getValue());
 		}
 	}
 }

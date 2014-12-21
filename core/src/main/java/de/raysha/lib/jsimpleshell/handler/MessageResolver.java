@@ -17,56 +17,56 @@ public interface MessageResolver {
 	/**
 	 * This method will be called if a command description should be resolved.
 	 *
-	 * @param command The annotation that contains the description.
-	 * @param annotatedMethod The annotated method.
+	 * @param description The description value of the command.
+	 * @param targetMethod The target method.
 	 * @return The resolved command description. Otherwise the <b>given</b> (included in the annotation) command description.
 	 */
-	public String resolveCommandDescription(Command command, Method annotatedMethod);
+	public String resolveCommandDescription(String description, Method targetMethod);
 
 	/**
 	 * This method will be called if a command name should be resolved.
 	 *
-	 * @param command The annotation that contains the name.
-	 * @param annotatedMethod The annotated method.
+	 * @param name The name value of the command.
+	 * @param targetMethod The target method.
 	 * @return The resolved command name. Otherwise the <b>given</b> (included in the annotation) command name.
 	 */
-	public String resolveCommandName(Command command, Method annotatedMethod);
+	public String resolveCommandName(String name, Method targetMethod);
 
 	/**
 	 * This method will be called if a command abbreviation should be resolved.
 	 *
-	 * @param command The annotation that contains the abbreviation.
-	 * @param annotatedMethod The annotated method.
+	 * @param abbrev The abbreviation value of the command.
+	 * @param targetMethod The target method.
 	 * @return The resolved command abbreviation. Otherwise the <b>given</b> (included in the annotation) command abbreviation.
 	 */
-	public String resolveCommandAbbrev(Command command, Method annotatedMethod);
+	public String resolveCommandAbbrev(String abbrev, Method targetMethod);
 
 	/**
 	 * This method will be called if a command header should be resolved.
 	 *
-	 * @param command The annotation that contains the header.
-	 * @param annotatedMethod The annotated method.
+	 * @param header The header value of the command.
+	 * @param targetMethod The target method.
 	 * @return The resolved command header. Otherwise the <b>given</b> (included in the annotation) command header.
 	 */
-	public String resolveCommandHeader(Command command, Method annotatedMethod);
+	public String resolveCommandHeader(String header, Method targetMethod);
 
 	/**
 	 * This method will be called if a parameter description should be resolved.
 	 *
-	 * @param param The annotation that contains the description.
-	 * @param annotatedMethod The annotated method.
+	 * @param description The description value of the parameter.
+	 * @param targetMethod The target method.
 	 * @return The resolved parameter description. Otherwise the <b>given</b> (included in the annotation) parameter description.
 	 */
-	public String resolveParamDescription(Param param, Method annotatedMethod);
+	public String resolveParamDescription(String description, Method targetMethod);
 
 	/**
 	 * This method will be called if a parameter name should be resolved.
 	 *
-	 * @param param The annotation that contains the name.
-	 * @param annotatedMethod The annotated method.
+	 * @param name The name value of the parameter.
+	 * @param targetMethod The target method.
 	 * @return The resolved parameter name. Otherwise the <b>given</b> (included in the annotation) parameter name.
 	 */
-	public String resolveParamName(Param param, Method annotatedMethod);
+	public String resolveParamName(String name, Method targetMethod);
 
 	/**
 	 * This method will be called if a general message should be resolved. For example: A general message can be the help-text and so on.

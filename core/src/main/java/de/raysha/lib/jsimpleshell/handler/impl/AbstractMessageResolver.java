@@ -3,8 +3,6 @@ package de.raysha.lib.jsimpleshell.handler.impl;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
-import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 /**
@@ -18,33 +16,33 @@ public abstract class AbstractMessageResolver implements MessageResolver {
 	protected Locale locale = Locale.getDefault();
 
 	@Override
-	public String resolveCommandDescription(Command command, Method annotatedMethod) {
-		return resolveMessage(command.description());
+	public String resolveCommandDescription(String description, Method targetMethod) {
+		return resolveMessage(description);
 	}
 
 	@Override
-	public String resolveCommandName(Command command, Method annotatedMethod) {
-		return resolveMessage("".equals(command.value()) ? command.name() : command.value());
+	public String resolveCommandName(String name, Method targetMethod) {
+		return resolveMessage(name);
 	}
 
 	@Override
-	public String resolveCommandAbbrev(Command command, Method annotatedMethod) {
-		return resolveMessage(command.abbrev());
+	public String resolveCommandAbbrev(String abbrev, Method targetMethod) {
+		return resolveMessage(abbrev);
 	}
 
 	@Override
-	public String resolveCommandHeader(Command command, Method annotatedMethod) {
-		return resolveMessage(command.header());
+	public String resolveCommandHeader(String header, Method targetMethod) {
+		return resolveMessage(header);
 	}
 
 	@Override
-	public String resolveParamDescription(Param param, Method annotatedMethod) {
-		return resolveMessage(param.description());
+	public String resolveParamDescription(String description, Method targetMethod) {
+		return resolveMessage(description);
 	}
 
 	@Override
-	public String resolveParamName(Param param, Method annotatedMethod) {
-		return resolveMessage(param.value());
+	public String resolveParamName(String name, Method targetMethod) {
+		return resolveMessage(name);
 	}
 
 	@Override

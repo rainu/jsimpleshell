@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
@@ -377,7 +378,20 @@ public class Shell {
 			allHandlers.add(handler);
 		}
 
+		addDeclaredMethods(handler, prefix);
 		configureHandler(handler, prefix);
+	}
+
+	public void addMainCommand(CommandDefinition definition) {
+		if (definition == null) {
+			throw new NullPointerException();
+		}
+		if(!allHandlers.contains(definition.getHandler())){
+			allHandlers.add(definition.getHandler());
+		}
+
+		commandTable.addCommand(definition);
+		configureHandler(definition.getHandler(), definition.getPrefix());
 	}
 
 	/**
@@ -396,11 +410,11 @@ public class Shell {
 		auxHandlers.put(prefix, handler);
 		allHandlers.add(handler);
 
+		addDeclaredMethods(handler, prefix);
 		configureHandler(handler, prefix);
 	}
 
 	private void configureHandler(Object handler, String prefix) {
-		addDeclaredMethods(handler, prefix);
 		inputConverter.addDeclaredConverters(handler);
 		outputConverter.addDeclaredConverters(handler);
 
