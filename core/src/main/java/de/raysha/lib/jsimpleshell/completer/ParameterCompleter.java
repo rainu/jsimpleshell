@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jline.console.completer.Completer;
 import de.raysha.lib.jsimpleshell.CommandTable;
@@ -44,12 +46,12 @@ public class ParameterCompleter implements Completer {
 	}
 
 	@Override
-	public synchronized int complete(String buffer, int cursor, List<CharSequence> candidates) {
+	public synchronized int complete(String buffer, final int cursor, List<CharSequence> candidates) {
 		if(buffer == null || buffer.isEmpty()) return -1;
 
 		this.buffer = buffer;
-		this.cursor = cursor;
-		this.token = getCurrentTokens(buffer, cursor);
+		this.cursor = adjustCursor(buffer, cursor);
+		this.token = getCurrentTokens(buffer, this.cursor);
 		this.paramIndex = getParamIndex(token, cursor);
 
 		List<String> possibleParameterNames = getPossibleParameterNames();
@@ -65,12 +67,23 @@ public class ParameterCompleter implements Completer {
 		for(ShellCommandParamSpec spec : possibleParameters){
 			Candidates c = candidatesChooser.chooseCandidates(spec, paramPart);
 
-			filterCandidates(buffer, cursor, c, spec);
+			filterCandidates(buffer, this.cursor, c, spec);
 
 			possibleCandidates.add(c);
 		}
 
 		return complete(candidates, possibleCandidates);
+	}
+
+	private Pattern escapePattern = Pattern.compile("\\\\[^\\\\]");
+	private int adjustCursor(String buffer, int c) {
+		//for each escaped char we must minimize the cursor by one
+		Matcher m = escapePattern.matcher(buffer);
+
+		int matchCount = 0;
+		while (m.find()) matchCount++;
+
+		return c - matchCount;
 	}
 
 	private void filterCandidates(String buffer, int cursor, Candidates candidates, ShellCommandParamSpec spec) {
@@ -115,16 +128,24 @@ public class ParameterCompleter implements Completer {
 		if(reduced.getValues().isEmpty()) return -1;
 
 		int startIndex = cursor;
-		for(int i = cursor - 1; i >= 0; i--){
-			if(buffer.charAt(i) == ' '){
-				startIndex = i;
-				break;
-			}
+		if(paramIndex + 1 < token.size()){
+			startIndex = token.get(paramIndex + 1).getIndex() - 1;
 		}
 
-		candidates.addAll(reduced.getValues());
+		for(String value : reduced.getValues()){
+			String escapedValue = escape(value);
+
+			candidates.add(escapedValue);
+		}
 
 		return startIndex + reduced.getIndex() + 1;
+	}
+
+	private String escape(String value) {
+		return value
+				.replace("\\", "\\\\")
+				.replace(" ", "\\ ")
+				.replace("\"", "\\\"");
 	}
 
 	private Candidates reducePossibleCandiates(List<Candidates> possibleCandidates) {
@@ -292,7 +313,10 @@ public class ParameterCompleter implements Completer {
 		}
 
 		if(cursor -1 < buffer.length() && Character.isWhitespace(buffer.charAt(cursor - 1))){
-			index++;
+			//special case "test \ "
+			if(!buffer.matches(".*[^\\\\]\\\\\\s$")){
+				index++;
+			}
 		}
 
 		return index - 1;	//tokenizer begins with command

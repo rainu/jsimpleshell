@@ -1,6 +1,7 @@
 ## [JSimpleShell x.x - xxxx-xx-xx][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
 
+* [fix] Autocomplete: Candidates which includes whitespaces will now be escaped
 
 ## [JSimpleShell 3.0.2 - 2014-11-03][3.0.2]
 [3.0.2]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/3.0.2/

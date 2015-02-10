@@ -268,6 +268,50 @@ public class AutoCompleteSpecial extends IntegrationsTest {
 		candidateIsNotShown(result, "?list-all");
 	}
 
+	@Test
+	public void completeCandidatesWithWhitespaces() throws IOException{
+		simulateUserInput("set-text \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "ABC\\ Test\\ One");
+		candidateIsShown(result, "ABC\\ Test\\ Two");
+		candidateIsShown(result, "ABC\\ 2015");
+	}
+
+	@Test
+	public void completeCandidatesWithWhitespaces2() throws IOException{
+		simulateUserInput("set-text ABC\\ \t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "ABC\\ Test\\ One");
+		candidateIsShown(result, "ABC\\ Test\\ Two");
+		candidateIsShown(result, "ABC\\ 2015");
+	}
+
+	@Test
+	public void completeCandidatesWithWhitespaces3() throws IOException{
+		simulateUserInput("set-text ABC\\ T\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "ABC\\ Test\\ One");
+		candidateIsShown(result, "ABC\\ Test\\ Two");
+		candidateIsNotShown(result, "ABC\\ 2015");
+	}
+
+	@Test
+	public void completeCandidatesWithWhitespaces4() throws IOException{
+		simulateUserInput("set-text ABC\\ Test\\ O\t");
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "ABC\\ Test\\ One");
+		candidateIsNotShown(result, "ABC\\ Test\\ Two");
+		candidateIsNotShown(result, "ABC\\ 2015");
+	}
+
 	private void candidateIsShown(CommandResult result, String candidate) {
 		assertTrue("Candidate '" + candidate + "' is not shown!",
 				result.getOut().contains(candidate));
