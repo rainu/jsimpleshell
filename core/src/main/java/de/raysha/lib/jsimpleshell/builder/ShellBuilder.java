@@ -3,6 +3,7 @@ package de.raysha.lib.jsimpleshell.builder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jline.console.ConsoleReader;
@@ -189,7 +190,9 @@ public class ShellBuilder {
 		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(model.getAuxHandlers());
 		modifAuxHandlers.put("!", io);
 
-		Shell theShell = new Shell(new ShellSettings(io, io, modifAuxHandlers, false), model.getHandlers(),
+		//TODO:
+		final ShellSettings settings = new ShellSettings(io, io, modifAuxHandlers, Collections.EMPTY_LIST, false);
+		Shell theShell = new Shell(settings, model.getHandlers(),
 				new CommandTable(new DashJoinedNamer(true)), path, new CommandPipeline(), buildInitialEnvironment());
 
 		configureShell(theShell);
@@ -206,7 +209,9 @@ public class ShellBuilder {
 		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
 		newPath.add(model.getPrompt());
 
-		Shell subshell = new Shell(parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers()), model.getHandlers(),
+		//TODO:
+		final ShellSettings settings = parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers(), Collections.EMPTY_LIST);
+		Shell subshell = new Shell(settings, model.getHandlers(),
 				new CommandTable(parent.getCommandTable().getNamer()), newPath, parent.getPipeline(), copyEnvironment(parent));
 
 		configureShell(subshell);

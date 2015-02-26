@@ -11,6 +11,7 @@ import de.raysha.lib.jsimpleshell.CommandResult;
 import de.raysha.lib.jsimpleshell.CommandsWithoutAnnotation;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.SubShellCommands;
 import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
@@ -22,7 +23,6 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 		@Override
 		protected String resolveMessage(String msg) {
 			if(msg.startsWith("dolly") && !msg.endsWith("_resolved")){
-				System.out.println("resolve: " + msg);
 				return msg + "_resolved";
 			}
 
@@ -41,6 +41,7 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 				.behavior()
 					.addHandler(this)
 					.addHandler(new MyMessageResolver())
+					.addHandler(new SubShellCommands())
 				.back();
 	}
 
@@ -64,6 +65,18 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 				def.getDisplayResult(), def.getStartsSubshell());
 
 		theShell.addMainCommand(def);
+
+		//aux def
+		try {
+			def = new CommandDefinition(
+					handler, handler.getClass().getMethod("hello"),
+					"aux.name", "aux.abbrev");
+
+			theShell.addAuxCommand(def);
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not get method!", e);
+		}
+
 	}
 
 	@Test
@@ -73,13 +86,30 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 		assertTrue(result.toString(), result.containsOutLine(".*hello.*"));
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.name_resolved.*"));
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.abbrev_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.name.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.abbrev.*"));
+
+		executeCommand("new-sub-shell");
+
+		result = executeAndWaitForCommand("?list");
+
+		assertFalse(result.toString(), result.containsOutLine(".*hello.*"));
+		assertFalse(result.toString(), result.containsOutLine(".*dolly.name_resolved.*"));
+		assertFalse(result.toString(), result.containsOutLine(".*dolly.abbrev_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.name.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.abbrev.*"));
 	}
 
 	@Test
 	public void execute() throws IOException{
 		CommandResult result = executeAndWaitForCommand("hello");
 
-		assertTrue(result.toString(), result.containsOutLine("^hello$"));
+		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
+
+		executeCommand("new-sub-shell");
+
+		result = executeAndWaitForCommand("aux.name");
+		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
 	}
 
 	@Test
