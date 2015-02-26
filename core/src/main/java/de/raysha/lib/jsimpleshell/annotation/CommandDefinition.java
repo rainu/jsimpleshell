@@ -123,4 +123,52 @@ public class CommandDefinition {
 
 	@Command
 	private final void annotationWirt(){ }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((handler == null) ? 0 : handler.hashCode());
+		result = prime * result + ((method == null) ? 0 : method.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CommandDefinition other = (CommandDefinition) obj;
+		if (handler == null) {
+			if (other.handler != null)
+				return false;
+		} else if (!handler.equals(other.handler))
+			return false;
+		if (method == null) {
+			if (other.method != null)
+				return false;
+		} else if (!method.equals(other.method))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (prefix == null) {
+			if (other.prefix != null)
+				return false;
+		} else if (!prefix.equals(other.prefix))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "CommandDefinition [method=" + method + "]";
+	}
 }

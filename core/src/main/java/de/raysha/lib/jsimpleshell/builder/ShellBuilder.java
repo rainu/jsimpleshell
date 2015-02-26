@@ -190,8 +190,8 @@ public class ShellBuilder {
 		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(model.getAuxHandlers());
 		modifAuxHandlers.put("!", io);
 
-		//TODO:
-		final ShellSettings settings = new ShellSettings(io, io, modifAuxHandlers, Collections.EMPTY_LIST, false);
+		//TODO: add main-commands
+		final ShellSettings settings = new ShellSettings(io, io, modifAuxHandlers, model.getAuxCommands(), false);
 		Shell theShell = new Shell(settings, model.getHandlers(),
 				new CommandTable(new DashJoinedNamer(true)), path, new CommandPipeline(), buildInitialEnvironment());
 
@@ -209,8 +209,8 @@ public class ShellBuilder {
 		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
 		newPath.add(model.getPrompt());
 
-		//TODO:
-		final ShellSettings settings = parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers(), Collections.EMPTY_LIST);
+		//TODO: add main-commands
+		final ShellSettings settings = parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers(), model.getAuxCommands());
 		Shell subshell = new Shell(settings, model.getHandlers(),
 				new CommandTable(parent.getCommandTable().getNamer()), newPath, parent.getPipeline(), copyEnvironment(parent));
 

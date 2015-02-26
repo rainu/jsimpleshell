@@ -116,7 +116,7 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 	public void executeDolly() throws IOException{
 		CommandResult result = executeAndWaitForCommand("dolly.name_resolved");
 
-		assertTrue(result.toString(), result.containsOutLine("^hello$"));
+		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.header_resolved.*"));
 	}
 

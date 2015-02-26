@@ -3,11 +3,14 @@ package de.raysha.lib.jsimpleshell.builder;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import jline.console.ConsoleReader;
 import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 
@@ -16,6 +19,8 @@ class BuilderModel {
 	private String appName = null;
 	private final MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
 	private final Collection<Object> handlers = new LinkedList<Object>();
+	private final Set<CommandDefinition> mainCommands = new HashSet<CommandDefinition>();
+	private final Set<CommandDefinition> auxCommands = new HashSet<CommandDefinition>();
 	private File history;
 	private File macroHome;
 	private Shell parent;
@@ -43,8 +48,14 @@ class BuilderModel {
 	MultiMap<String, Object> getAuxHandlers() {
 		return auxHandlers;
 	}
+	Collection<CommandDefinition> getAuxCommands() {
+		return auxCommands;
+	}
 	Collection<Object> getHandlers() {
 		return handlers;
+	}
+	Collection<CommandDefinition> getMainCommands() {
+		return mainCommands;
 	}
 	File getHistory() {
 		return history;

@@ -16,11 +16,11 @@ public class ShellSettings {
 	private final Input input;
 	private final Output output;
 	private final MultiMap<String, Object> auxHandlers;
-	private final List<CommandDefinition> auxCommands;
+	private final Collection<CommandDefinition> auxCommands;
 	private final boolean displayTime;
 
 	public ShellSettings(Input input, Output output,
-			MultiMap<String, Object> auxHandlers, List<CommandDefinition> auxCommands,
+			MultiMap<String, Object> auxHandlers, Collection<CommandDefinition> auxCommands,
 			boolean displayTime) {
 
 		this.input = input;
@@ -30,7 +30,7 @@ public class ShellSettings {
 		this.displayTime = displayTime;
 	}
 
-	public ShellSettings createWithAddedAuxHandlers(MultiMap<String, Object> addAuxHandlers, List<CommandDefinition> addAuxCommands) {
+	public ShellSettings createWithAddedAuxHandlers(MultiMap<String, Object> addAuxHandlers, Collection<CommandDefinition> addAuxCommands) {
 		MultiMap<String, Object> allAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
 		allAuxHandlers.putAll(addAuxHandlers);
 
@@ -57,8 +57,8 @@ public class ShellSettings {
 		return new UnmodifiableMultiMap<String, Object>(auxHandlers);
 	}
 
-	public List<CommandDefinition> getAuxCommands() {
-		return Collections.unmodifiableList(auxCommands);
+	public Collection<CommandDefinition> getAuxCommands() {
+		return Collections.unmodifiableCollection(auxCommands);
 	}
 
 	public static class UnmodifiableMultiMap<K, V> implements MultiMap<K, V> {
