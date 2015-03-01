@@ -2,7 +2,9 @@
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
 * [feature] Now you can add a commands without use a annotation. That can be helpful for objects where you have no access.
 * [change] The interface "MessageResolver" has been changed. You get no annotaion anymore. Istead of the annotation you will get the string directely.
-* [fix] Autocomplete: Candidates which includes whitespaces will now be escaped
+* [fix] Autocomplete: 
+   * Candidates which includes whitespaces will now be escaped
+   * Works also with VarArgs
 * [change] Replace the back() method in each sub-builder. Now you can jump through the sub-categories or build the shell directely.
 
 ## [JSimpleShell 3.0.2 - 2014-11-03][3.0.2]

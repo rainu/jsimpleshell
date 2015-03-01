@@ -11,12 +11,18 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
  *
  * @author rainu
  */
-public class BooleanCandidatesChooser implements CandidatesChooser {
+public class BooleanCandidatesChooser extends AbstractCandidatesChooser {
 
 	/**
 	 * Type for a {@link Boolean} parameter.
 	 */
 	public static final String BOOLEAN_TYPE = "java.lang.Boolean";
+
+	public BooleanCandidatesChooser() {
+		super(
+			new Class<?>[]{Boolean.class, boolean.class},
+			new String[]{BOOLEAN_TYPE});
+	}
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
@@ -35,11 +41,4 @@ public class BooleanCandidatesChooser implements CandidatesChooser {
 
 		return new Candidates(values);
 	}
-
-	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return Boolean.class == paramSpec.getValueClass() ||
-				boolean.class == paramSpec.getValueClass() ||
-				BOOLEAN_TYPE.equals(paramSpec.getType());
-	}
-
 }

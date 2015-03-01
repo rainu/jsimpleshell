@@ -13,11 +13,15 @@ import de.raysha.lib.jsimpleshell.script.Variable;
  *
  * @author rainu
  */
-public class VariableCandidatesChooser implements CandidatesChooser {
+public class VariableCandidatesChooser extends AbstractCandidatesChooser {
 
 	public static final String VARIABLE_NAME_TYPE = "de.raysha.lib.jsimpleshell.completer.VariableCandidatesChooser_variableName";
 
 	@Inject private Environment environment;
+
+	public VariableCandidatesChooser() {
+		super(VARIABLE_NAME_TYPE);
+	}
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
@@ -47,7 +51,7 @@ public class VariableCandidatesChooser implements CandidatesChooser {
 				if(var.getValue() == null){
 					add = true;
 				}else {
-					final Class<?> paramClass = paramSpec.getValueClass();
+					final Class<?> paramClass = getParameterClass(paramSpec);
 					final Class<?> varClass = var.getValue().getClass();
 
 					if(paramClass.isAssignableFrom(varClass)){
@@ -81,6 +85,6 @@ public class VariableCandidatesChooser implements CandidatesChooser {
 	}
 
 	private boolean responsibleFor(ShellCommandParamSpec paramSpec, String part) {
-		return VARIABLE_NAME_TYPE.equals(paramSpec.getType()) || part.startsWith("$");
+		return responsibleFor(paramSpec) || part.startsWith("$");
 	}
 }

@@ -10,7 +10,7 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
  *
  * @author rainu
  */
-public class EnumCandidatesChooser implements CandidatesChooser {
+public class EnumCandidatesChooser extends AbstractCandidatesChooser {
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
@@ -18,7 +18,8 @@ public class EnumCandidatesChooser implements CandidatesChooser {
 
 		List<String> elements = new ArrayList<String>();
 
-		for(Object e : paramSpec.getValueClass().getEnumConstants()){
+		Class<?> pClass = getParameterClass(paramSpec);
+		for(Object e : pClass.getEnumConstants()){
 			String representation = ((Enum<?>)e).name();
 
 			if(representation.toUpperCase().startsWith(part.toUpperCase())){
@@ -29,8 +30,13 @@ public class EnumCandidatesChooser implements CandidatesChooser {
 		return new Candidates(elements);
 	}
 
-	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return paramSpec.getValueClass().isEnum();
+	protected boolean responsibleFor(ShellCommandParamSpec paramSpec) {
+		Class<?> pClass = paramSpec.getValueClass();
+
+		if(pClass.isArray()){
+			return pClass.getComponentType().isEnum();
+		}
+		return pClass.isEnum();
 	}
 
 }
