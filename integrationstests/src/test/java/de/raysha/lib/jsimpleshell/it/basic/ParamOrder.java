@@ -20,7 +20,7 @@ public class ParamOrder extends IntegrationsTest {
 		return super.buildShell()
 				.behavior()
 					.addHandler(new ParamOrderCommands())
-				.back();
+				.root();
 	}
 
 	@Test

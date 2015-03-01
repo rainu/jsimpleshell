@@ -12,6 +12,7 @@ import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter;
 import de.raysha.lib.jsimpleshell.completer.filter.DefaultPrefixCandidateFilter;
+import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
@@ -34,13 +35,13 @@ import de.raysha.lib.jsimpleshell.script.cmd.process.ProcessResultOutputConverte
  *
  * @author rainu
  */
-public class Behavior {
+public class Behavior implements Builder {
 	private final BuilderModel model;
-	private final ShellBuilder shellBuilder;
+	private final Builder parentBuilder;
 
-	Behavior(BuilderModel model, ShellBuilder shellBuilder) {
+	Behavior(BuilderModel model, Builder parentBuilder) {
 		this.model = model;
-		this.shellBuilder = shellBuilder;
+		this.parentBuilder = parentBuilder;
 	}
 
 	/**
@@ -226,7 +227,7 @@ public class Behavior {
 
 	/**
 	 * Disable the exit command. Be careful! You must implements
-	 * your own exit mechanism (@see ExitException). If you do not,
+	 * your own exit mechanism (@see {@link ExitException}). If you do not,
 	 * the user can never exit the shell normally!
 	 *
 	 * @return This {@link Behavior}
@@ -384,12 +385,32 @@ public class Behavior {
 		return this;
 	}
 
-	/**
-	 * Go back to the {@link ShellBuilder}.
-	 *
-	 * @return The {@link ShellBuilder}
-	 */
-	public ShellBuilder back(){
-		return shellBuilder;
+	@Override
+	public Behavior behavior() {
+		return this;
 	}
+
+	@Override
+	public IO io() {
+		return new IO(model, this);
+	}
+
+	@Override
+	public Look look() {
+		return new Look(model, this);
+	}
+
+	@Override
+	public ShellBuilder root() {
+		if(parentBuilder instanceof ShellBuilder)
+			return (ShellBuilder) parentBuilder;
+
+		return parentBuilder.root();
+	}
+
+	@Override
+	public Shell build() {
+		return parentBuilder.build();
+	}
+
 }

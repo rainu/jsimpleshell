@@ -25,7 +25,7 @@ public class Variables extends IntegrationsTest {
 					.addHandler(new SecurityCommands())
 					.addHandler(new ExceptionTestCommand())
 					.addHandler(new VariablePlaygroundCommands())
-				.back();
+				.root();
 	}
 
 	public static class ExceptionTestCommand{

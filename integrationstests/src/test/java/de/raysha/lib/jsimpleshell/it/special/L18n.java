@@ -33,7 +33,7 @@ public class L18n extends IntegrationsTest {
 					.behavior()
 						.addHandler(new L18nCommands())
 						.addAuxHandler(new MyMessageResolver())
-					.back();
+					.root();
 	}
 
 	@Test

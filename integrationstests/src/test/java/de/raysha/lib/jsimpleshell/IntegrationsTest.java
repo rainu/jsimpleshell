@@ -68,6 +68,6 @@ public abstract class IntegrationsTest {
 						.addAuxHandler(new MainHandler())
 						.setMacroHome(macroHome)
 						.setHistoryFile(historyFile)
-					.back();
+					.root();
 	}
 }

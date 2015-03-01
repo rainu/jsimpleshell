@@ -56,7 +56,7 @@ public class ProcessCommandHandler {
 							.behavior()
 								.addHandler(builder)
 								.disableExitCommand()
-							.back().build();
+							.build();
 
 		subShell.commandLoop();
 		final Process process = builder.build();

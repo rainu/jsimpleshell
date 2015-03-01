@@ -20,7 +20,7 @@ public class DependencyInjection extends IntegrationsTest {
 				.behavior()
 					.addHandler(new DependencyInjectionCommand())
 					.addHandler(new InheritedDependencyInjectionCommand())
-				.back();
+				.root();
 	}
 
 	@Test

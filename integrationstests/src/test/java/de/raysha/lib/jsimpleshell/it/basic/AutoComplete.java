@@ -28,7 +28,7 @@ public class AutoComplete extends IntegrationsTest {
 						.addHandler(new SecurityCommands())
 						.addHandler(new SubShellCommands())
 						.enableAutocompleOfSpecialCommands()
-					.back();
+					.root();
 	}
 
 	@Test

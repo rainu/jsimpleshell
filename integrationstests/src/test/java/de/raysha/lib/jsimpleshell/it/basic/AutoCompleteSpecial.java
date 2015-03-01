@@ -23,7 +23,7 @@ public class AutoCompleteSpecial extends IntegrationsTest {
 						.addHandler(new CompleterCommands())
 						.addHandler(new ParamOrderCommands())
 						.addHandler(new SecurityCommands())
-					.back();
+					.root();
 	}
 
 	@Test

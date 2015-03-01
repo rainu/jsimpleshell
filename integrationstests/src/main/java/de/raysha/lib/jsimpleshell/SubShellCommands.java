@@ -14,8 +14,8 @@ public class SubShellCommands {
 		ShellBuilder.subshell("sub", shell)
 			.behavior()
 				.addHandler(new VariablePlaygroundCommands())
-			.back()
-		.build().commandLoop();
+			.build()
+		.commandLoop();
 	}
 
 	@Command(startsSubshell = true)
@@ -25,7 +25,7 @@ public class SubShellCommands {
 				.disableExitCommand()
 				.addHandler(new ExitAlternativeCommands())
 				.addHandler(new VariablePlaygroundCommands())
-			.back().build()
+			.build()
 		.commandLoop();
 	}
 }

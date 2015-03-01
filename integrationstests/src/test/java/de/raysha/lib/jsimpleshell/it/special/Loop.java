@@ -30,7 +30,7 @@ public class Loop extends IntegrationsTest {
 					.addHandler(new VariablePlaygroundCommands())
 					.addHandler(new SubShellCommands())
 					.addHandler(this)
-				.back();
+				.root();
 	}
 
 	@Test

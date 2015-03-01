@@ -18,7 +18,7 @@ public class WithoutExit extends IntegrationsTest {
 		return super.buildShell()
 				.behavior()
 					.addHandler(new SubShellCommands())
-				.back();
+				.root();
 	}
 
 	@Test

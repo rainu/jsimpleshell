@@ -23,7 +23,7 @@ public class Prompt extends IntegrationsTest {
 							return System.getProperty("user.name");
 						}
 					})
-				.back();
+				.root();
 	}
 
 	@Test

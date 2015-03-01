@@ -72,7 +72,7 @@ public class EchoCommandHandler {
 				.addHandler(builder)
 				.addHandler(new AdditionalBuilderCommands(builder))
 				.disableExitCommand()
-			.back().build();
+			.build();
 
 		subShell.commandLoop();
 

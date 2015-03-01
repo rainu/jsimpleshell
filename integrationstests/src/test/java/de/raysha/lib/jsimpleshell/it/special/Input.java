@@ -18,7 +18,7 @@ public class Input extends IntegrationsTest {
 		return super.buildShell()
 					.behavior()
 						.addHandler(new InputCommands())
-					.back();
+					.root();
 	}
 
 	@Test

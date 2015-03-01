@@ -22,7 +22,7 @@ public class ExecutionCommand extends IntegrationsTest {
 				.behavior()
 					.enableProcessStarterCommands()
 					.addHandler(new VariablePlaygroundCommands())
-				.back();
+				.root();
 	}
 
 	@Before

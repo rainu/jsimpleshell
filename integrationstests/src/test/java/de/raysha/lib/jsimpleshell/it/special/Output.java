@@ -18,7 +18,7 @@ public class Output extends IntegrationsTest {
 		return super.buildShell()
 					.behavior()
 						.addHandler(new OutputCommands())
-					.back();
+					.root();
 	}
 
 	@Test
