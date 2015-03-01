@@ -5,7 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.builder.MethodProperties.Filter;
 
 /**

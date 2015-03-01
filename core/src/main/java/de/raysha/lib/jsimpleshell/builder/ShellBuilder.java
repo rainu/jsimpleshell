@@ -3,7 +3,6 @@ package de.raysha.lib.jsimpleshell.builder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import jline.console.ConsoleReader;
@@ -16,6 +15,7 @@ import de.raysha.lib.jsimpleshell.HistoryFlusher;
 import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.ShellSettings;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.EnumCandidatesChooser;
@@ -190,7 +190,6 @@ public class ShellBuilder {
 		MultiMap<String, Object> modifAuxHandlers = new ArrayHashMultiMap<String, Object>(model.getAuxHandlers());
 		modifAuxHandlers.put("!", io);
 
-		//TODO: add main-commands
 		final ShellSettings settings = new ShellSettings(io, io, modifAuxHandlers, model.getAuxCommands(), false);
 		Shell theShell = new Shell(settings, model.getHandlers(),
 				new CommandTable(new DashJoinedNamer(true)), path, new CommandPipeline(), buildInitialEnvironment());
@@ -209,7 +208,6 @@ public class ShellBuilder {
 		List<PromptElement> newPath = new ArrayList<PromptElement>(parent.getPath());
 		newPath.add(model.getPrompt());
 
-		//TODO: add main-commands
 		final ShellSettings settings = parent.getSettings().createWithAddedAuxHandlers(model.getAuxHandlers(), model.getAuxCommands());
 		Shell subshell = new Shell(settings, model.getHandlers(),
 				new CommandTable(parent.getCommandTable().getNamer()), newPath, parent.getPipeline(), copyEnvironment(parent));
@@ -232,6 +230,14 @@ public class ShellBuilder {
 	}
 
 	private void configureShell(Shell shell) {
+		if(model.getMainCommands() != null) for(CommandDefinition def : model.getMainCommands()){
+			shell.addMainCommand(def);
+		}
+
+		if(model.getAuxCommands() != null) for(CommandDefinition def : model.getAuxCommands()){
+			shell.addAuxCommand(def);
+		}
+
 		shell.setAppName(model.getAppName());
 		addDefaultHandler(shell);
 

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.CommandNotFoundException;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;

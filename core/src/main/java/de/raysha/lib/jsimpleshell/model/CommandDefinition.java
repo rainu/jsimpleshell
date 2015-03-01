@@ -1,6 +1,8 @@
-package de.raysha.lib.jsimpleshell.annotation;
+package de.raysha.lib.jsimpleshell.model;
 
 import java.lang.reflect.Method;
+
+import de.raysha.lib.jsimpleshell.annotation.Command;
 
 /**
  * This class represents the model of a {@link Command}-Annotation.

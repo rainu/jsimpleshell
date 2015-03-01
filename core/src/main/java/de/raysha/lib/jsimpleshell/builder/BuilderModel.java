@@ -10,7 +10,7 @@ import java.util.Set;
 import jline.console.ConsoleReader;
 import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
-import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 

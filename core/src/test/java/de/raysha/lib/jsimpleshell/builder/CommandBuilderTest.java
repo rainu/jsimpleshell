@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import org.junit.Test;
 
-import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 
 public class CommandBuilderTest {
 

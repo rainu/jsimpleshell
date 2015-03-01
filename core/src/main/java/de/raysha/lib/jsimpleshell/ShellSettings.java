@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.io.Input;
 import de.raysha.lib.jsimpleshell.io.Output;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
