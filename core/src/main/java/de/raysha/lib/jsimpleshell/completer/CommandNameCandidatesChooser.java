@@ -18,11 +18,15 @@ import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.De
  * @author rainu
  *
  */
-public class CommandNameCandidatesChooser implements CandidatesChooser {
+public class CommandNameCandidatesChooser extends AbstractCandidatesChooser {
 	public static final String COMMAND_NAME_TYPE = "de.raysha.lib.jsimpleshell.Shell_commandName";
 
 	@Inject private Shell shell;
 	@Inject private CommandAccessManager accessManager;
+
+	public CommandNameCandidatesChooser() {
+		super(COMMAND_NAME_TYPE);
+	}
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
@@ -49,9 +53,4 @@ public class CommandNameCandidatesChooser implements CandidatesChooser {
 
 		return result;
 	}
-
-	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return COMMAND_NAME_TYPE.equals(paramSpec.getType());
-	}
-
 }

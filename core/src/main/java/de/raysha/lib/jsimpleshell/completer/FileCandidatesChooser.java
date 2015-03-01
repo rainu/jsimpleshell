@@ -2,7 +2,6 @@ package de.raysha.lib.jsimpleshell.completer;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +16,7 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
  * @author rainu
  *
  */
-public class FileCandidatesChooser implements CandidatesChooser {
+public class FileCandidatesChooser extends AbstractCandidatesChooser {
 	/**
 	 * If the parameter type is FILES_TYPE only directories and files will be completed.
 	 */
@@ -28,13 +27,17 @@ public class FileCandidatesChooser implements CandidatesChooser {
 	 */
 	public static final String DIRECTORY_ONLY_TYPE = "java.io.file_dirOnly";
 
-	private static final Set<String> RESPONSIBLE_FOR = Collections.unmodifiableSet(new HashSet<String>(){{
-		add(File.class.getName());
-		add(FILES_TYPE);
-		add(DIRECTORY_ONLY_TYPE);
-	}});
-
 	private FileNameCompleter delegate = new FileNameCompleter();
+
+	public FileCandidatesChooser() {
+		super(
+			new Class<?>[]{File.class},
+			new String[]{
+					File.class.getName(),
+					FILES_TYPE,
+					DIRECTORY_ONLY_TYPE
+			});
+	}
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec spec, String part) {
@@ -66,10 +69,4 @@ public class FileCandidatesChooser implements CandidatesChooser {
 			}
 		}
 	}
-
-	protected boolean responsibleFor(ShellCommandParamSpec spec) {
-		return 	RESPONSIBLE_FOR.contains(spec.getValueClass().getName()) ||
-				RESPONSIBLE_FOR.contains(spec.getType());
-	}
-
 }

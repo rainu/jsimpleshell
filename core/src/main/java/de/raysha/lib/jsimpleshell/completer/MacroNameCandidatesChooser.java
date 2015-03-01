@@ -16,10 +16,14 @@ import de.raysha.lib.jsimpleshell.io.TerminalIO;
  *
  * @author rainu
  */
-public class MacroNameCandidatesChooser implements CandidatesChooser {
+public class MacroNameCandidatesChooser extends AbstractCandidatesChooser {
 	public static final String MACRO_NAME_TYPE = "de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser_macroName";
 
 	@Inject private Shell shell;
+
+	public MacroNameCandidatesChooser() {
+		super(MACRO_NAME_TYPE);
+	}
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, final String part) {
@@ -42,9 +46,4 @@ public class MacroNameCandidatesChooser implements CandidatesChooser {
 		Candidates candidates = new Candidates(names);
 		return candidates;
 	}
-
-	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return MACRO_NAME_TYPE.equals(paramSpec.getType());
-	}
-
 }

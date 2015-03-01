@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
@@ -21,6 +22,11 @@ public class CompleterCommands implements CandidatesChooser {
 	}
 
 	@Command
+	public String VarFile(File...files){
+		return "File: " + Arrays.toString(files);
+	}
+
+	@Command
 	public String dir(
 			@Param(value = "file", type = Param.DefaultTypes.DIRECTORY)
 			File file){
@@ -29,13 +35,36 @@ public class CompleterCommands implements CandidatesChooser {
 	}
 
 	@Command
+	public String VarDir(
+			@Param(value = "file", type = Param.DefaultTypes.DIRECTORY)
+			File...file){
+
+		return "Dir: " + Arrays.toString(file);
+	}
+
+	@Command
 	public String Boolean(Boolean b){
 		return "Boolean: " + b;
 	}
 
 	@Command
+	public String VarBoolean(Boolean...b){
+		return "Boolean: " + Arrays.toString(b);
+	}
+
+	@Command
 	public String Enum(TestEnum e){
 		return "Enum: " + e;
+	}
+
+	@Command
+	public String VarEnum(TestEnum...e){
+		return "Enum: " + Arrays.toString(e);
+	}
+
+	@Command
+	public String VarLocale(Locale...l){
+		return "Locale: " + Arrays.toString(l);
 	}
 
 	@Command
@@ -50,6 +79,11 @@ public class CompleterCommands implements CandidatesChooser {
 			@Param(value = "p", type = "Text")
 			String text){
 		return "text: " + text;
+	}
+
+	@Command
+	public String VarSpecial(String s, Boolean...b){
+		return "Special: " + s + " - " + Arrays.toString(b);
 	}
 
 	@Override

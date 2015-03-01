@@ -13,11 +13,15 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
  *
  * @author rainu
  */
-public class LocaleCandidatesChooser implements CandidatesChooser {
+public class LocaleCandidatesChooser extends AbstractCandidatesChooser {
 	/**
 	 * If the parameter type is LOCALE locales will be completed.
 	 */
 	public static final String LOCALE_TYPE = "java.util.Locale";
+
+	public LocaleCandidatesChooser() {
+		super(new Class<?>[]{Locale.class}, new String[]{LOCALE_TYPE});
+	}
 
 	@Override
 	public Candidates chooseCandidates(ShellCommandParamSpec paramSpec, String part) {
@@ -42,9 +46,5 @@ public class LocaleCandidatesChooser implements CandidatesChooser {
 		}
 
 		return new Candidates(values);
-	}
-
-	private boolean responsibleFor(ShellCommandParamSpec paramSpec) {
-		return Locale.class == paramSpec.getValueClass() || LOCALE_TYPE.equals(paramSpec.getType());
 	}
 }

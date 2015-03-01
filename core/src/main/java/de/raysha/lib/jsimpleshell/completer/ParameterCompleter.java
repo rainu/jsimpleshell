@@ -291,6 +291,12 @@ public class ParameterCompleter implements Completer {
 					}
 				}else if(paramIndex < cmd.getParamSpecs().length){
 					possibleParameters.add(cmd.getParamSpecs()[paramIndex]);
+				}else {
+					for(ShellCommandParamSpec spec : cmd.getParamSpecs()){
+						if(spec.isVarArgs()){
+							possibleParameters.add(spec);
+						}
+					}
 				}
 			}
 		}
