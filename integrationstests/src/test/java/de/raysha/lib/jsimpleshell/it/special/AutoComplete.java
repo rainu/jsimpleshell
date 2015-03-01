@@ -1,4 +1,4 @@
-package de.raysha.lib.jsimpleshell.it.basic;
+package de.raysha.lib.jsimpleshell.it.special;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +14,7 @@ import de.raysha.lib.jsimpleshell.MainHandler;
 import de.raysha.lib.jsimpleshell.ParamOrderCommands;
 import de.raysha.lib.jsimpleshell.SecurityCommands;
 
-public class AutoCompleteSpecial extends IntegrationsTest {
+public class AutoComplete extends IntegrationsTest {
 
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
@@ -310,6 +310,72 @@ public class AutoCompleteSpecial extends IntegrationsTest {
 		candidateIsShown(result, "ABC\\ Test\\ One");
 		candidateIsNotShown(result, "ABC\\ Test\\ Two");
 		candidateIsNotShown(result, "ABC\\ 2015");
+	}
+
+	@Test
+	public void completeVarArgsFile() throws IOException{
+		simulateUserInput("var-file p1 \t");
+
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "pom.xml");
+		candidateIsShown(result, "src");
+	}
+
+	@Test
+	public void completeVarArgsDirectory() throws IOException{
+		simulateUserInput("var-dir p1 \t");
+
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsNotShown(result, "pom.xml");
+		candidateIsShown(result, "src");
+	}
+
+	@Test
+	public void completeVarArgsBoolean() throws IOException{
+		simulateUserInput("var-boolean p1 \t");
+
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "true");
+		candidateIsShown(result, "false");
+	}
+
+	@Test
+	public void completeVarArgsLocale() throws IOException{
+		simulateUserInput("var-locale p1 \ty");
+
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "de_DE");
+		candidateIsShown(result, "en_US");
+	}
+
+	@Test
+	public void completeVarArgsEnum() throws IOException{
+		simulateUserInput("var-enum p1 \t");
+
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "ARG1");
+		candidateIsShown(result, "ARG2");
+	}
+
+	@Test
+	public void completeVarArgsSpecial() throws IOException{
+		simulateUserInput("var-special --p2 test --p1 text --p2 \t");
+
+		CommandResult result = waitForShellCommandExec();
+
+		assertFalse(result.isError());
+		candidateIsShown(result, "true");
+		candidateIsShown(result, "false");
 	}
 
 	private void candidateIsShown(CommandResult result, String candidate) {
