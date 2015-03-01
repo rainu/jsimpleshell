@@ -12,7 +12,7 @@ import de.raysha.lib.jsimpleshell.CommandsWithoutAnnotation;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.SubShellCommands;
-import de.raysha.lib.jsimpleshell.annotation.CommandDefinition;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.handler.ShellDependent;
 import de.raysha.lib.jsimpleshell.handler.impl.AbstractMessageResolver;
@@ -37,12 +37,44 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 
 	@Override
 	protected ShellBuilder buildShell() throws IOException {
-		return super.buildShell()
+		ShellBuilder builder = super.buildShell()
 				.behavior()
-					.addHandler(this)
-					.addHandler(new MyMessageResolver())
-					.addHandler(new SubShellCommands())
-				.back();
+				.addHandler(this)
+				.addHandler(new MyMessageResolver())
+				.addHandler(new SubShellCommands())
+			.back();
+
+		CommandsWithoutAnnotation handler = new CommandsWithoutAnnotation();
+		CommandDefinition def;
+		try {
+			def = new CommandDefinition(handler, handler.getClass().getMethod("hello"), "hello-builder");
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not get method!", e);
+		}
+
+		builder.behavior().addMainCommand(def);
+
+		//multiple def
+		def = new CommandDefinition(
+				def.getHandler(), def.getMethod(),
+				def.getPrefix(), "dolly.builder.name",
+				"dolly.builder.abbrev", "dolly.builder.desc", "dolly.builder.header",
+				def.getDisplayResult(), def.getStartsSubshell());
+
+		builder.behavior().addMainCommand(def);
+
+		//aux def
+		try {
+			def = new CommandDefinition(
+					handler, handler.getClass().getMethod("hello"),
+					"aux.builder.name", "aux.builder.abbrev");
+
+			builder.behavior().addAuxCommand(def);
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not get method!", e);
+		}
+
+		return builder;
 	}
 
 	@Override
@@ -89,15 +121,21 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 		assertTrue(result.toString(), result.containsOutLine(".*aux.name.*"));
 		assertTrue(result.toString(), result.containsOutLine(".*aux.abbrev.*"));
 
+		assertTrue(result.toString(), result.containsOutLine(".*hello-builder.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*dolly.builder.name_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*dolly.builder.abbrev_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.builder.name.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.builder.abbrev.*"));
+
 		executeCommand("new-sub-shell");
 
 		result = executeAndWaitForCommand("?list");
 
-		assertFalse(result.toString(), result.containsOutLine(".*hello.*"));
-		assertFalse(result.toString(), result.containsOutLine(".*dolly.name_resolved.*"));
-		assertFalse(result.toString(), result.containsOutLine(".*dolly.abbrev_resolved.*"));
-		assertTrue(result.toString(), result.containsOutLine(".*aux.name.*"));
-		assertTrue(result.toString(), result.containsOutLine(".*aux.abbrev.*"));
+		assertFalse(result.toString(), result.containsOutLine(".*hello-builder.*"));
+		assertFalse(result.toString(), result.containsOutLine(".*dolly.builder.name_resolved.*"));
+		assertFalse(result.toString(), result.containsOutLine(".*dolly.builder.abbrev_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.builder.name.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*aux.builder.abbrev.*"));
 	}
 
 	@Test
@@ -110,6 +148,17 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 
 		result = executeAndWaitForCommand("aux.name");
 		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
+
+
+		executeCommand("exit");
+		result = executeAndWaitForCommand("hello-builder");
+
+		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
+
+		executeCommand("new-sub-shell");
+
+		result = executeAndWaitForCommand("aux.builder.name");
+		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
 	}
 
 	@Test
@@ -118,6 +167,11 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 
 		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.header_resolved.*"));
+
+		result = executeAndWaitForCommand("dolly.builder.name_resolved");
+
+		assertTrue(result.toString(), result.containsOutLine("^Hello World$"));
+		assertTrue(result.toString(), result.containsOutLine(".*dolly.builder.header_resolved.*"));
 	}
 
 	@Test
@@ -127,5 +181,11 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.name_resolved.*"));
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.abbrev_resolved.*"));
 		assertTrue(result.toString(), result.containsOutLine(".*dolly.desc_resolved.*"));
+
+		result = executeAndWaitForCommand("?help dolly.builder.name_resolved");
+
+		assertTrue(result.toString(), result.containsOutLine(".*dolly.builder.name_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*dolly.builder.abbrev_resolved.*"));
+		assertTrue(result.toString(), result.containsOutLine(".*dolly.builder.desc_resolved.*"));
 	}
 }
