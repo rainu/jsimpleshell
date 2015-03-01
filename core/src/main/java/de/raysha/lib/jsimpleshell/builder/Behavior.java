@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter;
@@ -106,6 +107,58 @@ public class Behavior {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Add Main-{@link CommandDefinition}s. For example you can use functions
+	 * from the {@link CommandBuilder}.
+	 *
+	 * @see CommandBuilder
+	 * @param commandDefinitions The {@link CommandDefinition}s to be add.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior addMainCommand(Collection<CommandDefinition> commandDefinitions){
+		model.getMainCommands().addAll(commandDefinitions);
+
+		return this;
+	}
+
+	/**
+	 * Add Main-{@link CommandDefinition}s. For example you can use functions
+	 * from the {@link CommandBuilder}.
+	 *
+	 * @see CommandBuilder
+	 * @param commandDefinitions The {@link CommandDefinition}s to be add.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior addMainCommand(CommandDefinition... commandDefinition){
+		return addMainCommand(Arrays.asList(commandDefinition));
+	}
+
+	/**
+	 * Add Aux-{@link CommandDefinition}s. For example you can use functions
+	 * from the {@link CommandBuilder}.
+	 *
+	 * @see CommandBuilder
+	 * @param commandDefinitions The {@link CommandDefinition}s to be add.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior addAuxCommand(Collection<CommandDefinition> commandDefinitions){
+		model.getAuxCommands().addAll(commandDefinitions);
+
+		return this;
+	}
+
+	/**
+	 * Add Aux-{@link CommandDefinition}s. For example you can use functions
+	 * from the {@link CommandBuilder}.
+	 *
+	 * @see CommandBuilder
+	 * @param commandDefinitions The {@link CommandDefinition}s to be add.
+	 * @return This {@link Behavior}
+	 */
+	public Behavior addAuxCommand(CommandDefinition... commandDefinition){
+		return addAuxCommand(Arrays.asList(commandDefinition));
 	}
 
 	/**

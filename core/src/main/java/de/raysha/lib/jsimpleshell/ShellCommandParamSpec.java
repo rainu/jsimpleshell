@@ -48,13 +48,13 @@ public class ShellCommandParamSpec {
 	private static String resolveName(Param annotation, Method method,
 			MessageResolver msgResolver) {
 
-		return msgResolver.resolveParamName(annotation, method);
+		return msgResolver.resolveParamName(annotation.value(), method);
 	}
 
 	private static String resolveDescription(Param annotation, Method method,
 			MessageResolver msgResolver) {
 
-		return msgResolver.resolveParamDescription(annotation, method);
+		return msgResolver.resolveParamDescription(annotation.description(), method);
 	}
 
 	private String name;

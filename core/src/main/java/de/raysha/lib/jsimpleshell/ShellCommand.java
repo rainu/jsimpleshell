@@ -146,6 +146,56 @@ public class ShellCommand {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((abbreviation == null) ? 0 : abbreviation.hashCode());
+		result = prime * result + ((handler == null) ? 0 : handler.hashCode());
+		result = prime * result + ((method == null) ? 0 : method.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ShellCommand other = (ShellCommand) obj;
+		if (abbreviation == null) {
+			if (other.abbreviation != null)
+				return false;
+		} else if (!abbreviation.equals(other.abbreviation))
+			return false;
+		if (handler == null) {
+			if (other.handler != null)
+				return false;
+		} else if (!handler.equals(other.handler))
+			return false;
+		if (method == null) {
+			if (other.method != null)
+				return false;
+		} else if (!method.equals(other.method))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (prefix == null) {
+			if (other.prefix != null)
+				return false;
+		} else if (!prefix.equals(other.prefix))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return prefix + name + "\t" + (abbreviation != null ? prefix + abbreviation : "") + "\t" +
 				method.getParameterTypes().length + (method.isVarArgs() ? "+" : "") + "\t" + description;

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 
 /**
@@ -36,12 +34,12 @@ public class CompositeMessageResolver implements MessageResolver {
 	}
 
 	@Override
-	public String resolveCommandDescription(Command command, Method annotatedMethod) {
-		String value = command.description();
+	public String resolveCommandDescription(String description, Method targetMethod) {
+		String value = description;
 		for(MessageResolver r : getChainWithDefault()){
 			if(!r.supportsLocale(locale)) continue;
 
-			String newValue = r.resolveCommandDescription(command, annotatedMethod);
+			String newValue = r.resolveCommandDescription(description, targetMethod);
 			if(	(value == null && newValue != null) ||
 				(value != null && newValue != null && !value.equals(newValue))){
 
@@ -52,12 +50,12 @@ public class CompositeMessageResolver implements MessageResolver {
 	}
 
 	@Override
-	public String resolveCommandName(Command command, Method annotatedMethod) {
-		String value = "".equals(command.value()) ? command.name() : command.value();
+	public String resolveCommandName(String name, Method targetMethod) {
+		String value = name;
 		for(MessageResolver r : getChainWithDefault()){
 			if(!r.supportsLocale(locale)) continue;
 
-			String newValue = r.resolveCommandName(command, annotatedMethod);
+			String newValue = r.resolveCommandName(name, targetMethod);
 			if(	(value == null && newValue != null) ||
 				(value != null && newValue != null && !value.equals(newValue))){
 
@@ -68,12 +66,12 @@ public class CompositeMessageResolver implements MessageResolver {
 	}
 
 	@Override
-	public String resolveCommandAbbrev(Command command, Method annotatedMethod) {
-		String value = command.abbrev();
+	public String resolveCommandAbbrev(String abbrev, Method targetMethod) {
+		String value = abbrev;
 		for(MessageResolver r : getChainWithDefault()){
 			if(!r.supportsLocale(locale)) continue;
 
-			String newValue = r.resolveCommandAbbrev(command, annotatedMethod);
+			String newValue = r.resolveCommandAbbrev(abbrev, targetMethod);
 			if(	(value == null && newValue != null) ||
 				(value != null && newValue != null && !value.equals(newValue))){
 
@@ -84,12 +82,12 @@ public class CompositeMessageResolver implements MessageResolver {
 	}
 
 	@Override
-	public String resolveCommandHeader(Command command, Method annotatedMethod) {
-		String value = command.header();
+	public String resolveCommandHeader(String header, Method targetMethod) {
+		String value = header;
 		for(MessageResolver r : getChainWithDefault()){
 			if(!r.supportsLocale(locale)) continue;
 
-			String newValue = r.resolveCommandHeader(command, annotatedMethod);
+			String newValue = r.resolveCommandHeader(header, targetMethod);
 			if(	(value == null && newValue != null) ||
 				(value != null && newValue != null && !value.equals(newValue))){
 
@@ -100,12 +98,12 @@ public class CompositeMessageResolver implements MessageResolver {
 	}
 
 	@Override
-	public String resolveParamDescription(Param param, Method annotatedMethod) {
-		String value = param.description();
+	public String resolveParamDescription(String description, Method targetMethod) {
+		String value = description;
 		for(MessageResolver r : getChainWithDefault()){
 			if(!r.supportsLocale(locale)) continue;
 
-			String newValue = r.resolveParamDescription(param, annotatedMethod);
+			String newValue = r.resolveParamDescription(description, targetMethod);
 			if(	(value == null && newValue != null) ||
 				(value != null && newValue != null && !value.equals(newValue))){
 
@@ -116,12 +114,12 @@ public class CompositeMessageResolver implements MessageResolver {
 	}
 
 	@Override
-	public String resolveParamName(Param param, Method annotatedMethod) {
-		String value = param.value();
+	public String resolveParamName(String name, Method targetMethod) {
+		String value = name;
 		for(MessageResolver r : getChainWithDefault()){
 			if(!r.supportsLocale(locale)) continue;
 
-			String newValue = r.resolveParamName(param, annotatedMethod);
+			String newValue = r.resolveParamName(name, targetMethod);
 			if(	(value == null && newValue != null) ||
 				(value != null && newValue != null && !value.equals(newValue))){
 

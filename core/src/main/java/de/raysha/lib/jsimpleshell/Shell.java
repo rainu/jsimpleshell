@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
@@ -124,7 +125,7 @@ public class Shell {
 	}
 
 	public ShellSettings getSettings() {
-		return new ShellSettings(input, output, auxHandlers, displayTime);
+		return new ShellSettings(input, output, auxHandlers, auxCommands, displayTime);
 	}
 
 	private void setSettings(ShellSettings s, Collection<Object> initialHandlers) {
@@ -143,6 +144,9 @@ public class Shell {
 			for (Object handler : s.getAuxHandlers().get(prefix)) {
 				addAuxHandler(handler, prefix);
 			}
+		}
+		for(CommandDefinition cmdDef : s.getAuxCommands()){
+			addAuxCommand(cmdDef);
 		}
 		for(Object handler : initialHandlers){
 			addMainHandler(handler, "");
@@ -283,6 +287,7 @@ public class Shell {
 	}
 
 	private MultiMap<String, Object> auxHandlers = new ArrayHashMultiMap<String, Object>();
+	private List<CommandDefinition> auxCommands = new ArrayList<CommandDefinition>();
 	private List<Object> allHandlers = new ArrayList<Object>();
 
 	/**
@@ -377,7 +382,25 @@ public class Shell {
 			allHandlers.add(handler);
 		}
 
+		addDeclaredMethods(handler, prefix);
 		configureHandler(handler, prefix);
+	}
+
+	/**
+	 * This method register a main command.
+	 *
+	 * @param definition The command definition.
+	 */
+	public void addMainCommand(CommandDefinition definition) {
+		if (definition == null) {
+			throw new NullPointerException();
+		}
+		if(!allHandlers.contains(definition.getHandler())){
+			allHandlers.add(definition.getHandler());
+		}
+
+		commandTable.addCommand(definition);
+		configureHandler(definition.getHandler(), definition.getPrefix());
 	}
 
 	/**
@@ -396,11 +419,29 @@ public class Shell {
 		auxHandlers.put(prefix, handler);
 		allHandlers.add(handler);
 
+		addDeclaredMethods(handler, prefix);
 		configureHandler(handler, prefix);
 	}
 
+	/**
+	 * This method register a aux command.
+	 *
+	 * @param definition The command definition.
+	 */
+	public void addAuxCommand(CommandDefinition definition) {
+		if (definition == null) {
+			throw new NullPointerException();
+		}
+		if(!allHandlers.contains(definition.getHandler())){
+			allHandlers.add(definition.getHandler());
+		}
+		auxCommands.add(definition);
+
+		commandTable.addCommand(definition);
+		configureHandler(definition.getHandler(), definition.getPrefix());
+	}
+
 	private void configureHandler(Object handler, String prefix) {
-		addDeclaredMethods(handler, prefix);
 		inputConverter.addDeclaredConverters(handler);
 		outputConverter.addDeclaredConverters(handler);
 

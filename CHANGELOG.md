@@ -1,6 +1,7 @@
 ## [JSimpleShell x.x - xxxx-xx-xx][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
-
+* [feature] Now you can add a commands without use a annotation. That can be helpful for objects where you have no access.
+* [change] The interface "MessageResolver" has been changed. You get no annotaion anymore. Istead of the annotation you will get the string directely.
 * [fix] Autocomplete: Candidates which includes whitespaces will now be escaped
 
 ## [JSimpleShell 3.0.2 - 2014-11-03][3.0.2]

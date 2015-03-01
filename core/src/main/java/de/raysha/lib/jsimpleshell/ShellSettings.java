@@ -1,9 +1,12 @@
 package de.raysha.lib.jsimpleshell;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.io.Input;
 import de.raysha.lib.jsimpleshell.io.Output;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
@@ -13,19 +16,29 @@ public class ShellSettings {
 	private final Input input;
 	private final Output output;
 	private final MultiMap<String, Object> auxHandlers;
+	private final Collection<CommandDefinition> auxCommands;
 	private final boolean displayTime;
 
-	public ShellSettings(Input input, Output output, MultiMap<String, Object> auxHandlers, boolean displayTime) {
+	public ShellSettings(Input input, Output output,
+			MultiMap<String, Object> auxHandlers, Collection<CommandDefinition> auxCommands,
+			boolean displayTime) {
+
 		this.input = input;
 		this.output = output;
 		this.auxHandlers = auxHandlers;
+		this.auxCommands = auxCommands;
 		this.displayTime = displayTime;
 	}
 
-	public ShellSettings createWithAddedAuxHandlers(MultiMap<String, Object> addAuxHandlers) {
+	public ShellSettings createWithAddedAuxHandlers(MultiMap<String, Object> addAuxHandlers, Collection<CommandDefinition> addAuxCommands) {
 		MultiMap<String, Object> allAuxHandlers = new ArrayHashMultiMap<String, Object>(auxHandlers);
 		allAuxHandlers.putAll(addAuxHandlers);
-		return new ShellSettings(input, output, allAuxHandlers, displayTime);
+
+		List<CommandDefinition> allAuxCommands = new ArrayList<CommandDefinition>(auxCommands.size() + addAuxCommands.size());
+		allAuxCommands.addAll(auxCommands);
+		allAuxCommands.addAll(addAuxCommands);
+
+		return new ShellSettings(input, output, allAuxHandlers, allAuxCommands, displayTime);
 	}
 
 	public Input getInput() {
@@ -42,6 +55,10 @@ public class ShellSettings {
 
 	public MultiMap<String, Object> getAuxHandlers() {
 		return new UnmodifiableMultiMap<String, Object>(auxHandlers);
+	}
+
+	public Collection<CommandDefinition> getAuxCommands() {
+		return Collections.unmodifiableCollection(auxCommands);
 	}
 
 	public static class UnmodifiableMultiMap<K, V> implements MultiMap<K, V> {
