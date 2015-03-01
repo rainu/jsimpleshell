@@ -39,8 +39,8 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
  *
  * @author rainu
  */
-public class ShellBuilder {
-	private final BuilderModel model = new BuilderModel();
+public class ShellBuilder implements Builder {
+	final BuilderModel model = new BuilderModel();
 
 	private ShellBuilder(){
 		setDefaultSettings();
@@ -118,31 +118,24 @@ public class ShellBuilder {
 		return builder;
 	}
 
-	/**
-	 * Enter the part that is responsible for configuring the look of the shell.
-	 *
-	 * @return The {@link Look}.
-	 */
-	public Look look(){
-		return new Look(model, this);
-	}
-
-	/**
-	 * Enter the part that is responsible for configuring the behavior of the shell.
-	 *
-	 * @return The {@link Behavior}.
-	 */
-	public Behavior behavior(){
+	@Override
+	public Behavior behavior() {
 		return new Behavior(model, this);
 	}
 
-	/**
-	 * Enter the part that is responsible for configuring the input/output of the shell.
-	 *
-	 * @return The {@link IO}.
-	 */
-	public IO io(){
+	@Override
+	public IO io() {
 		return new IO(model, this);
+	}
+
+	@Override
+	public Look look() {
+		return new Look(model, this);
+	}
+
+	@Override
+	public ShellBuilder root() {
+		return this;
 	}
 
 	private void checkPrecondition() throws IOException {
@@ -276,11 +269,7 @@ public class ShellBuilder {
 		shell.addMainHandler(new VariableCandidatesChooser(), "");
 	}
 
-	/**
-	 * Build the shell with the settings which you have set before.
-	 *
-	 * @return A ready-to-use {@link Shell}.
-	 */
+	@Override
 	public Shell build(){
 		try{
 			checkPrecondition();

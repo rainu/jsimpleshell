@@ -42,7 +42,7 @@ public class CommandDefinitionTest extends IntegrationsTest implements ShellDepe
 				.addHandler(this)
 				.addHandler(new MyMessageResolver())
 				.addHandler(new SubShellCommands())
-			.back();
+			.root();
 
 		CommandsWithoutAnnotation handler = new CommandsWithoutAnnotation();
 		CommandDefinition def;

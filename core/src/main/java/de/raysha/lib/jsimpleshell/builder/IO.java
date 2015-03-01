@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import de.raysha.lib.jsimpleshell.Shell;
 import jline.console.ConsoleReader;
 
 /**
@@ -12,13 +13,13 @@ import jline.console.ConsoleReader;
  *
  * @author rainu
  */
-public class IO {
+public class IO implements Builder {
 	private final BuilderModel model;
-	private final ShellBuilder shellBuilder;
+	private final Builder parentBuilder;
 
-	IO(BuilderModel model, ShellBuilder shellBuilder) {
+	IO(BuilderModel model, Builder parentBuilder) {
 		this.model = model;
-		this.shellBuilder = shellBuilder;
+		this.parentBuilder = parentBuilder;
 	}
 
 	/**
@@ -61,12 +62,31 @@ public class IO {
 		return this;
 	}
 
-	/**
-	 * Go back to the {@link ShellBuilder}.
-	 *
-	 * @return The {@link ShellBuilder}
-	 */
-	public ShellBuilder back(){
-		return shellBuilder;
+	@Override
+	public Behavior behavior() {
+		return new Behavior(model, this);
+	}
+
+	@Override
+	public IO io() {
+		return this;
+	}
+
+	@Override
+	public Look look() {
+		return new Look(model, this);
+	}
+
+	@Override
+	public ShellBuilder root() {
+		if(parentBuilder instanceof ShellBuilder)
+			return (ShellBuilder) parentBuilder;
+
+		return parentBuilder.root();
+	}
+
+	@Override
+	public Shell build() {
+		return parentBuilder.build();
 	}
 }

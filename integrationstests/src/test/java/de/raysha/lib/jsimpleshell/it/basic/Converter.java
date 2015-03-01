@@ -18,7 +18,7 @@ public class Converter extends IntegrationsTest {
 		return super.buildShell()
 					.behavior()
 						.addHandler(new ConverterCommands())
-					.back();
+					.root();
 	}
 
 	@Test

@@ -19,7 +19,7 @@ public class AmbiguousCommandsTest extends IntegrationsTest {
 		return super.buildShell()
 					.behavior()
 						.addHandler(new AmbiguousCommands())
-					.back();
+					.root();
 	}
 
 	@Test

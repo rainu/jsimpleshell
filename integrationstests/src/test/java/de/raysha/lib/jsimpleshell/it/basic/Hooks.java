@@ -39,7 +39,7 @@ public class Hooks extends IntegrationsTest {
 						.addHandler(new SubShellCommands())
 						.addHandler(new ConverterCommands())
 						.addAuxHandler(this.hookMock)
-					.back();
+					.root();
 	}
 
 	@Test

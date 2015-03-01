@@ -24,7 +24,7 @@ public class MultiCommand extends IntegrationsTest {
 						.addHandler(new AmbiguousCommands())
 						.addHandler(new SubShellCommands())
 						.addHandler(new ExceptionTestCommand())
-					.back();
+					.root();
 	}
 
 	public static class ExceptionTestCommand{

@@ -125,8 +125,7 @@ public class LoopCommandHandler implements CommandLoopObserver {
 		Shell subshell = ShellBuilder.subshell(myPrompt, shell)
 							.behavior()
 								.disableExitCommand()
-							.back()
-						.build();
+							.build();
 
 
 		subshell.addMainHandler(new LoopSpecialCommand(), ".");

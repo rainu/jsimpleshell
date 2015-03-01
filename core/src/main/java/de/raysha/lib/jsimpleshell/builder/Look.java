@@ -1,6 +1,7 @@
 package de.raysha.lib.jsimpleshell.builder;
 
 import de.raysha.lib.jsimpleshell.PromptElement;
+import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.util.PromptBuilder;
 
 /**
@@ -9,13 +10,13 @@ import de.raysha.lib.jsimpleshell.util.PromptBuilder;
  *
  * @author rainu
  */
-public class Look {
+public class Look implements Builder {
 	private final BuilderModel model;
-	private final ShellBuilder shellBuilder;
+	private final Builder parentBuilder;
 
-	Look(BuilderModel model, ShellBuilder shellBuilder) {
+	Look(BuilderModel model, Builder parentBuilder) {
 		this.model = model;
-		this.shellBuilder = shellBuilder;
+		this.parentBuilder = parentBuilder;
 	}
 
 	/**
@@ -92,12 +93,31 @@ public class Look {
 		return this;
 	}
 
-	/**
-	 * Go back to the {@link ShellBuilder}.
-	 *
-	 * @return The {@link ShellBuilder}
-	 */
-	public ShellBuilder back(){
-		return shellBuilder;
+	@Override
+	public Behavior behavior() {
+		return new Behavior(model, this);
+	}
+
+	@Override
+	public IO io() {
+		return new IO(model, this);
+	}
+
+	@Override
+	public Look look() {
+		return this;
+	}
+
+	@Override
+	public ShellBuilder root() {
+		if(parentBuilder instanceof ShellBuilder)
+			return (ShellBuilder) parentBuilder;
+
+		return parentBuilder.root();
+	}
+
+	@Override
+	public Shell build() {
+		return parentBuilder.build();
 	}
 }

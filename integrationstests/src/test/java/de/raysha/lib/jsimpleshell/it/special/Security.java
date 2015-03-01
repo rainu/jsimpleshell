@@ -18,7 +18,7 @@ public class Security extends IntegrationsTest {
 		return super.buildShell()
 				.behavior()
 					.addHandler(new SecurityCommands())
-				.back();
+				.root();
 	}
 
 	@Test

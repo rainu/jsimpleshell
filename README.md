@@ -47,7 +47,6 @@ public class Example {
 		Shell shell = ShellBuilder.shell("MyShell")
 				.behavior()
 					.addHandler(new Example())
-				.back()
 				.build();
 
 		shell.commandLoop();
@@ -127,7 +126,7 @@ When I will change which part of the version number? The version has three parts
 
 | Version| When it will be changed |
 |--------|-----|
-| ___Major___ | If one or more additional features have been added, which ___breaks___ the existing interfaces! If you want to upgrade to this version you have to migrate your code. |
+| ___Major___ | If one or more additional features have been added, which ___breaks___ the existing interfaces! If you want to upgrade to this version you(might) have to migrate your code. |
 | ___Minor___ | If one or more additional features have been added, which breaks ___not___ the existing interfaces. You can upgrade to this version without any risk.|
 | ___Patch___ | If any bug was fixed. You can upgrade to this version without any risk. |
 

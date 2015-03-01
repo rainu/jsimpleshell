@@ -30,7 +30,7 @@ public class Macro extends IntegrationsTest {
 					.behavior()
 						.addHandler(new SubShellCommands())
 						.setMacroHome(macroHome)
-					.back();
+					.root();
 	}
 
 	@After

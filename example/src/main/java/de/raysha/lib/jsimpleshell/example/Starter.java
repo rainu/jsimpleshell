@@ -16,8 +16,7 @@ public class Starter {
 									.addHandler(new MessageResolving()) //this handler is also a MessageResolver
 									.addHandler(new SecurityHandler())
 									.enableProcessStarterCommands()
-								.back()
-							.build();
+								.build();
 
 		//print help text
 		shell.processLine("?help");

@@ -18,9 +18,9 @@ public class Color extends IntegrationsTest {
 		return super.buildShell()
 				.behavior()
 					.addHandler(new OutputCommands())
-				.back().look()
+				.look()
 					.enableColor()
-				.back();
+				.root();
 	}
 
 	@Test
