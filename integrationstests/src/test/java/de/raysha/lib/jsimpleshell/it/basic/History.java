@@ -7,9 +7,19 @@ import java.io.IOException;
 import org.junit.Test;
 
 import de.raysha.lib.jsimpleshell.CommandResult;
+import de.raysha.lib.jsimpleshell.InputCommands;
 import de.raysha.lib.jsimpleshell.IntegrationsTest;
+import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 
 public class History extends IntegrationsTest {
+
+	@Override
+	protected ShellBuilder buildShell() throws IOException {
+		return super.buildShell()
+				.behavior()
+					.addHandler(new InputCommands())
+				.root();
+	}
 
 	@Test
 	public void moveThrough() throws IOException{
@@ -42,8 +52,18 @@ public class History extends IntegrationsTest {
 		isLineShown(waitForShell(), "JKL");
 	}
 
+	@Test
+	public void noHistoryForCustomInput() throws IOException{
+		executeCommand("visible");
+		simulateUserInput("PW\n");
+
+		waitForShellCommandExec();
+		movePrev();
+		isLineShown(waitForShell(), "visible");
+	}
+
 	private void isLineShown(CommandResult result, String line) {
-		assertTrue("The command-line '" + line + " is not shown!" + result,
+		assertTrue("The command-line '" + line + "' is not shown!" + result,
 				result.containsOutLine(".*" + line + ".*"));
 	}
 
