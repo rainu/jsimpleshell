@@ -3,7 +3,7 @@
 
 	<groupId>de.raysha.lib</groupId>
 	<artifactId>jsimpleshell-parent</artifactId>
-	<version>4.0</version>
+	<version>4.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>JSimpleShell</name>
 	<description>
