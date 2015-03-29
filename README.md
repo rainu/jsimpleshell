@@ -25,6 +25,7 @@ Feature-List
 * Param type dependent autocompletion (Commands and File-Pathes are available by default)
 * All messages can be resolved (useful for l18n)
 * Recording macros
+* Runtime user input validation (own mechanism or JSR303-Validation are possible)
 
 For possible future changes see [here](https://github.com/rainu/jsimpleshell/labels/enhancement)
 

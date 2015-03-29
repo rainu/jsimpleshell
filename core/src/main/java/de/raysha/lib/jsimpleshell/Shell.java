@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
 import de.raysha.lib.jsimpleshell.completer.AggregateCandidatesChooser;
@@ -39,14 +38,16 @@ import de.raysha.lib.jsimpleshell.exception.TokenException;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.Decision;
-import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.Context;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent.ExecutionResult;
 import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
+import de.raysha.lib.jsimpleshell.handler.CommandValidator;
+import de.raysha.lib.jsimpleshell.handler.CommandValidator.ValidationResult;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
 import de.raysha.lib.jsimpleshell.handler.OutputDependent;
 import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeCommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.impl.CompositeCommandValidator;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeMessageResolver;
 import de.raysha.lib.jsimpleshell.handler.impl.DefaultMessageResolver;
 import de.raysha.lib.jsimpleshell.io.Input;
@@ -56,6 +57,7 @@ import de.raysha.lib.jsimpleshell.io.Output;
 import de.raysha.lib.jsimpleshell.io.OutputBuilder;
 import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter;
@@ -82,6 +84,7 @@ public class Shell {
 	private final CompositeCandidateFilter candidatesFilter;
 	private DependencyResolver dependencyResolver;
 	private final CompositeCommandAccessManager accessManager;
+	private final CompositeCommandValidator validator;
 	private final Environment environment;
 
 	/**
@@ -114,6 +117,7 @@ public class Shell {
 		this.commandTable.setMessageResolver(messageResolver);
 
 		this.accessManager = new CompositeCommandAccessManager(messageResolver);
+		this.validator = new CompositeCommandValidator();
 
 		this.candidatesChooser = new AggregateCandidatesChooser();
 		this.candidatesFilter = new CompositeCandidateFilter();
@@ -242,6 +246,15 @@ public class Shell {
 	}
 
 	/**
+	 * Get the {@link CommandValidator} of this shell.
+	 *
+	 * @return The command validator.
+	 */
+	public CommandValidator getValidator() {
+		return validator;
+	}
+
+	/**
 	 * Get the {@link InputBuilder} of this shell.
 	 *
 	 * @return The input builder.
@@ -309,6 +322,7 @@ public class Shell {
 		dependencyResolver.put(getOutputBuilder());
 		dependencyResolver.put(getMessageResolver());
 		dependencyResolver.put(getAccessManager());
+		dependencyResolver.put(getValidator());
 		dependencyResolver.put(getEnvironment());
 
 		return dependencyResolver;
@@ -456,6 +470,9 @@ public class Shell {
 		}
 		if (handler instanceof CommandAccessManager) {
 			accessManager.addCommandAccessManager((CommandAccessManager)handler);
+		}
+		if (handler instanceof CommandValidator){
+			validator.addCommandValidator((CommandValidator)handler);
 		}
 	}
 
@@ -743,7 +760,7 @@ public class Shell {
 				commandToInvoke.getParamSpecs(), paramClasses,
 				commandToInvoke.getMethod().isVarArgs());
 
-		if(!hasAccess(commandToInvoke, parameters)){
+		if(!hasAccess(commandToInvoke, parameters) || !isValid(commandToInvoke, parameters)){
 			return;
 		}
 
@@ -784,7 +801,7 @@ public class Shell {
 	}
 
 	private boolean hasAccess(ShellCommand commandToInvoke, Object[] parameters) throws AccessDeniedException {
-		final Context context = new Context(commandToInvoke, parameters);
+		final CommandAccessManager.Context context = new CommandAccessManager.Context(commandToInvoke, parameters);
 		final AccessDecision decision = accessManager.checkCommandPermission(context);
 
 		if(decision.getDecision() != Decision.ALLOWED){
@@ -802,6 +819,27 @@ public class Shell {
 		}
 
 		return true;
+	}
+
+	private boolean isValid(ShellCommand commandToInvoke, Object[] parameters) {
+		final CommandValidator.Context context = new CommandValidator.Context(commandToInvoke, parameters);
+		final ValidationResult result = validator.validate(context);
+
+		if(result.hasFailures()){
+			output.printlnErr(messageResolver.resolveGeneralMessage("message.general.validation.head"));
+
+			for(ShellCommandParamSpec param : commandToInvoke.getParamSpecs()){
+				if(result.getFailures().containsKey(param)){
+					final String messageTemplate = result.getFailures().get(param);
+					final String message = messageResolver.resolveGeneralMessage(messageTemplate);
+
+					output.printErr(param.getName() + ": ");
+					output.printlnErr(message);
+				}
+			}
+		}
+
+		return !result.hasFailures();
 	}
 
 	private void informHooks(ShellCommand commandToInvoke, Object[] parameters, AccessDecision decision) {
