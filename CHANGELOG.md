@@ -1,5 +1,6 @@
 ## [JSimpleShell x.x - xxxx-xx-xx][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
+* [fix] The user input, which will you get by the InputBuilder, will no longer stored in the console's history (unless you configure it with the help of the new saveHistory-Method in the InputBuilder)
 * [feature] Now you can add a commands without use a annotation. That can be helpful for objects where you have no access.
 * [change] The interface "MessageResolver" has been changed. You get no annotaion anymore. Istead of the annotation you will get the string directely.
 * [fix] Autocomplete: 
