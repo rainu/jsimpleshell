@@ -15,6 +15,8 @@ import de.raysha.lib.jsimpleshell.annotation.Inject;
 import de.raysha.lib.jsimpleshell.exception.NotResolvableDependencyException;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.CommandValidator;
+import de.raysha.lib.jsimpleshell.handler.CommandValidatorDependent;
 import de.raysha.lib.jsimpleshell.handler.EnvironmentDependent;
 import de.raysha.lib.jsimpleshell.handler.InputDependent;
 import de.raysha.lib.jsimpleshell.handler.MessageResolver;
@@ -72,6 +74,9 @@ public class DependencyResolver {
 		}
 		if (object instanceof CommandAccessManagerDependent) {
 			((CommandAccessManagerDependent) object).cliSetCommandAccessManager(get(CommandAccessManager.class));
+		}
+		if (object instanceof CommandValidatorDependent) {
+			((CommandValidatorDependent) object).cliSetCommandValidator(get(CommandValidator.class));
 		}
 		if (object instanceof EnvironmentDependent) {
 			((EnvironmentDependent) object).cliSetEnvironment(get(Environment.class));

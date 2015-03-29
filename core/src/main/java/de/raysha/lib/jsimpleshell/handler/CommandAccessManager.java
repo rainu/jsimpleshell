@@ -20,7 +20,7 @@ public interface CommandAccessManager {
 	public AccessDecision checkCommandPermission(Context context);
 
 	/**
-	 * This class includes relevant data about a command execution.
+	 * This class contains relevant data about a command execution.
 	 *
 	 * @author rainu
 	 */
