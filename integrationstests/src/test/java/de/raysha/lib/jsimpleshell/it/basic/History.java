@@ -57,9 +57,53 @@ public class History extends IntegrationsTest {
 		executeCommand("visible");
 		simulateUserInput("PW\n");
 
-		waitForShellCommandExec();
 		movePrev();
 		isLineShown(waitForShell(), "visible");
+	}
+
+	@Test
+	public void noHistoryForCustomInput_masked() throws IOException{
+		executeCommand("masked");
+		simulateUserInput("PW\n");
+
+		movePrev();
+		isLineShown(waitForShell(), "masked");
+	}
+
+	@Test
+	public void noHistoryForCustomInput_invisible() throws IOException{
+		executeCommand("invisible");
+		simulateUserInput("PW\n");
+
+		movePrev();
+		isLineShown(waitForShell(), "invisible");
+	}
+
+	@Test
+	public void historyForCustomInput() throws IOException{
+		executeCommand("visible-with-history");
+		simulateUserInput("PW\n");
+
+		movePrev();
+		isLineShown(waitForShell(), "PW");
+	}
+
+	@Test
+	public void historyForCustomInput_masked() throws IOException{
+		executeCommand("masked-with-history");
+		simulateUserInput("PW\n");
+
+		movePrev();
+		isLineShown(waitForShell(), "PW");
+	}
+
+	@Test
+	public void historyForCustomInput_invisible() throws IOException{
+		executeCommand("invisible-with-history");
+		simulateUserInput("PW\n");
+
+		movePrev();
+		isLineShown(waitForShell(), "PW");
 	}
 
 	private void isLineShown(CommandResult result, String line) {
