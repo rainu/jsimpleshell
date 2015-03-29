@@ -2,6 +2,8 @@ package de.raysha.lib.jsimpleshell.example;
 
 import java.io.IOException;
 
+import javax.validation.constraints.Pattern;
+
 import de.raysha.lib.jsimpleshell.CommandRecorder;
 import de.raysha.lib.jsimpleshell.PromptElement;
 import de.raysha.lib.jsimpleshell.Shell;
@@ -125,6 +127,14 @@ public class MainShell implements ShellDependent {
 	@Command(abbrev = "sp", description = "Saves your secret password. I swear, in my hands it is save!")
 	public String saveSecretPassword() throws IOException{
 		return "So, your secret password is: " + input.invisibleIn().withPromt("Enter your password please: ").readLine() + " Thank you and good by... >:->";
+	}
+
+	@Command(abbrev = "ae", description = "What is the answer of everything?")
+	public String answerOfEverything(
+			@Pattern(regexp = "42")
+			String param){
+
+		return "You're damn right!";
 	}
 
 	@Command
