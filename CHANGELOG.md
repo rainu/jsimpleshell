@@ -1,5 +1,8 @@
 ## [JSimpleShell x.x - xxxx-xx-xx][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
+* [feature] You can now validate the parameters before the command will be execute.
+   * As default you can use the_JSR303_-Validation (if the validation-dependencies are available in classpath)
+   * You can implements you own command validator (just implements the new interface _CommandValidator_)
 * [change] Use the new JLine2-Version (2.12.1)
 * [fix] The user input, which will you get by the InputBuilder, will no longer stored in the console's history (unless you configure it with the help of the new saveHistory-Method in the InputBuilder)
 * [feature] Now you can add a commands without use a annotation. That can be helpful for objects where you have no access.
