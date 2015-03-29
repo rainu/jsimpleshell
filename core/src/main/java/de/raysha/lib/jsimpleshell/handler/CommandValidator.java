@@ -15,7 +15,13 @@ import de.raysha.lib.jsimpleshell.ShellCommandParamSpec;
  */
 public interface CommandValidator {
 
-	public ValidationResult validate(Context context);
+	/**
+	 * Validate the command (included in the context).
+	 *
+	 * @param ctx The command context.
+	 * @return <b>Always</b> a {@link ValidationResult} that contains the validation failures (if there was any).
+	 */
+	public ValidationResult validate(Context ctx);
 
 	/**
 	 * This class contains relevant data about a command execution.
