@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import jline.console.ConsoleReader;
+import jline.console.history.History;
 
 /**
  * This builder allow to read the (user-)input.
@@ -58,6 +59,7 @@ public class InputBuilder {
 		private final Character prevEchoChar;
 		private BufferedReader reader;
 		private String prompt = "";
+		private boolean writeIntoHistory = false;
 
 		private InputBuilder_(Character echoChar) {
 			if(console != null){
@@ -67,6 +69,18 @@ public class InputBuilder {
 				this.prevEchoChar = null;
 				this.reader = new BufferedReader(new InputStreamReader(in));
 			}
+		}
+
+		/**
+		 * The user input will be stored into the console history
+		 * (if there is any history).
+		 *
+		 * @return This {@link InputBuilder_}
+		 */
+		public InputBuilder_ saveHistory(){
+			this.writeIntoHistory = true;
+
+			return this;
 		}
 
 		/**
@@ -90,12 +104,25 @@ public class InputBuilder {
 		public String readLine() throws IOException {
 			if(console != null){
 				try{
-					return console.readLine(prompt, console.getEchoCharacter());
+					synchronized (console){
+						final String read = console.readLine(prompt, console.getEchoCharacter());
+						removeFromHistory(read);
+
+						return read;
+					}
 				}finally{
 					console.setEchoCharacter(prevEchoChar);
 				}
 			}else{
 				return reader.readLine();
+			}
+		}
+
+		private void removeFromHistory(String read) {
+			if(console.getHistory() != null && !writeIntoHistory){
+				History history = console.getHistory();
+				history.removeLast();	//removes only the element
+				history.previous();		//... and fix the index
 			}
 		}
 	}
