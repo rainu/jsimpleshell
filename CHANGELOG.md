@@ -1,5 +1,9 @@
 ## [JSimpleShell x.x - xxxx-xx-xx][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
+
+## [JSimpleShell 4.0 - 2015-03-29][4.0]
+[4.0]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/4.0/
+
 * [feature] You can now validate the parameters before the command will be execute.
    * As default you can use the_JSR303_-Validation (if the validation-dependencies are available in classpath)
    * You can implements you own command validator (just implements the new interface _CommandValidator_)
