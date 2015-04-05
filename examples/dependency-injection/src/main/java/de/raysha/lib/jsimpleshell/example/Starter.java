@@ -11,6 +11,7 @@ public class Starter {
 	public static void main(String[] args) throws IOException, CLIException {
 		final Shell shell = ShellBuilder.shell("JSS")
 								.behavior()
+									.addHandler(new Commands())
 								.build();
 
 		//print help text
