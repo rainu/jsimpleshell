@@ -20,6 +20,7 @@
 			</activation>
 			<modules>
 					<module>dependency-injection</module>
+					<module>command-pipeline</module>
 			</modules>
 		</profile>
 	</profiles>
