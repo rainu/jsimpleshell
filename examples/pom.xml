@@ -20,6 +20,7 @@
 			</activation>
 			<modules>
 					<module>dependency-injection</module>
+					<module>io-converter</module>
 			</modules>
 		</profile>
 	</profiles>
