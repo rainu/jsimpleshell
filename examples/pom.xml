@@ -20,7 +20,7 @@
 			</activation>
 			<modules>
 					<module>dependency-injection</module>
-					<module>authentication</module>
+					<module>subshell</module>
 			</modules>
 		</profile>
 	</profiles>
