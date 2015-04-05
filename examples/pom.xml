@@ -20,6 +20,7 @@
 			</activation>
 			<modules>
 					<module>dependency-injection</module>
+					<module>without-annotation</module>
 			</modules>
 		</profile>
 	</profiles>
