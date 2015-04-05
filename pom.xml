@@ -58,7 +58,7 @@
 			<modules>
 				<module>core</module>
 				<module>integrationstests</module>
-				<module>example</module>
+				<module>demo</module>
 			</modules>
 		</profile>
 		

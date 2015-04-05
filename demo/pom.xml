@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.raysha.lib</groupId>
-	<artifactId>jsimpleshell-example</artifactId>
+	<artifactId>jsimpleshell-demo</artifactId>
 	<name>JSimpleShell-Demo</name>
 
 	<parent>
