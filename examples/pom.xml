@@ -23,6 +23,7 @@
 					<module>io-converter</module>
 					<module>validation</module>
 					<module>hooks</module>
+					<module>autocomplete</module>
 			</modules>
 		</profile>
 	</profiles>
