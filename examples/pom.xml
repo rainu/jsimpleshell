@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.raysha.lib</groupId>
+	<artifactId>jsimpleshell-examples-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>JSimpleShell-Examples Parent</name>
+
+	<parent>
+		<groupId>de.raysha.lib</groupId>
+		<artifactId>jsimpleshell-parent</artifactId>
+		<version>4.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+					<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+					<module>dependency-injection</module>
+			</modules>
+		</profile>
+	</profiles>
+</project>
