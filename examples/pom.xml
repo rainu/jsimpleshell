@@ -21,6 +21,7 @@
 			<modules>
 					<module>dependency-injection</module>
 					<module>io-converter</module>
+					<module>validation</module>
 			</modules>
 		</profile>
 	</profiles>
