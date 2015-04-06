@@ -11,6 +11,8 @@ public class Starter {
 	public static void main(String[] args) throws IOException, CLIException {
 		final Shell shell = ShellBuilder.shell("JSS")
 								.behavior()
+									.addAuxHandler(new CustomValidator()) //register our own validator
+									.addHandler(new Commands())
 								.build();
 
 		//print help text
