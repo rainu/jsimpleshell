@@ -1,6 +1,15 @@
 ## [JSimpleShell x.x - xxxx-xx-xx][x.x]
 [x.x]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/x.x/
 
+* [change] Mark some interfaces as deprecated:
+	* CommandAccessManagerDependent
+	* CommandValidatorDependent
+	* EnvironmentDependent
+	* InputDependent
+	* MessageResolverDependent
+	* OutputDependent
+	* ShellDependent
+
 ## [JSimpleShell 4.0 - 2015-03-29][4.0]
 [4.0]: https://oss.sonatype.org/content/groups/public/de/raysha/lib/jsimpleshell/4.0/
 

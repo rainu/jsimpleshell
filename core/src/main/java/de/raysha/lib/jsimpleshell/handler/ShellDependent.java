@@ -6,10 +6,14 @@
 package de.raysha.lib.jsimpleshell.handler;
 
 import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.annotation.Inject;
 
 /**
  * Classes that want to have an instance of Shell associated with them should implement this interface.
  * Upon registration in Shell, cliSetShell() is called.
+ *
+ * @deprecated Use the {@link Inject} annotation over a setter-method instead of using this interface
+ * (it has the same effect).
  *
  * @author ASG
  */
