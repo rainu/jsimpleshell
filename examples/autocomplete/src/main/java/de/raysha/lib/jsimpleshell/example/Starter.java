@@ -11,6 +11,11 @@ public class Starter {
 	public static void main(String[] args) throws IOException, CLIException {
 		final Shell shell = ShellBuilder.shell("JSS")
 								.behavior()
+									.setAutocompleOfSpecialCommands(true) 	//by default it is true
+									.setFileNameCompleter(true)				//by default it is true
+
+									.addAuxHandler(new BinaryCandidatesChooser()) //register my own candidates chooser
+									.addHandler(new Commands())
 								.build();
 
 		//print help text
