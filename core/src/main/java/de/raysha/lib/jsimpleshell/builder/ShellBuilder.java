@@ -1,30 +1,10 @@
 package de.raysha.lib.jsimpleshell.builder;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import jline.console.ConsoleReader;
-import jline.console.history.FileHistory;
-import de.raysha.lib.jsimpleshell.CommandPipeline;
-import de.raysha.lib.jsimpleshell.CommandTable;
-import de.raysha.lib.jsimpleshell.DashJoinedNamer;
-import de.raysha.lib.jsimpleshell.HelpCommandHandler;
-import de.raysha.lib.jsimpleshell.HistoryFlusher;
-import de.raysha.lib.jsimpleshell.PromptElement;
-import de.raysha.lib.jsimpleshell.Shell;
-import de.raysha.lib.jsimpleshell.ShellSettings;
-import de.raysha.lib.jsimpleshell.model.CommandDefinition;
-import de.raysha.lib.jsimpleshell.completer.BooleanCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.CommandNameCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.EnumCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.FileCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.LocaleCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.MacroNameCandidatesChooser;
-import de.raysha.lib.jsimpleshell.completer.VariableCandidatesChooser;
+import de.raysha.lib.jsimpleshell.*;
+import de.raysha.lib.jsimpleshell.completer.*;
 import de.raysha.lib.jsimpleshell.handler.impl.JSR303CommandValidator;
 import de.raysha.lib.jsimpleshell.io.TerminalIO;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.Variable;
 import de.raysha.lib.jsimpleshell.script.VariableInputConverter;
@@ -34,6 +14,13 @@ import de.raysha.lib.jsimpleshell.script.cmd.LoopCommandHandler;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
 import de.raysha.lib.jsimpleshell.util.PromptBuilder;
+import jline.console.ConsoleReader;
+import jline.console.history.FileHistory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a class that can be used to build a {@link Shell}.
@@ -240,7 +227,7 @@ public class ShellBuilder implements Builder {
 		}
 
 		if(model.isDisableExit()){
-			shell.disableExitCommand();
+			shell.disableExitCommand(model.getExitCommand());
 		}
 
 		if(model.isColorOutput()){

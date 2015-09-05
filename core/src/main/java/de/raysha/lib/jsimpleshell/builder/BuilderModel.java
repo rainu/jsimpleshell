@@ -1,18 +1,18 @@
 package de.raysha.lib.jsimpleshell.builder;
 
+import de.raysha.lib.jsimpleshell.PromptElement;
+import de.raysha.lib.jsimpleshell.Shell;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
+import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
+import de.raysha.lib.jsimpleshell.util.MultiMap;
+import jline.console.ConsoleReader;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-
-import jline.console.ConsoleReader;
-import de.raysha.lib.jsimpleshell.PromptElement;
-import de.raysha.lib.jsimpleshell.Shell;
-import de.raysha.lib.jsimpleshell.model.CommandDefinition;
-import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
-import de.raysha.lib.jsimpleshell.util.MultiMap;
 
 class BuilderModel {
 	private PromptElement prompt;
@@ -30,6 +30,7 @@ class BuilderModel {
 	private boolean fileNameCompleterEnabled = true;
 	private boolean handleUserInterrupt = false;
 	private boolean disableExit = false;
+	private String exitCommand = null;
 	private boolean colorOutput = true;
 
 
@@ -111,6 +112,15 @@ class BuilderModel {
 	void setDisableExit(boolean disableExit) {
 		this.disableExit = disableExit;
 	}
+
+	public String getExitCommand() {
+		return exitCommand;
+	}
+
+	public void setExitCommand(String exitCommand) {
+		this.exitCommand = exitCommand;
+	}
+
 	boolean isColorOutput() {
 		return colorOutput;
 	}
