@@ -12,18 +12,6 @@
 
 package de.raysha.lib.jsimpleshell;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.builder.ShellBuilder;
@@ -35,34 +23,28 @@ import de.raysha.lib.jsimpleshell.exception.AccessDeniedException;
 import de.raysha.lib.jsimpleshell.exception.CLIException;
 import de.raysha.lib.jsimpleshell.exception.ExitException;
 import de.raysha.lib.jsimpleshell.exception.TokenException;
-import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
+import de.raysha.lib.jsimpleshell.handler.*;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision;
 import de.raysha.lib.jsimpleshell.handler.CommandAccessManager.AccessDecision.Decision;
-import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
 import de.raysha.lib.jsimpleshell.handler.CommandHookDependent.ExecutionResult;
-import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
-import de.raysha.lib.jsimpleshell.handler.CommandValidator;
 import de.raysha.lib.jsimpleshell.handler.CommandValidator.ValidationResult;
-import de.raysha.lib.jsimpleshell.handler.MessageResolver;
-import de.raysha.lib.jsimpleshell.handler.OutputDependent;
-import de.raysha.lib.jsimpleshell.handler.ShellManageable;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeCommandAccessManager;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeCommandValidator;
 import de.raysha.lib.jsimpleshell.handler.impl.CompositeMessageResolver;
 import de.raysha.lib.jsimpleshell.handler.impl.DefaultMessageResolver;
-import de.raysha.lib.jsimpleshell.io.Input;
-import de.raysha.lib.jsimpleshell.io.InputBuilder;
-import de.raysha.lib.jsimpleshell.io.InputConversionEngine;
-import de.raysha.lib.jsimpleshell.io.Output;
-import de.raysha.lib.jsimpleshell.io.OutputBuilder;
-import de.raysha.lib.jsimpleshell.io.OutputConversionEngine;
-import de.raysha.lib.jsimpleshell.io.TerminalIO;
+import de.raysha.lib.jsimpleshell.io.*;
 import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.util.ArrayHashMultiMap;
 import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter;
 import de.raysha.lib.jsimpleshell.util.CommandChainInterpreter.CommandLine;
 import de.raysha.lib.jsimpleshell.util.MultiMap;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Shell is the class interacting with user.
@@ -77,6 +59,7 @@ public class Shell {
 	private InputBuilder inputBuilder;
 	private Input input;
 	private String appName;
+	private String exitCommand = ExitCommand.COMMAND_NAME_EXIT;
 
 	private final CommandPipeline pipeline;
 	private final CompositeMessageResolver messageResolver;
@@ -334,14 +317,28 @@ public class Shell {
 	public void enableExitCommand(){
 		disableExitCommand();
 		addMainHandler(new ExitCommand(), "");
+		this.exitCommand = ExitCommand.COMMAND_NAME_EXIT;
+	}
+
+	/**
+	 * @see Shell#disableExitCommand(String)
+	 */
+	public void disableExitCommand(){
+		disableExitCommand(null); //cause a ExitException if user type CTRL + D
 	}
 
 	/**
 	 * Disable the exit command. Be careful! You must implements
 	 * your own exit mechanism (@see ExitException). If you do not,
 	 * the user can never exit the shell normally!
+	 *
+	 * @param exitCommand The alternative exit command. This command will be
+	 *                    execute if the user type &lt;ctrl&gt;+&lt;d&gt;. If
+	 *                    the exit command is <b>null</b>, so an {@link ExitException} will
+	 *                    be thrown if the user type &lt;ctrl&gt;+&lt;d&gt;!
 	 */
-	public void disableExitCommand(){
+	public void disableExitCommand(String exitCommand){
+		this.exitCommand = exitCommand;
 		Iterator<Object> iter = allHandlers.iterator();
 
 		while(iter.hasNext()){
@@ -659,12 +656,22 @@ public class Shell {
 		}
 	}
 
-	private String getNextCommandLine() {
+	private String getNextCommandLine() throws ExitException {
 		if(pipeline.hasNext()){
 			return pipeline.pop();
 		}
 
-		return input.readCommand(path);
+		String userInput = input.readCommand(path);
+
+		if (userInput == null) {
+			if (exitCommand == null) {
+				throw new ExitException();
+			}
+
+			userInput = getMessageResolver().resolveGeneralMessage(exitCommand);
+		}
+
+		return userInput;
 	}
 
 	private void outputHeader(String header, Object[] parameters) {

@@ -1,33 +1,21 @@
 package de.raysha.lib.jsimpleshell.builder;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
-import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.annotation.Param;
 import de.raysha.lib.jsimpleshell.completer.CandidatesChooser;
 import de.raysha.lib.jsimpleshell.completer.filter.CandidateFilter;
 import de.raysha.lib.jsimpleshell.completer.filter.DefaultPrefixCandidateFilter;
-import de.raysha.lib.jsimpleshell.exception.ExitException;
-import de.raysha.lib.jsimpleshell.handler.CommandAccessManager;
-import de.raysha.lib.jsimpleshell.handler.CommandAccessManagerDependent;
-import de.raysha.lib.jsimpleshell.handler.CommandHookDependent;
-import de.raysha.lib.jsimpleshell.handler.CommandLoopObserver;
-import de.raysha.lib.jsimpleshell.handler.EnvironmentDependent;
-import de.raysha.lib.jsimpleshell.handler.InputConverter;
-import de.raysha.lib.jsimpleshell.handler.InputDependent;
-import de.raysha.lib.jsimpleshell.handler.MessageResolver;
-import de.raysha.lib.jsimpleshell.handler.MessageResolverDependent;
-import de.raysha.lib.jsimpleshell.handler.OutputConverter;
-import de.raysha.lib.jsimpleshell.handler.OutputDependent;
-import de.raysha.lib.jsimpleshell.handler.ShellDependent;
+import de.raysha.lib.jsimpleshell.handler.*;
+import de.raysha.lib.jsimpleshell.model.CommandDefinition;
 import de.raysha.lib.jsimpleshell.script.Environment;
 import de.raysha.lib.jsimpleshell.script.cmd.process.ProcessCommandHandler;
 import de.raysha.lib.jsimpleshell.script.cmd.process.ProcessResultOutputConverter;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * This is a part of the {@link ShellBuilder}. It is responsible for configuring
@@ -226,14 +214,18 @@ public class Behavior implements Builder {
 	}
 
 	/**
-	 * Disable the exit command. Be careful! You must implements
-	 * your own exit mechanism (@see {@link ExitException}). If you do not,
-	 * the user can never exit the shell normally!
-	 *
-	 * @return This {@link Behavior}
+	 * @see Shell#disableExitCommand()
 	 */
 	public Behavior disableExitCommand(){
+		return disableExitCommand(null);
+	}
+
+	/**
+	 * @see Shell#disableExitCommand(String)
+	 */
+	public Behavior disableExitCommand(String exitCommand){
 		model.setDisableExit(true);
+		model.setExitCommand(exitCommand);
 
 		return this;
 	}
