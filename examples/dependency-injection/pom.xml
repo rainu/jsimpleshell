@@ -65,5 +65,19 @@
 			<artifactId>jsimpleshell</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- This dependency contains the javax- @Inject annotation -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<!-- This dependency contains the javax- @Autowired annotation -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-beans</artifactId>
+		    <version>4.1.6.RELEASE</version>
+		</dependency>
 	</dependencies>
 </project>
