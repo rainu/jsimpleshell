@@ -1,5 +1,6 @@
 package de.raysha.lib.jsimpleshell.example;
 
+import de.raysha.lib.jsimpleshell.CommandRecorder;
 import de.raysha.lib.jsimpleshell.Shell;
 import de.raysha.lib.jsimpleshell.annotation.Command;
 import de.raysha.lib.jsimpleshell.annotation.Inject;
@@ -20,11 +21,17 @@ public class Commands {
 		//build the subshell
 		Shell subshell = ShellBuilder.subshell("build-your-name", parent)
 			.behavior()
-				.disableExitCommand()	//disable the default "exit" command to implements the commit/cancel feature
+				.disableExitCommand("cancel")	//disable the default "exit" command to implements the commit/cancel feature
 				.addHandler(builder)
 			.build();
 
 		subshell.commandLoop();		//enter the subshell
+
+		if(CommandRecorder.isShellInRecordMode(parent)){
+			//skip processing if the shell is in record mode
+			//for example if the user configure a loop or a condition (if)
+			return null;
+		}
 
 		//evaluate the result
 		if(builder.isCanceled()){
@@ -37,9 +44,9 @@ public class Commands {
 	public static class NameBuilder {
 		private boolean isCanceled = true;
 
-		private String firstName;
-		private String middleName;
-		private String lastName;
+		private String firstName = "";
+		private String middleName = "";
+		private String lastName = "";
 
 		@Command
 		public void setFirstName(String firstName) {
