@@ -25,6 +25,7 @@
 					<module>hooks</module>
 					<module>autocomplete</module>
 					<module>authentication</module>
+					<module>subshell</module>
 			</modules>
 		</profile>
 	</profiles>
