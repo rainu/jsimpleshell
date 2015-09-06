@@ -26,6 +26,7 @@
 					<module>autocomplete</module>
 					<module>authentication</module>
 					<module>subshell</module>
+					<module>command-pipeline</module>
 			</modules>
 		</profile>
 	</profiles>
